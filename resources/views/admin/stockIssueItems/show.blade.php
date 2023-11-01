@@ -1,0 +1,89 @@
+@extends('layouts.admin')
+@section('content')
+
+<div class="card">
+    <div class="card-header">
+        <h4>
+        {{ trans('global.show') }} {{ trans('cruds.stockIssueItem.title') }}
+        </h4>
+    </div>
+
+    <div class="card-body">
+        <div class="table-responsive">
+            <!-- <div class="form-group">
+                <a class="btn btn-default" href="{{ route('admin.stock-issue-items.index') }}">
+                    {{ trans('global.back_to_list') }}
+                </a>
+            </div> -->
+            <table class="table table-bordered table-striped">
+                <tbody>
+                    <tr>
+                        <th>
+                            {{ trans('cruds.stockIssueItem.fields.id') }}
+                        </th>
+                        <td>
+                            {{ $stockIssueItem->id }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            {{ trans('cruds.stockIssueItem.fields.item') }}
+                        </th>
+                        <td>
+                            {{ $stockIssueItem->item->name ?? '' }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            {{ trans('cruds.stockIssueItem.fields.unit') }}
+                        </th>
+                        <td>
+                            {{ $stockIssueItem->unit->type ?? '' }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            {{ trans('cruds.stockIssueItem.fields.lot_no') }}
+                        </th>
+                        <td>
+                            {{ $stockIssueItem->lot_no }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            {{ trans('cruds.stockIssueItem.fields.stock_required') }}
+                        </th>
+                        <td>
+                            {{ $stockIssueItem->stock_required }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            {{ trans('cruds.stockIssueItem.fields.issued_qty') }}
+                        </th>
+                        <td>
+                            {{ $stockIssueItem->issued_qty }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            {{ trans('cruds.stockIssueItem.fields.stock_issue') }}
+                        </th>
+                        <td>
+                            {{ $stockIssueItem->stock_issue->issue_no ?? '' }}
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <!-- <div class="form-group">
+                <a class="btn btn-default" href="{{ route('admin.stock-issue-items.index') }}">
+                    {{ trans('global.back_to_list') }}
+                </a>
+            </div> -->
+        </div>
+    </div>
+</div>
+
+
+
+@endsection

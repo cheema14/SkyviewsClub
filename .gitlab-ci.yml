@@ -1,0 +1,36 @@
+stages:
+  - deploy
+  - release
+deploy_to_staging:
+  stage: deploy
+  tags:
+    - staging
+  only:
+    refs:
+      - dev
+  before_script:
+    - echo "Before running script"
+  script:
+    - echo "Jumping in repository folder"
+    - cd "/var/www/vhosts/paf-dev" #complete project path
+    - git pull origin dev
+    - echo "Application deployed to staging successfully"
+    - php artisan optimize:clear
+    - php artisan migrate
+
+deploy_to_production:
+  stage: deploy
+  tags:
+    - production
+  only:
+    refs:
+      - main
+  before_script:
+    - echo "Before running script"
+  script:
+    - echo "Jumping in repository folder"
+    - cd "/var/www/vhosts/paf-web" #complete project path
+    - git pull origin main
+    - echo "Application deployed to production successfully"
+    - php artisan config:cache
+    - php artisan migrate

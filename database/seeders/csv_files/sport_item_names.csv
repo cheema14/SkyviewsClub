@@ -1,0 +1,61 @@
+item_class_id,item_name, item_rate ,unit
+1,Car Sticker,100,Each
+2,Card Fee,300,Each
+2,Card Fees,2000,Each
+3,Late Payment Fine,1000,Each
+4,Locker Club House,200,Each
+4,Locker Kit,500,Each
+5,Ball Packet (Pro),1000,Each
+6,Bucket Rate Member,60,Each
+6,Bucket Rate,60,Each
+6,Bucket Income,50,Each
+7,Caddy Fee Cat 'C'  (9 Holes ),400,Each
+7,Caddy Fee Cat 'B'  (9 Holes ),500,Each
+7,Caddy Fee Cat 'C'  (18 Holes ),700,Each
+7,Caddy Fee Cat 'B'  (18 Holes ),800,Each
+7,Caddy Self,100,Each
+7,Caddy Others,100,Each
+8,Cart Charges Members (9 Hole),700,Each
+8,Cart Charges Non-Members (9 Hole),1000,Each
+8,Cart Charges Members (18 Hole),1200,Each
+8,Cart Charges Non-Members (18 Hole ),1500,Each
+8,Cart Charges Members 60 And Above (9 Hole),500,Each
+8,Cart Charges Members 60 And Above (18 Hole),1000,Each
+9,Coaching Members (12 Lesson),14000,Each
+9,Coaching Non-Members (12 Lesson),18000,Each
+9,Coaching Members (Single Lesson ),1200,Each
+9,Coaching Non-Members (Single Lesson ),2000,Each
+9,Coaching Pgf Members (Single Lesson ),1500,Each
+9,Coaching Course Lesson  (9 Hole) Non-Members,2000,Each
+9,Coaching Course Lesson (9 Holes) Member,1500,Each
+10,Damage Balls,100,Each
+11,Golf Game,100,Each
+12,Greenfee Armed Forces Offcers ( Monday To Thursday),400,Each
+12,Greenfee Civilian Pgf Members ( Monday To Thursday),1000,Each
+12,Greenfee Civilian Non Members ( Monday To Thursday),2000,Each
+12,Greenfee Ladies Pgf Members ( Monday To Thursday),500,Each
+12,Greenfee Childern Pgf Members ( Monday To Thursday),400,Each
+12,Greenfee Senior Citizen (Any Club 65 Yrs) ( Monday To Thursday),400,Each
+12,Greenfee Guest  Pgf Members ( Monday To Thursday),800,Each
+12,Greenfee Guest Non Members ( Monday To Thursday),1000,Each
+12,Greenfee Armed Forces Offrs (Weekend Holidays Friday1400 To Sunday),500,Each
+12,Greenfee Civilian Pgf Members (Weekend Holidays Friday1400 To Sunday),1500,Each
+12,Greenfee Civilian Non Members (Weekend Holidays Friday1400 To Sunday),2500,Each
+12,Greenfee Ladies Pgf Members (Weekend Holidays Friday1400 To Sunday),750,Each
+12,Greenfee Childern Pgf Members (Weekend Holidays Friday1400 To Sunday),500,Each
+12,Greenfee Senior Citizens (Any Club 65Yrs) (Weekend Holidays Friday1400 To Sunday),600,Each
+12,Greenfee Guest Of Members (Pgf Member) (Weekend Holidays Friday1400 To Sunday),1200,Each
+12,Greenfee Guest Of Members (Non Members) (Weekend Holidays Friday1400 To Sunday),1200,Each
+12,Professional Player Fee,500,Each
+13,Gym Members,300,Each
+14,Lost Ball,100,Each
+14,Lost Ball Executive,100,Each
+15,Match Fee,500,Each
+16,Range Fee Guest,200,Each
+16,Practice Range Fee,200,Each
+16,Bucket Executive,100,Each
+16,Range Fee Non Member,300,Each
+17,Simulator Member,300,Each
+17,Simulator Guest,2000,Each
+18,Snooker Member,100,Each
+18,Snooker Guest,100,Each
