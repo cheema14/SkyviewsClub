@@ -59,6 +59,5 @@ A Member has a profile page, dependents list (Son/Daughter/Husband/Wife) and lin
 1. every kitchen should receive its respective item's print.
 2. printers are ip based - so the Mobile App places the order and at the time of placing it, the prints should be sent.
 3. Allow Admin to manage order like add discount, select payment types(Card,Credit,Cash).
-
-    All of the restaurant(order) items have been linked through Eloquent relationships. For multiple items linking in an order I have used many-to-many relationship techniques like Sync,attach and detach. 
+All of the restaurant(order) items have been linked through Eloquent relationships. For multiple items linking in an order I have used many-to-many relationship techniques like Sync,attach and detach. 
 </p>
