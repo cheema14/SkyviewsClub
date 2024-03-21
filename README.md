@@ -44,12 +44,12 @@ A Member has a profile page, dependents list (Son/Daughter/Husband/Wife) and lin
 ### Inventory Management
 <p>As stated by the name. It handles all the inventory related to the club. It could be sports inventory, stationary for office use, food items or any other thing. As instructed by the client, I implemented the following sequence and hierarch in this module.
 
-1. Stores
-2. Vendors
-3. Units
-4. Item Types
-5. Item Class
-6. Store Items
+1. Stores - A store could be Sports, Restaurant items store, stationary store etc
+2. Vendors - Vendor info forms
+3. Units - Defined by the client. KG,Litre or anything
+4. Item Types - Item type could be solid,liquid etc
+5. Item Class - It is linked with item types like liquid type could be mineral water, dishwasher, room spray etc
+6. Store Items - The items data source (CRUD). An Item will have a store, an item type, an item class and then an associated unit with it.
 7. Sections ( Sections are completely independent)
 </p>
 
