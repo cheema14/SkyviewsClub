@@ -1,10 +1,16 @@
 <?php
 
+/** 
+ * Class: Generate Bill Controller 
+ * Purpose: i- Generates bill for orders
+ * ii- Prints the bill receipt 
+ */
+
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Order;
-use App\Models\Transaction;
+use App\Models\Transaction; 
 
 class GenerateBillController extends Controller
 {
@@ -34,8 +40,8 @@ class GenerateBillController extends Controller
 
     public function generate_customer_bill(Order $order)
     {
-
         $order = $order->load('items', 'user', 'member', 'tableTop');
+        // dd($order,$order->grand_total,$order->total);
         // Create transactions for the order
 
         return view('admin.bills.customer_bill', ['order' => $order, 'grand_total' => $order->grand_total, 'total' => $order->total]);

@@ -18,23 +18,23 @@ class OrderApiController extends Controller
 
     public function placeOrder(Request $request)
     {
-
+        
         $validator = Validator::make($request->all(), [
             'user_id' => 'required',
             'member_id' => 'required|exists:members,id',
             'items' => 'required',
-            // 'table_id' => [
-            //     'required',
-            //     function ($attribute, $value, $fail) {
-            //         $table = TableTop::find($value);
+            'table_id' => [
+                'required',
+                function ($attribute, $value, $fail) {
+                    $table = TableTop::find($value);
 
-            //         if (! $table || $table->status !== 'free') {
+                    if (! $table || $table->status !== 'free') {
 
-            //             $this->table_occupied_flag = true;
+                        $this->table_occupied_flag = true;
 
-            //         }
-            //     },
-            // ],
+                    }
+                },
+            ],
         ]);
 
         if ($validator->fails()) {
@@ -45,7 +45,6 @@ class OrderApiController extends Controller
             return $this->error(__('apis.order.tableOccupied'), 200);
         }
 
-        // dd($request->all());
         $order = Order::create(
             [
                 'user_id' => $request->user_id,
@@ -78,7 +77,32 @@ class OrderApiController extends Controller
 
         $data = $order->load('items', 'tableTop');
 
-        PrintKitchenReceiptEvent::dispatch($data);
+        // $data = collect($data->items)->sortBy(function ($item) {
+        //     return $item['pivot']['menu_id'];
+        // })->values()->all();
+
+        $recieptData = [];
+
+        foreach ($data->items as $key => $value) {
+            $recieptData['menu'.$value->pivot->menu_id][] = $value;
+        }
+
+        $recieptData['tableTop'] = $order->tableTop;
+        $recieptData['orderDetails'] = $order->id;
+        $recieptData['allItems'] = $data->items;
+
+        $menuArray = config('printers');
+        $keysWithoutUnderscore = array_filter(array_keys($menuArray), function ($key) {
+            return strpos($key, '_') === false;
+        });
+
+        // $keysWithoutUnderscore = count($keysWithoutUnderscore);
+        $recieptData['iterations'] = $keysWithoutUnderscore;
+                 
+
+        // dd($recieptData);
+        // dd($recieptData['orderDetails'],$recieptData['tableTop']);
+        PrintKitchenReceiptEvent::dispatch($recieptData);
 
         return $this->success(
             ['order' => $order], __('apis.order.save')

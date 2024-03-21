@@ -2,15 +2,15 @@
 
 namespace App\Http\Controllers\Api\V1;
 
-use Auth;
-use App\Models\Menu;
-use App\Models\Member;
-use App\Models\TableTop;
-use Illuminate\Http\Request;
-use App\Models\MenuItemCategory;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Validator;
 use App\Http\Controllers\Traits\ApiResponser;
+use App\Models\Member;
+use App\Models\Menu;
+use App\Models\MenuItemCategory;
+use App\Models\TableTop;
+use Auth;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class MemberApiController extends Controller
 {
@@ -18,7 +18,7 @@ class MemberApiController extends Controller
 
     protected $message = '';
 
-    protected $data = array();
+    protected $data = [];
 
     public function login(Request $request)
     {
@@ -32,7 +32,7 @@ class MemberApiController extends Controller
             return $this->error('', 401, $validator->errors());
         }
 
-        if (!Auth::guard('member')->attempt($validator->validated())) {
+        if (! Auth::guard('member')->attempt($validator->validated())) {
             return $this->error('Credentials not matched', 401);
         }
 
@@ -77,14 +77,14 @@ class MemberApiController extends Controller
             ->where('membership_no', $request->membership_no)
             ->first();
 
-        if (!$member) {
-            return $this->error(__('apis.member.failedSearch'), 200, );
+        if (! $member) {
+            return $this->error(__('apis.member.failedSearch'), 200);
         }
 
         $tableTop = TableTop::all();
 
         return $this->success(
-            ['member' => $member , 'tableTop'=> $tableTop], __('apis.member.search')
+            ['member' => $member, 'tableTop' => $tableTop], __('apis.member.search')
         );
     }
 
@@ -115,7 +115,7 @@ class MemberApiController extends Controller
             ->where('cnic_no', $request->cnic_no)
             ->first();
 
-        if (!$member) {
+        if (! $member) {
             return $this->error('Member not found', 403, $validator->errors());
         }
 

@@ -47,7 +47,7 @@
             @endif
             <div class="form-group col-md-4">
                 <label class="required" for="bill_date">{{ trans('cruds.sportsBilling.fields.bill_date') }}</label>
-                <input class="form-control date {{ $errors->has('bill_date') ? 'is-invalid' : '' }}" type="text" name="bill_date" id="bill_date" value="{{ old('bill_date', $sportsBilling->bill_date) }}" required>
+                <input disabled class="form-control date {{ $errors->has('bill_date') ? 'is-invalid' : '' }}" type="text" name="bill_date" id="bill_date" value="{{ old('bill_date', $sportsBilling->bill_date) }}" required>
                 @if($errors->has('bill_date'))
                     <div class="invalid-feedback">
                         {{ $errors->first('bill_date') }}

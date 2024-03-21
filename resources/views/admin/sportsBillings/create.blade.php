@@ -1,9 +1,51 @@
 @extends('layouts.admin')
 @section('content')
+@section('styles')
+<style>
+    .btn-paf{
+        background:#acdae6 !important;
+    }
+    .original-background-important{
+        background-color: #d8dbe0 !important;
+    }
+
+    .modal-content{
+      border-radius: 10px;
+    }
+    .modal-header{
+      background: #06c1f0;
+      color: #fff;
+      border-top-left-radius: 10px;
+      border-top-right-radius: 10px;
+    }
+    .modal-header .close {
+      color: #fff;
+      opacity: 1;
+    }
+    .modal-title{
+      line-height: 1;
+    }
+    .modal-body{
+      padding: 40px;
+    }
+    .modal-footer{
+      text-align: center;
+      border-top-color: transparent;
+    }
+    .modal-footer button{
+      max-width: 150px;
+      width: 100%;
+    }
+</style>
+@endsection
+
+
 
 <div class="card" x-data="handler()">
     <div class="card-header">
         {{ trans('global.create') }} {{ trans('cruds.sportsBilling.title_singular') }}
+
+        <button x-show="showDependents" x-model="showDependents" data-toggle="modal" data-target="#showMemberInfo" style="float:right" class="btn btn-success">{{ trans('cruds.sportsBilling.showDependents') }} </button>
     </div>
 
     <form method="POST" action="{{ route("admin.sports-billings.store") }}" enctype="multipart/form-data">
@@ -30,6 +72,16 @@
                 @endif
                 <span class="help-block">{{ trans('cruds.sportsBilling.fields.member_name_helper') }}</span>
             </div>
+            <div class="form-group col-md-4" x-show="!nonMemberName">
+                <label for="membership_status_label">{{ trans('cruds.sportsBilling.fields.membership_status') }}</label>
+                <input readonly class="form-control {{ $errors->has('membership_status') ? 'is-invalid' : '' }}" x-model="memberStatus" type="text" name="membership_status" id="membership_status">
+                @if($errors->has('membership_status'))
+                    <div class="invalid-feedback">
+                        {{ $errors->first('membership_status') }}
+                    </div>
+                @endif
+                <span class="help-block">{{ trans('cruds.sportsBilling.fields.member_name_helper') }}</span>
+            </div>
             <div class="form-group col-md-4" x-show="!membershipNo">
                 <label for="non_member_name">{{ trans('cruds.sportsBilling.fields.non_member_name') }}</label>
                 <input class="form-control {{ $errors->has('non_member_name') ? 'is-invalid' : '' }}" x-model="nonMemberName" type="text" name="non_member_name" id="non_member_name" value="{{ old('non_member_name', '') }}">
@@ -42,7 +94,8 @@
             </div>
             <div class="form-group col-md-4">
                 <label class="required" for="bill_date">{{ trans('cruds.sportsBilling.fields.bill_date') }}</label>
-                <input class="form-control date {{ $errors->has('bill_date') ? 'is-invalid' : '' }}" type="text" name="bill_date" id="bill_date" value="{{ old('bill_date') }}" required>
+                <input disabled class="form-control date {{ $errors->has('bill_date') ? 'is-invalid' : '' }}" type="text" name="bill_date" id="bill_date" value="{{ old('bill_date') }}" required>
+                <input type="hidden" id="bill_date_post" name="bill_date" >
                 @if($errors->has('bill_date'))
                     <div class="invalid-feedback">
                         {{ $errors->first('bill_date') }}
@@ -156,46 +209,44 @@
                 @endif
                 <span class="help-block">{{ trans('cruds.sportsBilling.fields.pay_mode_helper') }}</span>
             </div>
-            {{-- <div class="form-group col-md-4">
-                <label for="gross_total">{{ trans('cruds.sportsBilling.fields.gross_total') }}</label>
-                <input class="form-control {{ $errors->has('gross_total') ? 'is-invalid' : '' }}" type="number" name="gross_total" id="gross_total" value="{{ old('gross_total', '') }}" step="1">
-                @if($errors->has('gross_total'))
+
+            <div class="form-group col-md-4">
+                <label>{{ trans('cruds.sportsBilling.fields.division') }}</label>
+                <select required name="item_division_id" class="form-control {{ $errors->has('item') ? 'is-invalid' : '' }}" id="item_division" x-on:change="getDivision($event)">
+                    @foreach($divisions as $id => $entry)
+                    <option value="{{ $id }}" x-bind:selected="shared.division == '{{ $id }}' ? true : false">{{ $entry }}</option>
+                    @endforeach
+                </select>
+                @if($errors->has('division'))
                     <div class="invalid-feedback">
-                        {{ $errors->first('gross_total') }}
+                        {{ $errors->first('division') }}
                     </div>
                 @endif
-                <span class="help-block">{{ trans('cruds.sportsBilling.fields.gross_total_helper') }}</span>
-            </div> --}}
-            {{-- <div class="form-group col-md-4">
-                <label for="total_payable">{{ trans('cruds.sportsBilling.fields.total_payable') }}</label>
-                <input class="form-control {{ $errors->has('total_payable') ? 'is-invalid' : '' }}" type="number" name="total_payable" id="total_payable" value="{{ old('total_payable', '') }}" step="1">
-                @if($errors->has('total_payable'))
+                <span class="help-block">{{ trans('cruds.sportsBilling.fields.division_helper') }}</span>
+            </div>
+
+            <div class="form-group col-md-4">
+                <label>{{ trans('cruds.sportsBilling.fields.item_type') }}</label>
+                <select required  x-on:change="getClass($event)" name="item_type_id" class="form-control {{ $errors->has('item') ? 'is-invalid' : '' }}" id="item_type" x-model="shared.itemType" >
+                        <option value="" disabled selected>Select an option</option>
+                            <template x-for="type in fields.types">
+                                <option x-text="type.item_type"  x-bind:value="type.id"></option>
+                            </template>
+                </select>
+                @if($errors->has('item_type'))
                     <div class="invalid-feedback">
-                        {{ $errors->first('total_payable') }}
+                        {{ $errors->first('item_type') }}
                     </div>
                 @endif
-                <span class="help-block">{{ trans('cruds.sportsBilling.fields.total_payable_helper') }}</span>
-            </div> --}}
-            {{-- <div class="form-group col-md-4" id="bankCharges" style="display:none;">
-                <label for="bank_charges">{{ trans('cruds.sportsBilling.fields.bank_charges') }}</label>
-                <input class="form-control {{ $errors->has('bank_charges') ? 'is-invalid' : '' }}" readonly type="number" name="bank_charges" id="bank_charges" value="{{ old('bank_charges', '') }}" step="0.01">
-                @if($errors->has('bank_charges'))
-                    <div class="invalid-feedback">
-                        {{ $errors->first('bank_charges') }}
-                    </div>
-                @endif
-                <span class="help-block">{{ trans('cruds.sportsBilling.fields.bank_charges_helper') }}</span>
-            </div> --}}
-            {{-- <div class="form-group col-md-4">
-                <label for="net_pay">{{ trans('cruds.sportsBilling.fields.net_pay') }}</label>
-                <input class="form-control {{ $errors->has('net_pay') ? 'is-invalid' : '' }}" type="number" name="net_pay" id="net_pay" value="{{ old('net_pay', '') }}" step="0.01">
-                @if($errors->has('net_pay'))
-                    <div class="invalid-feedback">
-                        {{ $errors->first('net_pay') }}
-                    </div>
-                @endif
-                <span class="help-block">{{ trans('cruds.sportsBilling.fields.net_pay_helper') }}</span>
-            </div> --}}
+                <span class="help-block">{{ trans('cruds.sportsBilling.fields.item_type_helper') }}</span>
+            </div>
+
+            <div class="form-group col-md-4">
+                <label>{{ trans('cruds.sportsBilling.fields.discount') }}</label>
+                <input x-model="discountPercent" x-on:change="calculateDiscountOnChange($event)" class="form-control {{ $errors->has('discount') ? 'is-invalid' : '' }}" type="number" name="discount" id="discount" value="{{ old('discount', '') }}" step="0.01">
+            </div>
+            
+            
         </div>
         <div class="card-body row">
 
@@ -205,8 +256,8 @@
                     <thead class="thead-light">
                         <tr>
                             <th>#</th>
-                            <th>Item Division</th>
-                            <th>Item Type</th>
+                            {{-- <th>Item Division</th>
+                            <th>Item Type</th> --}}
                             <th>Item Class</th>
                             <th>Item Name</th>
                             <th>Item Code</th>
@@ -221,22 +272,21 @@
                         <template x-for="(field, index) in fields" :key="index">
                             <tr>
                                 <td x-text="index + 1"></td>
-                                <td>
+                                {{-- <td>
                                     <select required x-model="field.item_division" class="form-control {{ $errors->has('item') ? 'is-invalid' : '' }}" :name="`items[${index}][billing_division_id]`" id="item_division" x-on:change="getDivision(index)">
                                         @foreach($divisions as $id => $entry)
                                         <option value="{{ $id }}" {{ old('item_division') == $id ? 'selected' : '' }}>{{ $entry }}</option>
                                         @endforeach
                                     </select>
-                                </td>
-                                <td>
-                                    {{-- Item Type --}}
+                                </td> --}}
+                                {{-- <td>
                                     <select required x-model="field.item_type" x-on:change="getClass(index)" class="form-control {{ $errors->has('item') ? 'is-invalid' : '' }}" :name="`items[${index}][billing_item_type_id]`" id="item_type">
                                         <option value="" disabled selected>Select an option</option>
                                             <template x-for="type in field.types">
                                                 <option x-text="type.item_type" x-bind:value="type.id"></option>
                                             </template>
                                     </select>
-                                </td>
+                                </td> --}}
                                 <td>
                                     {{-- Item Class --}}
                                     <select required x-model="field.item_class" x-on:change="getItems(index)" class="form-control {{ $errors->has('item') ? 'is-invalid' : '' }}" :name="`items[${index}][billing_item_class_id]`" id="item_class">
@@ -298,6 +348,11 @@
                         </tr>
                         <tr>
                             <td colspan="8"></td>
+                            <td colspan="2">Discount Amount:</td>
+                            <td><input x-model="displayDiscountAmount" class="form-control {{ $errors->has('discount') ? 'is-invalid' : '' }}" type="text" name="displayDiscountAmount" id="displayDiscountAmount" value="" readonly></td>
+                        </tr>
+                        <tr>
+                            <td colspan="8"></td>
                             <td colspan="2">Net Payable:</td>
                             <td><input type="number" readonly name="net_pay" id="net_payable" class="form-control"></td>
                         </tr>
@@ -319,17 +374,48 @@
     </form>
 </div>
 
-
+<div id="showMemberInfo" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header">
+            <h4 class="modal-title">Member Information</h4>
+          <button type="button" class="close" data-dismiss="modal">&times;</button> <br />
+        </div>
+        <div class="modal-body text-center">
+             <img class="memberPhoto" src="" />
+             <p class="memberStatus"></p>
+        </div>
+        <div class="modal-footer text-center">
+          <button type="button"  class="btn btn-paf btn-md" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+</div>
 
 @endsection
 @section('scripts')
 <script>
+    // Get the current date in the format YYYY-MM-DD
+    const currentDate = new Date().toISOString().split('T')[0];
 
+    // Set the value of the 'bill_date' input to the current date
+    document.getElementById('bill_date_post').value = currentDate;
     function handler() {
 
         return {
             payMode:'',
+            discountPercent:'0',
+            displayDiscountAmount:'0',
             bank_charges_percentage:2.37,
+            memberName:'',
+            memberStatus:'',
+            showDependents:false,
+            globalIndex:0,
+            shared: {
+                division: '',
+                itemType: '',
+            },
             fields: [{
                 item_division:'',
                 item_type:'',
@@ -360,54 +446,68 @@
                 rate:'',
                 amount:'',
                });
+               this.globalIndex = this.globalIndex + 1;
+
+               // Reset the Item Type Dropdown
+               this.shared.itemType = '';
             },
             removeField(index) {
                this.fields.splice(index, 1);
                this.removeTotalFieldRemoval(index);
+               this.globalIndex = this.globalIndex - 1;
+               this.shared.itemType = '';
+               this.discountPercent = 0;
             },
-            async getDivision(index) {
+            async getDivision(event) {
                 
                 // If division is changed then all other dropdowns should be nulled
-                this.fields[index].types = [];
-                this.fields[index].classes = [];
-                this.fields[index].items = [];
-                this.fields[index].quantity = 0;
+                // this.fields[index].types = [];
+                // this.fields[index].classes = [];
+                // this.fields[index].items = [];
+                // this.fields[index].quantity = 0;
 
-                    let data = await (await fetch("{{ route('admin.sports-items.get_sports_item_type') }}?division_id=" + this.fields[index].item_division)).json();
-                    this.fields[index].types = data.itemType.sport_item_types;
+                    let data = await (await fetch("{{ route('admin.sports-items.get_sports_item_type') }}?division_id=" + event.target.value)).json();
+                    // console.log("data",data.itemType.sport_item_types);
+                    this.fields.types = data.itemType.sport_item_types;
+                    this.shared.division = event.target.value;
+                    // this.fields[index].types = data.itemType.sport_item_types;
                     // this.fields[index].showDropdown =  this.fields[index].types.length > 0;
                     
             },
-            async getClass(index){
-
-                    this.fields.classes = [];
-                    this.fields.items = [];
-                    this.fields[index].quantity = 0;
-                    
-                    let data = await (await fetch("{{ route('admin.sports-items.get_sports_classes') }}?item_type=" + this.fields[index].item_type)).json();
-                    this.fields[index].classes = data.itemClasses.sport_item_classes;
+            async getClassFromOutside(event){
+                
+                let data = await (await fetch("{{ route('admin.sports-items.get_sports_classes') }}?item_type=" + event.target.value)).json();
+                // this.getClass(false,data);
+            },
+            async getClass(event){
+                    // this.fields.classes = [];
+                    // this.fields.items = [];
+                    // this.fields[index].quantity = 0;
+                    // console.log("index",this.fields);
+                    let data = await (await fetch("{{ route('admin.sports-items.get_sports_classes') }}?item_type=" + event.target.value)).json();
+                    this.fields[this.globalIndex].classes = data.itemClasses.sport_item_classes;
             },
             async getItems(index){
                 this.fields.items = [];
-                this.fields[index].quantity = 0;
-                let data = await (await fetch("{{ route('admin.sports-items.get_sports_items') }}?item_class=" + this.fields[index].item_class)).json();
-                this.fields[index].items = data.itemNames.sport_items;
-                this.fields.item_code = data.itemNames.sport_items[index].id;
+                this.fields[this.globalIndex].quantity = 0;
+                let data = await (await fetch("{{ route('admin.sports-items.get_sports_items') }}?item_class=" + this.fields[[this.globalIndex]].item_class)).json();
+                this.fields[this.globalIndex].items = data.itemNames.sport_items;
+                this.fields.item_code = data.itemNames.sport_items[[this.globalIndex]].id;
             },
             async getItemDetails(index){
                 
-                let data = await (await fetch("{{ route('admin.sports-items.get_item_details') }}?item_id=" + this.fields[index].item_name)).json();
-                this.fields[index].itemDetails = data.itemDetails;
-                this.fields[index].item_code = data.itemDetails.id;
-                this.fields[index].rate = data.itemDetails.item_rate;
+                let data = await (await fetch("{{ route('admin.sports-items.get_item_details') }}?item_id=" + this.fields[[this.globalIndex]].item_name)).json();
+                this.fields[[this.globalIndex]].itemDetails = data.itemDetails;
+                this.fields[[this.globalIndex]].item_code = data.itemDetails.id;
+                this.fields[[this.globalIndex]].rate = data.itemDetails.item_rate;
                 // console.log("itemDetails",this.fields[index].itemDetails);
             },
             async getLot(item_id) {
                 let data = await (await fetch("{{ route('admin.store-items.get_lot_by_item') }}?item_id=" + item_id)).json();
             },
             calculateAmount(index) {
-                if (this.fields[index].quantity) {
-                    this.fields[index].amount = this.fields[index].quantity * this.fields[index].rate;
+                if (this.fields[[this.globalIndex]].quantity) {
+                    this.fields[[this.globalIndex]].amount = this.fields[[this.globalIndex]].quantity * this.fields[[this.globalIndex]].rate;
                     this.calculateAllTotals();
                 }
                 // this.grand_total = this.fields.reduce((accumulator, object) => {
@@ -421,7 +521,6 @@
                 let Grosstotal = 0;
                 let TotalPayable = 0;
                 let NetPayable = 0;
-
 
                 // if(this.payMode == 'card'){
                 //     NetPayable += NetPayable * (this.bank_charges_percentage)/100;
@@ -445,41 +544,103 @@
                     NetPayable += parseFloat(Grosstotal);
                 }
                 
+                let deduct_amount_as_discount = this.calculateDiscount();
+                // console.log("discounted_amount",deduct_amount_as_discount);
                 // Update the elements with the new calculated values
                 document.getElementById("gross_total").value = Grosstotal;
                 document.getElementById("total_payable").value = TotalPayable;
-                document.getElementById("net_payable").value = NetPayable;
+                document.getElementById("net_payable").value = (TotalPayable - deduct_amount_as_discount).toFixed(2);
                 document.getElementById("bank_charges").value = cardTax;
+            },
+            calculateDiscount(){
+                
+                let discount = this.discountPercent;
+                if(discount == 0){
+                    this.displayDiscountAmount = discount;
+                    return 0;
+                }                
+                let net_payable = document.getElementById("net_payable").value;
+
+                discount = (net_payable * discount) / 100;
+                this.displayDiscountAmount = discount;
+                return discount;
+            },
+            calculateDiscountOnChange($event){
+                
+                this.discountPercent = $event.target.value;
+                
+                
+                let total_payable = document.getElementById("total_payable").value;
+                if(total_payable){
+                    discount = (total_payable * $event.target.value) / 100;
+                    document.getElementById("net_payable").value = (total_payable - discount).toFixed(2);
+                    this.displayDiscountAmount = discount;
+                }
+
+
             },
             removeTotalFieldRemoval(index){
                 this.calculateAllTotals();
             },
             async getMemberInfo(event) {
                 
-                const membershipNumber = event.target.value;
-                
+                let membershipNumber = event.target.value;
+
                 let data = await (await fetch("{{ route('admin.membersInfo.get_member_name') }}?membershipNumber=" + membershipNumber)).json();
+                
                 if(data.memberInfo){
-                    document.getElementById("member_name").value = data.memberInfo.name;
+                    this.memberName = data.memberInfo.name;
+                    this.memberStatus = data.memberInfo.membership_status;
+                    $(':input[readonly]#membership_status').removeClass('original-background-important');
+                    $(':input[readonly]#membership_status').css({'background-color': data.memberInfo.color});
                     document.getElementById("membership_no_error").style.display = 'none';
+
+                    // document.getElementByClass(".memberPhoto").attr('src',data.memberInfo.dependents.media.original_url);
+                    $(".memberStatus").text(data.memberInfo.membership_status);
+                    // console.log("member dependents",data.memberInfo.dependents);
+                    if(data.memberInfo.dependents){
+                        this.showDependents = true;
+                        
+                        // Display the dependents data inside the modal
+                        
+                        // Clear existing content in modal body
+                        $(".modal-body").empty();
+
+                        // Iterate through dependents and append information to modal body
+                        data.memberInfo.dependents.forEach(dependent => {
+                            const imgSrc = dependent.media.length > 0 ? dependent.media[0].thumbnail : `https://ui-avatars.com/api/?rounded=true&name=${encodeURIComponent('DEFAULT_NAME')}`;
+                            
+                            $(".modal-body").append(`
+                                <img src="${imgSrc}" alt="Dependent Photo" style="max-width: 100%; height: auto;">
+                                <p>Dependent Name: ${dependent.name}</p>
+                                <p>Dependent Relationship: ${dependent.relation}</p>
+                                <p>Dependent Date of Birth: ${dependent.dob}</p>
+                                <p>Dependent Occupation: ${dependent.occupation}</p>
+                                
+                                <hr>
+                            `);
+                        });
+
+
+                    }
                 }
-                else{
-                    document.getElementById("member_name").value = '';
-                    document.getElementById("membership_no").value = '';
-                    document.getElementById("membership_no_error").style.display = 'block';
+
+                if(membershipNumber == ''){
+                    $(':input[readonly]#membership_status').addClass('original-background-important');
+                    this.showDependents = false;
                 }
             },
             showBankCharges(event){
                 
                 if(event.target.value == 'card'){
                     this.payMode = 'card';
-                    document.getElementById("bankCharges").style.display = "table-row";
-                    document.getElementById("bank_charges").value = this.bank_charges_percentage;
+                    // document.getElementById("bankCharges").style.display = "table-row";
+                    // document.getElementById("bank_charges").value = this.bank_charges_percentage;
                     this.calculateAllTotals();
                 }
                 else{
-                    document.getElementById("bankCharges").style.display = "none";
-                    document.getElementById("bank_charges").value = this.bank_charges_percentage;
+                    // document.getElementById("bankCharges").style.display = "none";
+                    // document.getElementById("bank_charges").value = this.bank_charges_percentage;
                     this.calculateAllTotals();
                 }
 
@@ -503,6 +664,7 @@
                     }
             },
             watch: {
+                
                 payMode: function(newPayMode) {
                     if (newPayMode === 'card') {
                         // Calculate and add 2.33% to the total payable

@@ -29,9 +29,10 @@ class MemberController extends Controller
         abort_if(Gate::denies('member_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
         if ($request->ajax()) {
+            
             $query = Member::with(['designation', 'department', 'membership_category', 'membership_type'])->where('is_non_member', '=', 0)->select(sprintf('%s.*', (new Member)->table));
             $table = Datatables::of($query);
-
+            
             $table->addColumn('placeholder', '&nbsp;');
             $table->addColumn('actions', '&nbsp;');
 
@@ -67,6 +68,15 @@ class MemberController extends Controller
             $table->editColumn('cnic_no', function ($row) {
                 return $row->cnic_no ? $row->cnic_no : '';
             });
+            
+            $table->editColumn('membership_category.name', function ($row) {
+                return $row->membership_category ? $row->membership_category->name : '';
+            });
+
+            $table->editColumn('membership_type.name', function ($row) {
+                return $row->membership_type ? $row->membership_type->name : '';
+            });
+
             $table->editColumn('husband_father_name', function ($row) {
                 return $row->husband_father_name ? $row->husband_father_name : '';
             });
@@ -79,7 +89,7 @@ class MemberController extends Controller
 
             return $table->make(true);
         }
-
+        
         return view('admin.members.index');
     }
 
@@ -308,7 +318,11 @@ class MemberController extends Controller
         if (! $request->membershipNumber) {
             $data = 'Not Item Found!';
         } else {
-            $data = Member::where('membership_no', $request->membershipNumber)->where('serving_officer_type', null)->get()->first();
+            $data = Member::where('membership_no', $request->membershipNumber)
+                ->where('serving_officer_type', null)
+                ->with('dependents') // Eager load the "dependents" relationship
+                ->first();
+            $data['color'] = $data->membership_status && Member::STATUS_COLOR[$data->membership_status] ? Member::STATUS_COLOR[$data->membership_status] : 'none';
         }
 
         return response()->json(['memberInfo' => $data]);

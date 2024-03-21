@@ -22,8 +22,10 @@ class PrintUpdatedKitchenReceiptListener
     public function handle(object $event): void
     {
         $menuConfig = config('printers');
+        $sittingName = config('printers');
 
         $printerPort = 9100;
+        $printer_name = 'PAF Printer';
 
         try {
 
@@ -32,62 +34,61 @@ class PrintUpdatedKitchenReceiptListener
             // $totalItems = count($itemsArray);
             foreach ($itemsArray as $key => $item) {
 
-                $menuId = $item['menu_id'];
+                $menuId = $key;
 
-                if (isset($menuConfig["menu$menuId"])) {
+                $menuNumber = preg_replace('/[^0-9]/', '', $key);
 
-                    $printerIp = $menuConfig["menu$menuId"];
-                    $printerPort = 9100; // Change the port if needed
+                $printerIp = $menuConfig["$menuId"];
+                $printerPort = 9100; // Change the port if needed
 
-                    // $printerShareName = 'PAF Printer';
-                    // $connector = new WindowsPrintConnector($printerShareName);
+                // $connector = new WindowsPrintConnector($printer_name);
+                // $printer = new Printer($connector);
 
-                    $connector = new NetworkPrintConnector($printerIp, $printerPort);
-                    $printer = new Printer($connector);
+                $connector = new NetworkPrintConnector($printerIp, $printerPort);
+                $printer = new Printer($connector);
 
-                    $printer->setJustification(Printer::JUSTIFY_LEFT);
-                    $printer->text('Time:');
-                    $printer->text(date('d-m-Y H:i:s'));
+                $printer->setJustification(Printer::JUSTIFY_LEFT);
+                $printer->text('Time:');
+                $printer->text(date('d-m-Y H:i:s'));
+                $printer->text("\n");
+
+                $printer->setJustification(Printer::JUSTIFY_RIGHT);
+                $printer->text('SR No:');
+                $printer->text($event->content['orderDetails']);
+                $printer->text("\n");
+
+                $printer->setJustification(Printer::JUSTIFY_CENTER);
+                $printer->setEmphasis(true);
+
+                // Print the header
+                $printer->text('PAF Sky Views');
+                $printer->text("\n\n");
+                $printer->text("Kitchen Receipt\n");
+                $printer->text("\n");
+                $printer->text($event->content['tableTop']->code);
+                $printer->text("\n");
+                $printer->text($sittingName['menu_'.$menuNumber]);
+
+                $printer->text("\n\n");
+
+                // Print the header
+
+                $printer->text("--------------------------------\n");
+                $printer->text("| Item Name      | Qty | Price |\n");
+                $printer->text("--------------------------------\n\n");
+
+                foreach ($item as $items) {
+                    $printer->text($items['title'].'    '.$items['quantity']."\n");
                     $printer->text("\n");
 
-                    $printer->setJustification(Printer::JUSTIFY_RIGHT);
-                    $printer->text('SR No:');
-                    $printer->text($event->content['data']['id']);
-                    $printer->text("\n");
+                } // foreach for each menu id
 
-                    $printer->setJustification(Printer::JUSTIFY_CENTER);
-                    $printer->setEmphasis(true);
+                // Print the total
+                $printer->text("--------------------------------\n");
+                $printer->text("\n\n");
 
-                    // // Print the header
-                    $printer->text('PAF Sky Views');
-                    $printer->text("\n\n");
-                    $printer->text("Kitchen Receipt\n");
-                    $printer->text("\n");
-                    $printer->text($event->content['data']->tableTop->code);
-
-                    $printer->text("\n\n");
-
-                    // Print the header
-
-                    $printer->text("--------------------------------\n");
-                    $printer->text("| Item Name      | Qty | Price |\n");
-                    $printer->text("--------------------------------\n\n");
-
-                    $printer->text('| '.str_pad($item['title'], 15).' | '.str_pad($item['quantity'], 3).' | '.number_format($item['price'], 2)." |\n");
-                    $printer->text("\n\n");
-
-                    // Print the total
-                    $printer->text("--------------------------------\n");
-                    $printer->text("\n\n");
-
-                    $printer->cut();
-                    $printer->close();
-
-                } else {
-                    // Handle cases where there is no IP address for the menu_id
-                    // You can log an error or take appropriate action
-
-                }
+                $printer->cut();
+                $printer->close();
 
             }
         } catch (\Exception $e) {

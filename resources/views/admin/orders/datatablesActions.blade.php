@@ -27,7 +27,7 @@
             {{ trans('global.delete') }}
         </a> --}}
         @endcan
-        @if ($row->status == 'New')
+        @if ($row->status == 'New' || $row->status == 'Active')
 
             <a target="_blank" class="dropdown-item performAction" href="{{ route('admin.print-kitchen-receipt', $row->id) }}">
                 <i style="margin-right:10px; " class="fa fa-print fa-lg"></i>
@@ -50,7 +50,7 @@
             </a>
         @endif
 
-        @if ($row->status == 'Complete')
+        @if ($row->status == 'Complete' || $row->status == 'Active')
             <a target="_blank" class="dropdown-item performAction" href="{{ route('admin.print-customer-bill' , $row->id) }}">
                 <i style="margin-right:10px; " class="fa fa-money fa-lg"></i>
                 {{ trans('cruds.cash_receipts.fields.print_customer_receipt') }}

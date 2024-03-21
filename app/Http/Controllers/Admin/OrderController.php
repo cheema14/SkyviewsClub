@@ -2,23 +2,25 @@
 
 namespace App\Http\Controllers\Admin;
 
-use Gate;
-use Config;
-use App\Models\Item;
-use App\Models\Menu;
-use App\Models\User;
-use App\Models\Order;
-use App\Models\Member;
-use App\Models\TableTop;
-use Illuminate\Http\Request;
-use App\Models\MenuItemCategory;
 use App\Events\ChangeTableTopEvent;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\StoreOrderRequest;
-use Yajra\DataTables\Facades\DataTables;
-use App\Http\Requests\UpdateOrderRequest;
 use App\Http\Requests\MassDestroyOrderRequest;
+use App\Http\Requests\StoreOrderRequest;
+use App\Http\Requests\UpdateOrderRequest;
+use App\Models\Item;
+use App\Models\Member;
+use App\Models\Menu;
+use App\Models\MenuItemCategory;
+use App\Models\Order;
+use App\Models\TableTop;
+use App\Models\User;
+use Carbon\Carbon;
+use Config;
+use Gate;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Symfony\Component\HttpFoundation\Response;
+use Yajra\DataTables\Facades\DataTables;
 
 class OrderController extends Controller
 {
@@ -27,7 +29,31 @@ class OrderController extends Controller
         abort_if(Gate::denies('order_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
         if ($request->ajax()) {
-            $query = Order::with(['user', 'member', 'items','tableTop'])->select(sprintf('%s.*', (new Order)->table));
+            
+            $fromDate = $request->has('fromDate') ? $request->fromDate : '';
+            $toDate = $request->has('toDate') ? $request->toDate : date('d-m-Y');
+            $orderStatus = $request->orderStatus ? $request->orderStatus : null;
+            $completeStatusRoute = request('status') ? request('status') : null;
+            
+            
+            $query = Order::with(['user', 'member', 'items', 'tableTop'])->select(sprintf('%s.*', (new Order)->table));
+
+            if($completeStatusRoute != null){
+                $query->where('status' ,'=', request('status'));
+            }
+            
+            if($orderStatus && $orderStatus != 'all'){
+                $query->where('status','=',$request->orderStatus);
+            }
+            else{
+                $query->where('status','!=',Order::STATUS_SELECT['Complete']);
+            }
+            
+            if(!empty($fromDate)){
+                $query->whereBetween(DB::raw('DATE(created_at)'), [Carbon::createFromFormat('d-m-Y', $fromDate)->toDateString(), Carbon::createFromFormat('d-m-Y', $toDate)->toDateString()]);
+            }
+
+            
             $table = Datatables::of($query);
 
             $table->addColumn('placeholder', '&nbsp;');
@@ -35,15 +61,14 @@ class OrderController extends Controller
 
             $table->editColumn('actions', function ($row) {
 
-                $viewGate      = 'order_show';
-                if($row->status == 'Complete'){
-                    $editGate      = '';
+                $viewGate = 'order_show';
+                if ($row->status == 'Complete') {
+                    $editGate = '';
 
+                } else {
+                    $editGate = 'order_edit';
                 }
-                else{
-                    $editGate      = 'order_edit';
-                }
-                $deleteGate    = 'order_delete';
+                $deleteGate = 'order_delete';
                 $crudRoutePart = 'orders';
 
                 return view('admin.orders.datatablesActions', compact(
@@ -62,7 +87,6 @@ class OrderController extends Controller
             // $table->editColumn('table_top.code', function ($row) {
             //     return $row->table_top;
             // });
-
 
             $table->addColumn('user_name', function ($row) {
                 return $row->user ? $row->user->name : '';
@@ -130,7 +154,17 @@ class OrderController extends Controller
                 return $row->status && Order::STATUS_COLOR[$row->status] ? Order::STATUS_COLOR[$row->status] : 'none';
             });
 
-            $table->rawColumns(['actions', 'placeholder', 'user', 'member', 'item', 'table_top','floor']);
+            $table->rawColumns(['actions', 'placeholder', 'user', 'member', 'item', 'table_top', 'floor']);
+            
+            // if ($request->status == 'Complete') {
+            //     // Load the view for completed orders
+
+            //     return $table->make(true);
+            //     // return view('admin.orders.completed_orders')->with('dataTable', $table->make(true));
+            // } else {
+            //     // Load the default view for other orders
+            //     return $table->make(true);
+            // }
 
             return $table->make(true);
         }
@@ -142,14 +176,13 @@ class OrderController extends Controller
     {
         abort_if(Gate::denies('order_create'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
+        $menus = Menu::pluck('title', 'id')->prepend(trans('global.pleaseSelect'), '');
 
-        $menus = Menu::pluck('title' , 'id')->prepend(trans('global.pleaseSelect'), '');
-
-        $categories = MenuItemCategory::pluck('name' , 'id')->prepend(trans('global.pleaseSelect'), '');
+        $categories = MenuItemCategory::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
 
         $users = User::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
 
-        $members = Member::select('name', 'id' , 'membership_no')->get();
+        $members = Member::select('name', 'id', 'membership_no')->get();
 
         $items = Item::pluck('title', 'id');
 
@@ -157,7 +190,7 @@ class OrderController extends Controller
 
         $printers = Config::get('printers');
 
-        return view('admin.orders.create', compact('items', 'members', 'users' , 'menus' , 'categories' , 'tableTops','printers'));
+        return view('admin.orders.create', compact('items', 'members', 'users', 'menus', 'categories', 'tableTops', 'printers'));
     }
 
     public function store(StoreOrderRequest $request)
@@ -173,10 +206,9 @@ class OrderController extends Controller
             'floor' => $request->floor,
         ]);
 
-
         $order->items()->sync($request->input('items', []));
 
-        $this->calculate_total_after_update_order($request->items,$order);
+        $this->calculate_total_after_update_order($request->items, $order);
 
         return redirect()->route('admin.orders.index');
     }
@@ -185,24 +217,23 @@ class OrderController extends Controller
     {
         abort_if(Gate::denies('order_edit'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        $menus = Menu::pluck('title' , 'id')->prepend(trans('global.pleaseSelect'), '');
+        $menus = Menu::pluck('title', 'id')->prepend(trans('global.pleaseSelect'), '');
 
-        $categories = MenuItemCategory::pluck('name' , 'id')->prepend(trans('global.pleaseSelect'), '');
+        $categories = MenuItemCategory::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
 
         $users = User::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
 
-        $members = Member::select('name', 'id' , 'membership_no')->get();
+        $members = Member::select('name', 'id', 'membership_no')->get();
 
         $items = Item::pluck('title', 'id');
 
-        $tableTops = TableTop::where('status','!=','active')->orWhere('id',$order->table_top_id)->pluck('code', 'id')->prepend(trans('global.pleaseSelect'), '');
+        $tableTops = TableTop::where('status', '!=', 'active')->orWhere('id', $order->table_top_id)->pluck('code', 'id')->prepend(trans('global.pleaseSelect'), '');
 
         $order->load('user', 'member', 'items');
 
         $printers = Config::get('printers');
 
-
-        return view('admin.orders.edit', compact('items', 'members', 'users' , 'menus' , 'categories' , 'tableTops' , 'order','printers'));
+        return view('admin.orders.edit', compact('items', 'members', 'users', 'menus', 'categories', 'tableTops', 'order', 'printers'));
     }
 
     public function update(UpdateOrderRequest $request, Order $order)
@@ -211,18 +242,17 @@ class OrderController extends Controller
         $order->update($request->all());
 
         $order
-        ->items()
-        ->sync( $this->mapItemValues($request->items));
+            ->items()
+            ->sync($this->mapItemValues($request->items));
 
         // $data['id'] = $order->table_top_id;
         // $data['status'] = $order->table_top_id;
 
         // ChangeTableTopEvent::dispatch($data);
-        $this->calculate_total_after_update_order($request->items,$order);
+        $this->calculate_total_after_update_order($request->items, $order);
 
         return redirect()->route('admin.orders.index');
     }
-
 
     protected function mapItemValues($items)
     {
@@ -230,7 +260,7 @@ class OrderController extends Controller
         $syncData = collect($items)->mapWithKeys(function ($itemAttributes, $itemId) {
 
             return [$itemAttributes['item_id'] => [
-            // return [$itemId => [
+                // return [$itemId => [
                 'quantity' => $itemAttributes['quantity'],
                 // 'content' => $itemAttributes['content'],
                 'price' => $itemAttributes['price'],
@@ -242,15 +272,16 @@ class OrderController extends Controller
         return $syncData;
     }
 
-    protected function calculate_total_after_update_order($items, Order $order){
+    protected function calculate_total_after_update_order($items, Order $order)
+    {
 
         // dd($items);
         $sum = collect($items)
-                ->reduce(function($carry, $item){
+            ->reduce(function ($carry, $item) {
                 return $carry + ($item['price'] * $item['quantity']);
             }, 0);
 
-        $order->fill(['grand_total'=> $sum,'total'=>$sum]);
+        $order->fill(['grand_total' => $sum, 'total' => $sum]);
         $order->update();
     }
 

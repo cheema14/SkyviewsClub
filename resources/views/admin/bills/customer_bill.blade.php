@@ -143,9 +143,20 @@
         background-color: #e2af9e;
         border-color: #F4C1B1;
     }
-
-
-
+   
+    .item-table {
+        border: 0px solid !important;
+    }
+.item-table tr th {
+    border-bottom: 2px solid;
+    padding: 5px;
+    border-left: 0px solid;
+    border-right: 0px solid;
+    border-top: 0px solid;
+}
+.item-table tr td {
+    padding: 5px;
+}
     @media  print {
         body {
             color: black;
@@ -202,7 +213,7 @@
                         <strong>Bill No</strong></label> <span>{{ $order->id }}</span>
                     </td>
                     <td colspan="3"> <label class="control-label text_size">
-                        <strong>Bill Date: </strong></label> {{ now()->format('Y-m-d h:i A') }}</label>
+                        <strong>Bill Date: </strong> {{ $order->created_at->format('Y-m-d h:i A') }}</label>
                     </td>
                 </tr>
                 <tr class="center_text">
@@ -226,37 +237,33 @@
                     <td  colspan="6" style="border-top: 2px dotted;"></td>
                 </tr>
 
-
+              
                 <tr class="left_text" style="border-bottom: 2px solid;">
-                    <td  class="left_text" style="width: 30px;">
-                         <label class="control-label text_size">
-                          <strong>Sr#</strong></label>
-                    </td>
-                    <td colspan="2" class="left_text">
-                        <label class="control-label text_size">
-                         <strong>Item Description</strong></label>
-                    </td>
-                         <td  class="right_text">
-                         <label class="control-label text_size">
-                        <strong>Qty</strong></label>
-                    </td>
-                    <td  class="right_text">
-                        <label class="control-label text_size">
-                       <strong>Price</strong></label>
-                   </td>
-                   <td  class="right_text">
-                        <label class="control-label text_size">
-                    <strong>Amount</strong></label>
-                    </td>
-                </tr>
-                @foreach ($order->items as $item)
-
-                    <tr class="center_text">
-                        <td class="left_text">
-                            <label class="control-label text_size">
-                            <strong>{{ $loop->iteration }}</strong></label>
-                        </td>
-                            <td colspan="2" class="left_text">
+                    <td colspan="6" style="padding: 0; border: 0; word-wrap: normal;">
+                        <table class="item-table">
+                            <thead>
+                                <tr>
+                                    <th style="width: 30px;text-align: left;"><label class="control-label text_size">
+                                        <strong>Sr#</strong></label></th>
+                                    <th class="left_text" style="width: 30%;"> <label class="control-label text_size">
+                                        <strong>Item Description</strong></label></th>
+                                    <th style="width: 40px;">
+                                        <label class="control-label text_size">
+                                            <strong>Qty</strong></label>
+                                    </th>
+                                    <th> <label class="control-label text_size">
+                                        <strong>Price</strong></label></th>
+                                    <th><label class="control-label text_size">
+                                        <strong>Amount</strong></label></th>
+                                </tr>
+                            </thead>
+                            @foreach ($order->items as $item)
+                            <tbody>
+                            <td class="left_text">
+                                <label class="control-label text_size">
+                                <strong>{{ $loop->iteration }}</strong></label>
+                            </td>
+                            <td class="left_text">
                                 <label class="control-label text_size">
                             <strong>{{ $item->title }}</strong></label>
                             </td>
@@ -272,9 +279,14 @@
                                 <label class="control-label text_size">
                             <strong>{{ $item->price * $item->pivot->quantity }}</strong></label>
                             </td>
-                    </tr>
+                        </tbody>
+                        @endforeach
+                        </table>
+                    </td>
+                </tr>
+                
 
-                @endforeach
+                
 
                 {{-- <tr class="center_text">
                     <td class="left_text">
@@ -323,24 +335,37 @@
 
 
                 <tr class="center_text" style="border-top: 2px solid;">
-                    <td colspan="5" class="left_text">
+                    <td colspan="4" class="left_text">
                          <label class="control-label text_size">
                         <strong>Gross Amount:</strong></label>
                     </td>
-                        <td  class="left_text">
+                        <td colspan="2" class="right_text">
                             <label class="control-label text_size">
                            <strong>{{ $order->total }}</strong></label>
                         </td>
 
                 </tr>
 
-                @if ($order->latestTransaction->type == 'Card')
+                @if($order->discount)
+                    <tr class="center_text">
+                        <td colspan="4" class="left_text">
+                            <label class="control-label text_size">
+                                <strong>Discount:{{ isset($order->item_discount) ? $order->item_discount : '' }}{{ isset($order->item_discount) ? '%' : '' }}</strong>
+                        </td>
+                            <td colspan="2" class="right_text" style="padding:6px 9px !important;">
+                                <label class="control-label text_size">
+                            <strong>{{ number_format($order->discount)  }}</strong></label>
+                            </td>
+                    </tr>
+                @endif
+                {{-- 31 Jan 24 - Bank charges being removed upon request --}}
+                @if ($order->latestTransaction?->type == 'Card' && false)
                     <tr class="center_text" style="border-top: 2px solid;">
-                        <td colspan="5" class="left_text">
+                        <td colspan="4" class="left_text">
                             <label class="control-label text_size">
                             <strong>Bank Charges:</strong></label>
                         </td>
-                            <td  class="left_text">
+                            <td colspan="2" class="right_text">
                                 <label class="control-label text_size">
                             <strong>{{ $order->tax }}</strong></label>
                             </td>
@@ -349,16 +374,16 @@
                 @endif
 
                 <tr class="center_text">
-                    <td colspan="5" class="left_text">
+                    <td colspan="4" class="left_text">
                          <label class="control-label text_size">
                         <strong>Net Payable Amount:</strong></label>
                     </td>
-                        <td class="left_text" style="padding:6px 9px !important;">
+                        <td colspan="2" class="right_text" style="padding:6px 9px !important;">
                             <label class="control-label text_size">
-                           <strong>{{ number_format(round($order->grand_total))  }}</strong></label>
+                           <strong>{{ number_format($order->grand_total)  }}</strong></label>
                         </td>
-
                 </tr>
+
 
                 <tr class="center_text">
                     <td colspan="3" class="left_text">
@@ -367,11 +392,17 @@
                     </td>
                     <td colspan="3">
                         <label class="control-label text_size">
-                       <strong>Prepared By</strong></label> <span>{{ auth()->user()->name }}</span>
+                       <strong>Prepared By</strong></label> <span>{{ $order->user->name }}</span>
                    </td>
 
                 </tr>
 
+                <tr class="center_text">
+                    <td colspan="3" class="left_text">
+                        <label class="control-label text_size">
+                       <strong>Member Name</strong></label> <span>{{ $order->member->name }}</span>
+                   </td>
+                </tr>
                 <tr class="center_text">
                     <td colspan="3" class="left_text"> <label class="control-label text_size">
                         <strong></strong></label>
@@ -390,7 +421,7 @@
                 <tr class="center_text">
                     <td colspan="6" class="left_text" style="padding-top: 30px;">
                         <label class="control-label text_size">
-                        <strong>PayMode: {{ $order->latestTransaction->type }}</strong></label>
+                        <strong>PayMode: {{ $order->latestTransaction?->type }}</strong></label>
                     </td>
 
                 </tr>

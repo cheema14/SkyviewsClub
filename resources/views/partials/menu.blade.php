@@ -205,10 +205,50 @@
                 </ul>
             </li>
         @endcan
+        @can('monthly_bills')
+        <li class="c-sidebar-nav-dropdown {{ request()->is("admin/billing/*") ? "c-show" : "" }}">
+            <a class="c-sidebar-nav-dropdown-toggle {{ request()->is("admin/billing/*") ? "" : "" }}" href="#">
+                <i class="fa-fw fas fa-money-bill c-sidebar-nav-icon">
+
+                </i>
+                {{ trans('cruds.monthlyBilling.title') }}
+            </a>
+            
+            <ul class="c-sidebar-nav-dropdown-items">
+                @can('paid_bill_access')
+                    <li class="c-sidebar-nav-item">
+                        <a href="{{ route("admin.monthlyBilling.get-all-receipts") }}" class="c-sidebar-nav-link {{ request()->is("admin/billing/get-all-receipts") || request()->is("admin/billing/create-bill-receipt/*")  ? "c-active" : "" }}">
+                            <i class="fa-fw fas fa-check c-sidebar-nav-icon">
+
+                            </i>
+                            {{ trans('cruds.paymentReceipts.menu_title') }}
+                        </a>
+                    </li>
+                @endcan
+                @can('due_bill_access')
+                    <li class="c-sidebar-nav-item">
+                        <a href="{{ route("admin.monthlyBilling.get-due-bills") }}" class="c-sidebar-nav-link {{ request()->is("admin/billing/get-due-bills") ? "c-active" : "" }}">
+                            <i class="fa-fw fas fa-minus c-sidebar-nav-icon"></i>
+                            {{ trans('cruds.monthlyBilling.due_bills') }}
+                        </a>
+                    </li>
+                @endcan
+                @can('access_payment_history')
+                    <li class="c-sidebar-nav-item">
+                        <a href="{{ route("admin.paymentHistory.view-payment-history-list") }}" class="c-sidebar-nav-link {{ request()->is("admin/sports-divisions") || request()->is("admin/sports-divisions/*") ? "c-active" : "" }}">
+                            <i class="fa-fw fas fa-calendar c-sidebar-nav-icon"></i>
+                            {{ trans('cruds.paymentHistory.title') }}
+                        </a>
+                    </li>
+                @endcan
+            </ul>
+
+        </li>
+        @endcan
         @can('sport_access')
             <li class="c-sidebar-nav-dropdown {{ request()->is("admin/sports-divisions*") ? "c-show" : "" }} {{ request()->is("admin/sport-item-types*") ? "c-show" : "" }} {{ request()->is("admin/sport-item-classes*") ? "c-show" : "" }} {{ request()->is("admin/sport-item-names*") ? "c-show" : "" }}">
                 <a class="c-sidebar-nav-dropdown-toggle" href="#">
-                    <i class="fa-fw fas fa-cogs c-sidebar-nav-icon">
+                    <i class="fa-fw fas fa-futbol c-sidebar-nav-icon">
 
                     </i>
                     {{ trans('cruds.sport.title') }}
@@ -260,7 +300,7 @@
         @can('billing_access')
             <li class="c-sidebar-nav-dropdown {{ request()->is("admin/sports-billings*") ? "c-show" : "" }} {{ request()->is("admin/sport-billing-items*") ? "c-show" : "" }}">
                 <a class="c-sidebar-nav-dropdown-toggle" href="#">
-                    <i class="fa-fw fas fa-cogs c-sidebar-nav-icon">
+                    <i class="fa-fw fas fa-money-bill-wave c-sidebar-nav-icon">
 
                     </i>
                     {{ trans('cruds.billing.title') }}
@@ -498,7 +538,7 @@
         @endcan
         @can('order_access')
             <li class="c-sidebar-nav-item">
-                <a href="{{ route("admin.orders.index") }}" class="c-sidebar-nav-link {{ request()->is("admin/orders") || request()->is("admin/orders/*") ? "c-active" : "" }}">
+                <a href="{{ route("admin.orders.index") }}" class="c-sidebar-nav-link {{ request()->is("admin/orders") || request()->is("admin/orders/*")  ? "c-active":"" }}">
                     <!-- <i class="fa-fw fas fa-cogs c-sidebar-nav-icon"></i> -->
                     <svg class="c-sidebar-nav-icon" width="22" height="23" viewBox="0 0 22 23" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <g clip-path="url(#clip0_14_826)">
@@ -513,6 +553,27 @@
                         </defs>
                     </svg>
                     {{ trans('cruds.order.title') }}
+                </a>
+            </li>
+        @endcan
+        {{-- For the list of orders with "complete" status --}}
+        @can('order_access')
+            <li class="c-sidebar-nav-item">
+                <a href="{{ route("admin.orders.index", ['status' => 'Complete']) }}" class="c-sidebar-nav-link {{ request()->getQueryString() && request()->has('status') && request()->getQueryString() && request()->status == 'Complete' ? "c-active" : "" }}">
+                    <!-- <i class="fa-fw fas fa-cogs c-sidebar-nav-icon"></i> -->
+                    <svg class="c-sidebar-nav-icon" width="22" height="23" viewBox="0 0 22 23" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <g clip-path="url(#clip0_14_826)">
+                        <path d="M20.2125 18.1579H5.81188C5.63481 18.1579 5.55894 17.9253 5.69761 17.8184L7.70225 16.2777H19.1563C19.9707 16.2777 20.6461 15.6083 20.6619 14.7952L20.7903 8.18923C20.8049 7.43615 20.2535 6.78226 19.5075 6.67077C19.1487 6.61709 18.8127 6.86382 18.7589 7.22317C18.7051 7.58253 18.9531 7.91692 19.3128 7.9707C19.4062 7.98466 19.4753 8.06588 19.4735 8.15999L19.3451 14.7696C19.3432 14.8712 19.2585 14.9616 19.1564 14.9616H8.00143L5.92342 5.97716L6.97813 6.13091C7.33772 6.1845 7.67301 5.93495 7.72683 5.57559C7.7806 5.21623 7.53265 4.88038 7.17292 4.82661L5.59312 4.59003L4.98919 2.24244C4.9145 1.95143 4.65202 1.75302 4.35133 1.75302H1.78733C1.42365 1.75302 1.12878 2.04774 1.12878 2.4111C1.12878 2.77445 1.4236 3.06917 1.78733 3.06917H3.84038L6.74094 15.3432L4.89321 16.7666C3.77848 17.6255 4.40543 19.474 5.81183 19.474H7.54059C7.46407 19.6621 7.42205 19.9018 7.42205 20.1371C7.42205 21.2257 8.31397 22.1076 9.41033 22.1076C10.5067 22.1076 11.3986 21.2275 11.3986 20.139C11.3986 19.9036 11.3566 19.6621 11.2801 19.474H14.8767C14.8001 19.6621 14.7581 19.9018 14.7581 20.1371C14.7581 21.2257 15.65 22.1076 16.7464 22.1076C17.8428 22.1076 18.7347 21.2275 18.7347 20.139C18.7347 19.9036 18.6927 19.6621 18.6162 19.474H20.2126C20.5763 19.474 20.8712 19.1793 20.8712 18.816C20.8712 18.4526 20.5763 18.1579 20.2125 18.1579ZM9.41033 20.7881C9.04021 20.7881 8.73914 20.4928 8.73914 20.1298C8.73914 19.7668 9.04025 19.4715 9.41033 19.4715C9.78045 19.4715 10.0816 19.7668 10.0816 20.1298C10.0816 20.4928 9.78045 20.7881 9.41033 20.7881ZM16.7464 20.7881C16.3762 20.7881 16.0752 20.4928 16.0752 20.1298C16.0752 19.7668 16.3763 19.4715 16.7464 19.4715C17.1165 19.4715 17.4176 19.7668 17.4176 20.1298C17.4176 20.4928 17.1165 20.7881 16.7464 20.7881Z" fill="white"/>
+                        <path d="M13.1722 9.64602C10.5349 9.64602 8.38928 7.50657 8.38928 4.87681C8.38928 2.24705 10.5349 0.107605 13.1722 0.107605C15.8095 0.107605 17.9551 2.24705 17.9551 4.87681C17.9551 7.50657 15.8095 9.64602 13.1722 9.64602ZM13.1722 1.42347C11.2611 1.42347 9.70637 2.97263 9.70637 4.87681C9.70637 6.781 11.2612 8.33015 13.1722 8.33015C15.0832 8.33015 16.638 6.781 16.638 4.87681C16.638 2.97263 15.0832 1.42347 13.1722 1.42347Z" fill="white"/>
+                        <path d="M12.0056 6.55189L10.9479 5.29661C10.7136 5.01867 10.7493 4.60361 11.0275 4.36957C11.3057 4.13553 11.7211 4.17111 11.9554 4.44915L12.5366 5.13886L14.3448 3.21756C14.5939 2.95288 15.0107 2.94005 15.2757 3.18894C15.5407 3.43783 15.5535 3.85425 15.3043 4.11894L12.9892 6.57887C12.7824 6.79655 12.2532 6.83965 12.0056 6.55189Z" fill="white"/>
+                        </g>
+                        <defs>
+                        <clipPath id="clip0_14_826">
+                        <rect width="22" height="22" fill="white" transform="translate(0 0.107605)"/>
+                        </clipPath>
+                        </defs>
+                    </svg>
+                    {{ trans('cruds.order.fields.completed_orders') }}
                 </a>
             </li>
         @endcan

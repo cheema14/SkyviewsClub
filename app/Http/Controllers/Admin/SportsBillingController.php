@@ -11,6 +11,7 @@ use App\Models\SportItemName;
 use App\Models\SportItemType;
 use App\Models\SportsBilling;
 use App\Models\SportsDivision;
+use App\Models\Transaction;
 use Gate;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -21,7 +22,7 @@ class SportsBillingController extends Controller
     {
         abort_if(Gate::denies('sports_billing_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        $sportsBillings = SportsBilling::all();
+        $sportsBillings = SportsBilling::orderBy('created_at','desc')->get();
 
         return view('admin.sportsBillings.index', compact('sportsBillings'));
     }
@@ -41,14 +42,14 @@ class SportsBillingController extends Controller
 
     public function store(StoreSportsBillingRequest $request)
     {
-        // dd($request->all());
+        
         $billingIssue = SportsBilling::create($request->all());
 
         foreach ($request->items as $key => $value) {
 
             $billingIssue->sportBillingSportBillingItems()->create([
-                'billing_division_id' => $value['billing_division_id'],
-                'billing_item_type_id' => $value['billing_item_type_id'],
+                'billing_division_id' => $request->item_division_id,
+                'billing_item_type_id' => $request->item_type_id,
                 'billing_item_class_id' => $value['billing_item_class_id'],
                 'billing_item_name_id' => $value['billing_item_name_id'],
                 'billing_item_description' => $value['billing_item_description'],
@@ -57,6 +58,17 @@ class SportsBillingController extends Controller
                 'amount' => $value['amount'],
             ]);
         }
+
+        // Now create a transaction so that
+        // it can be fetched during the billing
+        
+        $billingIssue->sportTransactions()->create([
+            'code'=>'',
+            'user_id'=>auth()->user()->id,
+            'type'=>ucfirst($request->pay_mode),
+            'status'=> Transaction::STATUS_SELECT['Success'],
+            'bill_amount'=> $billingIssue->net_pay,
+        ]);
 
         return redirect()->route('admin.sports-billings.index');
     }
@@ -171,8 +183,10 @@ class SportsBillingController extends Controller
         $gross_total = $data->gross_total;
         $total_payable = $data->total_payable;
         $net_payable = $data->net_pay;
+        
+        $prepared_by = auth()->user()->name ?? 'Sports Admin';
 
-        return view('admin.sportsBillings.print_sports_bill', compact('data', 'gross_total', 'total_payable', 'net_payable'));
+        return view('admin.sportsBillings.print_sports_bill', compact('data', 'gross_total', 'total_payable', 'net_payable','prepared_by'));
 
     }
 }

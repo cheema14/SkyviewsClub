@@ -40,7 +40,7 @@
                         <th>
                             {{ trans('cruds.sportsBilling.fields.remarks') }}
                         </th>
-                        <th>
+                        {{-- <th>
                             {{ trans('cruds.sportsBilling.fields.ref_club') }}
                         </th>
                         <th>
@@ -60,13 +60,13 @@
                         </th>
                         <th>
                             {{ trans('cruds.sportsBilling.fields.temp_caddy') }}
-                        </th>
+                        </th> --}}
                         <th>
                             {{ trans('cruds.sportsBilling.fields.pay_mode') }}
                         </th>
-                        <th>
+                        {{-- <th>
                             {{ trans('cruds.sportsBilling.fields.gross_total') }}
-                        </th>
+                        </th> --}}
                         <th>
                             {{ trans('cruds.sportsBilling.fields.total_payable') }}
                         </th>
@@ -105,7 +105,7 @@
                             <td>
                                 {{ $sportsBilling->remarks ?? '' }}
                             </td>
-                            <td>
+                            {{-- <td>
                                 {{ $sportsBilling->ref_club ?? '' }}
                             </td>
                             <td>
@@ -125,13 +125,13 @@
                             </td>
                             <td>
                                 {{ $sportsBilling->temp_caddy ?? '' }}
-                            </td>
+                            </td> --}}
                             <td>
                                 {{ App\Models\SportsBilling::PAY_MODE_SELECT[$sportsBilling->pay_mode] ?? '' }}
                             </td>
-                            <td>
+                            {{-- <td>
                                 {{ $sportsBilling->gross_total ?? '' }}
-                            </td>
+                            </td> --}}
                             <td>
                                 {{ $sportsBilling->total_payable ?? '' }}
                             </td>
@@ -223,8 +223,8 @@
 
   $.extend(true, $.fn.dataTable.defaults, {
     orderCellsTop: true,
-    order: [[ 1, 'desc' ]],
-    pageLength: 100,
+    // order: [[ 1, 'desc' ]],
+    pageLength: 25,
   });
   let table = $('.datatable-SportsBilling:not(.ajaxTable)').DataTable({ buttons: dtButtons })
   $('a[data-toggle="tab"]').on('shown.bs.tab click', function(e){

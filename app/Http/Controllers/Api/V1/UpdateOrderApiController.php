@@ -33,6 +33,7 @@ class UpdateOrderApiController extends Controller
         $requestItems = $request->items;
         // Get the existing items from the order
         $existingItems = $order->items;
+
         // dd($existingItems[0]->pivot);
 
         // Initialize arrays to track new and modified items
@@ -59,13 +60,31 @@ class UpdateOrderApiController extends Controller
                 $newItems[] = $requestItem;
             }
         }
-
-        $newAndModifiedItems = array_merge($newItems, $modifiedItems);
+        $newAndModifiedItems['newAndModifiedItems'] = array_merge($newItems, $modifiedItems);
         $data = $order->load('items', 'tableTop');
 
         $newAndModifiedItems['data'] = $data;
 
-        PrintUpdatedKitchenReceiptEvent::dispatch($newAndModifiedItems);
+        // foreach ($newAndModifiedItems as $key => $value) {
+        //     $newAndModifiedItems['menu'.$value['menu_id']][] = $value;
+        //     // $recieptData['menu'.$value['menu_id']][] = $value;
+        // }
+
+        foreach ($newAndModifiedItems['newAndModifiedItems'] as $key => $value) {
+            // echo '<pre>';
+            $recieptData['menu'.$value['menu_id']][] = $value;
+        }
+
+        $recieptData['tableTop'] = $order->tableTop;
+        $recieptData['orderDetails'] = $order->id;
+
+        PrintUpdatedKitchenReceiptEvent::dispatch($recieptData);
+
+        $order
+            ->items()
+            ->sync($this->mapItemValues($request->items));
+
+        $this->calculate_total_after_update_order($request->items, $order);
 
         return $this->success(
             ['order' => $order], trans('apis.order.save')

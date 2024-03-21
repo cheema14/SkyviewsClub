@@ -17,3 +17,9 @@ use Illuminate\Support\Facades\Artisan;
 Artisan::command('inspire', function () {
     $this->comment(Inspiring::quote());
 })->purpose('Display an inspiring quote');
+
+
+Artisan::command('freeTables',function(){
+    \App\Models\TableTop::query()->update(['status' => 'free']);
+    $this->info('Table tops status updated to "free" for all rows.');
+})->purpose('Set the table tops to free to make orders');

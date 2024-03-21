@@ -17,8 +17,8 @@ class KitchenReceiptController extends Controller
 
         $data = $order->load('items','tableTop');
 
-        $order->fill(['status' => Order::STATUS_SELECT['Active']]);
-        $order->update();
+        // $order->fill(['status' => Order::STATUS_SELECT['Active']]);
+        // $order->update();
 
         return view('admin.bills.kitchen_receipt',['data'=>$data]);
     }

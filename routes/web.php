@@ -242,6 +242,38 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     Route::get('sports-items/get_sports_items', 'SportsBillingController@get_sports_items')->name('sports-items.get_sports_items');
     Route::get('sports-items/get_item_details', 'SportsBillingController@get_item_details')->name('sports-items.get_item_details');
 
+
+    // All routes for 
+    /* 
+        1- Paid Bills
+        2- Due Bills
+        3- Generate Monthly bills
+        4- Member reports (Billing history)
+    */
+    Route::get('billing/get-due-bills','BillController@get_due_bills')->name('monthlyBilling.get-due-bills');
+    
+    // view due bill gets an id passed as query parameter - its the member ID
+    // Same goes for the print due bill route as well
+    
+    Route::get('billing/view-due-bill/{id}','BillController@view_due_bill')->name('monthlyBilling.view-due-bill');
+    
+    // Create and Save bill receipt
+    Route::get('billing/create-bill-receipt/{id}','PaymentReceiptController@create_bill_receipt')->name('monthlyBilling.create-bill-receipt');
+    Route::post('billing/store-bill-receipt','PaymentReceiptController@store_bill_receipt')->name('monthlyBilling.store-bill-receipt');
+    Route::get('billing/get-all-receipts','PaymentReceiptController@get_all_receipts')->name('monthlyBilling.get-all-receipts');
+    Route::get('billing/view-payment-receipt','PaymentReceiptController@view_payment_receipt')->name('monthlyBilling.view-payment-receipt');
+    Route::get('billing/download-payment-receipt','PaymentReceiptController@download_payment_receipt')->name('monthlyBilling.download-payment-receipt');
+    Route::post('paymentReceipts/media', 'PaymentReceiptController@storeMedia')->name('paymentReceipts.storeMedia');
+    
+    // Payment History
+    Route::get('paymentHistory/view-payment-history-list','PaymentHistoryController@index')->name('paymentHistory.view-payment-history-list');
+    Route::get('paymentHistory/view-member-payment-history/{billing_month}/{member_id}','PaymentHistoryController@view_member_payment_history')->name('paymentHistory.view-member-payment-history');
+    
+    // Download all bills
+    Route::get('billing/download-all-bills/','BillController@print_all_bills_and_download')->name('monthlyBilling.download-all-bills');
+
+
+    // Employee summary
 });
 Route::group(['prefix' => 'profile', 'as' => 'profile.', 'namespace' => 'Auth', 'middleware' => ['auth']], function () {
     // Change password

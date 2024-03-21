@@ -7,7 +7,7 @@
    </head>
    <body style="width:680px; margin:0 auto; ">
       <?php
-        // dd($bill);
+        //dd($bill);
       ?>
         <p style='margin-top:0in;margin-right:0in;margin-bottom:18.8pt;margin-left:0in;line-height:15.9pt;font-size:19px;text-align:center;'><span style="width:143px;height:126px;">
             <img width="114" src="{{ public_path('img/logo.png') }}" alt="image"></span>
@@ -145,7 +145,7 @@
                </td>
                <td style="width: 232.8pt;border-top: none;border-left: none;border-bottom: 1pt solid windowtext;border-right: 1pt solid windowtext;padding: 0in 5.4pt;vertical-align: top;">
                   <p style='margin-top:0in;margin-right:0in;margin-bottom:.0001pt;margin-left:0in;line-height:normal;
-                  text-align:center;'><span>{{ number_format($member?->membership_type->monthly_fee + $member->arrears + $bill) }}</span></p>
+                  text-align:center;'><span>{{ number_format($member?->membership_type->monthly_fee + $member->arrears + $bill + $sportsBill) }}</span></p>
                </td>
             </tr>
             <tr>

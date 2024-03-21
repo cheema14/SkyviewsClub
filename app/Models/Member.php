@@ -312,4 +312,14 @@ class Member extends Authenticatable implements HasMedia
 
         return $this->hasOne(SportsBilling::class, 'membership_no', 'membership_no')->where($where);
     }
+
+    public function payments(){
+        return $this->hasMany(PaymentReceipt::class,'member_id');
+    }
+
+    public function getSumReceivedAmountAttribute()
+    {
+        // 
+
+    }
 }

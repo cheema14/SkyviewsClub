@@ -32,6 +32,8 @@ class Transaction extends Model
         'code',
         'type',
         'status',
+        'bill_amount',
+        'amount_paid',
         'created_at',
         'updated_at',
         'deleted_at',
@@ -60,5 +62,9 @@ class Transaction extends Model
     public function order()
     {
         return $this->belongsTo(Order::class, 'order_id');
+    }
+
+    public function sportsBilling(){
+        return $this->belongsTo(SportsBilling::class,'sports_bill_id');
     }
 }

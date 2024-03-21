@@ -11,9 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('sports_billings', function (Blueprint $table) {
-            $table->double('bank_charges')->nullable();
-        });
+        // Schema::table('sports_billings', function (Blueprint $table) {
+        //     $table->double('bank_charges')->nullable();
+        // });
     }
 
     /**
@@ -21,6 +21,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::drop('bank_charges');
+        //Schema::drop('bank_charges');
     }
 };

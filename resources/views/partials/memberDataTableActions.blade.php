@@ -74,13 +74,17 @@
                 {{ trans('cruds.dependent.fields.list_dependent') }}
             </a>
         @endcan
-
-        @if ($row->membership_category && $row->membership_type )
-            <a class="dropdown-item" href="{{ route('admin.view-monthly-bill', $row->id) }}">
-                <i style="margin-right:10px; " class="fa fa-money fa-lg"></i>
-                {{ trans('cruds.member.fields.monthly_bill') }}
-            </a>
-        @endif
+        
+        @can(['member_access','member_create'])
+            
+            @if ($row->membership_category && $row->membership_type )
+                <a class="dropdown-item" href="{{ route('admin.view-monthly-bill', $row->id) }}">
+                    <i style="margin-right:10px; " class="fa fa-money fa-lg"></i>
+                    {{ trans('cruds.member.fields.monthly_bill') }}
+                </a>
+            @endif
+        
+        @endcan
 
     </div>
 </div>

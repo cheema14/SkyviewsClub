@@ -156,7 +156,7 @@
                                     <strong><label style=""
                                         class="control-label">
                                         Prepared By:</label></strong>
-                                        <span style="line-height: 20px;">Administrator</span>
+                                        <span style="line-height: 20px;">{{ $prepared_by }}</span>
                                 </td>
                             </tr>
 

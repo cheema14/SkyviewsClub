@@ -33,9 +33,9 @@ class DependentController extends Controller
             $table->addColumn('actions', '&nbsp;');
 
             $table->editColumn('actions', function ($row) {
-                $viewGate      = 'dependent_show';
-                $editGate      = 'dependent_edit';
-                $deleteGate    = 'dependent_delete';
+                $viewGate = 'dependent_show';
+                $editGate = 'dependent_edit';
+                $deleteGate = 'dependent_delete';
                 $crudRoutePart = 'dependents';
 
                 return view('partials.datatableDependentActions', compact(
@@ -93,9 +93,8 @@ class DependentController extends Controller
 
         abort_if(Gate::denies('dependent_create'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        return view('admin.dependents.create', array('member' => $member));
+        return view('admin.dependents.create', ['member' => $member]);
     }
-
 
     public function store(StoreDependentRequest $request, Member $member)
     {
@@ -103,7 +102,7 @@ class DependentController extends Controller
         $dependent = Dependent::create(array_merge($request->all(), ['member_id' => $member->id]));
 
         if ($request->input('photo', false)) {
-            $dependent->addMedia(storage_path('tmp/uploads/' . basename($request->input('photo'))))->toMediaCollection('photo');
+            $dependent->addMedia(storage_path('tmp/uploads/'.basename($request->input('photo'))))->toMediaCollection('photo');
         }
 
         if ($media = $request->input('ck-media', false)) {
@@ -130,7 +129,7 @@ class DependentController extends Controller
                 if ($dependent->photo) {
                     $dependent->photo->delete();
                 }
-                $dependent->addMedia(storage_path('tmp/uploads/' . basename($request->input('photo'))))->toMediaCollection('photo');
+                $dependent->addMedia(storage_path('tmp/uploads/'.basename($request->input('photo'))))->toMediaCollection('photo');
             }
         } elseif ($dependent->photo) {
             $dependent->photo->delete();
@@ -139,7 +138,7 @@ class DependentController extends Controller
         return redirect()->route('admin.members.index');
     }
 
-    public function show(Dependent $dependent,Member $member)
+    public function show(Dependent $dependent, Member $member)
     {
         abort_if(Gate::denies('dependent_show'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
@@ -170,10 +169,10 @@ class DependentController extends Controller
     {
         abort_if(Gate::denies('dependent_create') && Gate::denies('dependent_edit'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        $model         = new Dependent();
-        $model->id     = $request->input('crud_id', 0);
+        $model = new Dependent();
+        $model->id = $request->input('crud_id', 0);
         $model->exists = true;
-        $media         = $model->addMediaFromRequest('upload')->toMediaCollection('ck-media');
+        $media = $model->addMediaFromRequest('upload')->toMediaCollection('ck-media');
 
         return response()->json(['id' => $media->id, 'url' => $media->getUrl()], Response::HTTP_CREATED);
     }

@@ -24,7 +24,7 @@ class UpdateSportsBillingRequest extends FormRequest
                 'nullable',
             ],
             'bill_date' => [
-                'required',
+                // 'required',
                 'date_format:'.config('panel.date_format'),
             ],
             'bill_number' => [

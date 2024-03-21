@@ -49,6 +49,7 @@ class SportsBilling extends Model
         'created_at',
         'updated_at',
         'deleted_at',
+        'discount',
     ];
 
     protected function serializeDate(DateTimeInterface $date)
@@ -74,5 +75,14 @@ class SportsBilling extends Model
     public function sportsBill()
     {
         return $this->hasMany(Member::class, 'membership_no', 'membership_no');
+    }
+
+    public function sportTransactions(){
+        return $this->hasMany(Transaction::class, 'sports_bill_id', 'id');
+    }
+
+    public function latestTransaction()
+    {
+        return $this->hasOne(Transaction::class)->latestOfMany();
     }
 }
