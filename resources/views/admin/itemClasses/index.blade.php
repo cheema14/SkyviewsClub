@@ -1,24 +1,24 @@
-@extends('layouts.admin')
+@extends('layouts.'.tenant()->id.'.admin')
 @section('content')
 @can('item_class_create')
     <div style="margin-bottom: 10px;" class="row">
         <div class="col-lg-12">
             <a class="btn btn-success" href="{{ route('admin.item-classes.create') }}">
-                {{ trans('global.add') }} {{ trans('cruds.itemClass.title_singular') }}
+                {{ trans(tenant()->id.'/global.add') }} {{ trans(tenant()->id.'/cruds.itemClass.title_singular') }}
             </a>
             @can('csv_import')
             <button class="btn btn-warning" data-toggle="modal" data-target="#csvImportModal">
-                {{ trans('global.app_csvImport') }}
+                {{ trans(tenant()->id.'/global.app_csvImport') }}
             </button>
             @endcan
             @include('csvImport.modal', ['model' => 'ItemClass', 'route' => 'admin.item-classes.parseCsvImport'])
         </div>
     </div>
 @endcan
-@include('partials.flash_messages')
+@include('partials.'.tenant()->id.'.flash_messages')
 <div class="card">
     <div class="card-header">
-        {{ trans('cruds.itemClass.title_singular') }} {{ trans('global.list') }}
+        {{ trans(tenant()->id.'/cruds.itemClass.title_singular') }} {{ trans(tenant()->id.'/global.list') }}
     </div>
 
     <div class="card-body">
@@ -28,13 +28,13 @@
                     <tr>
 
                         <th>
-                            {{ trans('cruds.itemClass.fields.id') }}
+                            {{ trans(tenant()->id.'/cruds.itemClass.fields.id') }}
                         </th>
                         <th>
-                            {{ trans('cruds.itemClass.fields.item_type') }}
+                            {{ trans(tenant()->id.'/cruds.itemClass.fields.item_type') }}
                         </th>
                         <th>
-                            {{ trans('cruds.itemClass.fields.name') }}
+                            {{ trans(tenant()->id.'/cruds.itemClass.fields.name') }}
                         </th>
                         <th>
                             &nbsp;
@@ -58,15 +58,15 @@
 
                                 @can('item_class_edit')
                                     <a class="btn btn-xs btn-info" href="{{ route('admin.item-classes.edit', $itemClass->id) }}">
-                                        {{ trans('global.edit') }}
+                                        {{ trans(tenant()->id.'/global.edit') }}
                                     </a>
                                 @endcan
 
                                 @can('item_class_delete')
-                                    <form action="{{ route('admin.item-classes.destroy', $itemClass->id) }}" method="POST" onsubmit="return confirm('{{ trans('global.areYouSure') }}');" style="display: inline-block;">
+                                    <form action="{{ route('admin.item-classes.destroy', $itemClass->id) }}" method="POST" onsubmit="return confirm('{{ trans(tenant()->id.'/global.areYouSure') }}');" style="display: inline-block;">
                                         <input type="hidden" name="_method" value="DELETE">
                                         <input type="hidden" name="_token" value="{{ csrf_token() }}">
-                                        <input type="submit" class="btn btn-xs btn-danger" value="{{ trans('global.delete') }}">
+                                        <input type="submit" class="btn btn-xs btn-danger" value="{{ trans(tenant()->id.'/global.delete') }}">
                                     </form>
                                 @endcan
 
@@ -89,7 +89,7 @@
     $(function () {
   let dtButtons = $.extend(true, [], $.fn.dataTable.defaults.buttons)
 @can('item_class_delete')
-  let deleteButtonTrans = '{{ trans('global.datatables.delete') }}'
+  let deleteButtonTrans = '{{ trans(tenant()->id.'/global.datatables.delete') }}'
   let deleteButton = {
     text: deleteButtonTrans,
     url: "{{ route('admin.item-classes.massDestroy') }}",
@@ -100,12 +100,12 @@
       });
 
       if (ids.length === 0) {
-        alert('{{ trans('global.datatables.zero_selected') }}')
+        alert('{{ trans(tenant()->id.'/global.datatables.zero_selected') }}')
 
         return
       }
 
-      if (confirm('{{ trans('global.areYouSure') }}')) {
+      if (confirm('{{ trans(tenant()->id.'/global.areYouSure') }}')) {
         $.ajax({
           headers: {'x-csrf-token': _token},
           method: 'POST',

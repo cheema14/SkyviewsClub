@@ -99,7 +99,7 @@ class PrintKitchenReceiptListener implements ShouldQueue
             } // foreach for iterating arrays of menuIds
 
         } catch (\Exception $e) {
-            // Handle the exception here
+            
             // echo 'Exception: '.$e->getMessage();
             // dd($e);
         }

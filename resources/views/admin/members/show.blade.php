@@ -1,4 +1,4 @@
-@extends('layouts.admin')
+@extends('layouts.'.tenant()->id.'.admin')
 @section('content')
 
 <div class="container-fluid">
@@ -249,7 +249,7 @@
                                 <tbody>
                                     @foreach ($member?->dependents as $dependent )
                                     <tr>
-                                        <td><img src="{{ $dependent->photo?->getUrl('thumb') ?? 'https://ui-avatars.com/api/?rounded=true&name='.urlencode($dependent->name) }}" class="img-thumbnail h-auto border-none " alt="">
+                                        <td><img style="width:500px;" src="{{ $dependent->photo?->getUrl('thumb') ?? 'https://ui-avatars.com/api/?rounded=true&name='.urlencode($dependent->name) }}" class="img-thumbnail h-auto border-none " alt="">
                                         </td>
                                         <td>{{ $dependent->name }}</td>
                                         <td>{{ $dependent->dob }}</td>

@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use App\Models\Unit;
+use App\Rules\AlphaSpaces;
 use Gate;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Response;
@@ -20,6 +21,8 @@ class StoreUnitRequest extends FormRequest
             'type' => [
                 'string',
                 'required',
+                new AlphaSpaces,
+                'max:30'
             ],
         ];
     }

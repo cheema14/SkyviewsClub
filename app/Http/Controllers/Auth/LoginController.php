@@ -45,25 +45,62 @@ class LoginController extends Controller
     // Override the default login method
     public function login(Request $request)
     {
-        // dd($request->all());
+        
         // Validate the login request
-        $validator = Validator::make($request->all(), [
+        // $validator = Validator::make($request->all(), [
+        //     'username' => 'required|string',
+        //     'password' => 'required',
+        //     'captcha' => 'required|captcha',
+        // ]);
+
+        $rules = [
             'username' => 'required|string',
             'password' => 'required',
-        ]);
+        ];
 
-        // dd($validator->validated());
+        // Conditionally add CAPTCHA validation rule
+        if (!app()->environment('local')) {
+            $rules['captcha'] = 'required|captcha';
+        }
+
+        $validator = Validator::make($request->all(), $rules);
+        
         // Attempt to log the user in
-        if (Auth::attempt($validator->validated())) {
-        // if (auth()->attempt(['username' => $request->username, 'password' => $request->password])) {
+        
+        // the first if attempts everything that has been
+        // validated successfully including the captcha
+        // if (Auth::attempt($validator->validated())) {
+
+        // the working if tells us that only attempt
+        // the username and password fields which is required at the moment
+        
+        if (auth()->attempt(['username' => $request->username, 'password' => $request->password])) {
             // Authentication was successful
-            return redirect()->intended('/home');
+            return redirect()->intended('/admin');
         }
 
         // Authentication failed
         throw ValidationException::withMessages([
             $this->username() => [trans('auth.failed')],
         ]);
+    }
+
+    public function loginScreen(){
+        
+        if(tenant()->id == 'paf'){
+            return view('admin.logins.loginPaf');
+        }
+        elseif(tenant()->id == 'pcom'){
+            return view('admin.logins.loginPcom');
+        }
+    }
+
+    public function logout(Request $request)
+    {
+        Auth::logout();
+
+        // Redirect based on the tenant context if necessary
+        return redirect()->route('loginScreen'); // Change to your desired route
     }
 
     public function username()

@@ -31,7 +31,7 @@ class TableTopController extends Controller
                 $deleteGate = 'table_top_delete';
                 $crudRoutePart = 'table-tops';
 
-                return view('partials.datatablesActions', compact(
+                return view('partials.'.tenant()->id.'.datatablesActions', compact(
                     'viewGate',
                     'editGate',
                     'deleteGate',

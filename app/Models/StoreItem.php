@@ -6,10 +6,11 @@ use DateTimeInterface;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Stancl\Tenancy\Database\Concerns\BelongsToTenant;
 
 class StoreItem extends Model
 {
-    use SoftDeletes, HasFactory;
+    use SoftDeletes, HasFactory, BelongsToTenant;
 
     public $table = 'store_items';
 
@@ -53,5 +54,9 @@ class StoreItem extends Model
     public function item_class()
     {
         return $this->belongsTo(ItemClass::class, 'item_class_id');
+    }
+
+    public function gr_item(){
+        return $this->hasOne(GrItemDetail::class,'item_id','id');
     }
 }

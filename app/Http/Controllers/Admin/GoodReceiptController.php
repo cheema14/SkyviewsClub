@@ -35,7 +35,7 @@ class GoodReceiptController extends Controller
                 $deleteGate = 'good_receipt_delete';
                 $crudRoutePart = 'good-receipts';
 
-                return view('partials.datatablesActions', compact(
+                return view('partials.'.tenant()->id.'/datatablesActions', compact(
                     'viewGate',
                     'editGate',
                     'deleteGate',
@@ -77,16 +77,16 @@ class GoodReceiptController extends Controller
     {
         abort_if(Gate::denies('good_receipt_create'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        $stores = Store::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
+        $stores = Store::pluck('name', 'id')->prepend(trans(tenant()->id.'/global.pleaseSelect'), '');
 
-        $vendors = Vendor::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
+        $vendors = Vendor::pluck('name', 'id')->prepend(trans(tenant()->id.'/global.pleaseSelect'), '');
 
-        // $items = StoreItem::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
+        // $items = StoreItem::pluck('name', 'id')->prepend(trans(tenant()->id.'/global.pleaseSelect'), '');
         $items = StoreItem::get();
 
-        $units = Unit::pluck('type', 'id')->prepend(trans('global.pleaseSelect'), '');
+        $units = Unit::pluck('type', 'id')->prepend(trans(tenant()->id.'/global.pleaseSelect'), '');
 
-        $grs = GoodReceipt::pluck('gr_number', 'id')->prepend(trans('global.pleaseSelect'), '');
+        $grs = GoodReceipt::pluck('gr_number', 'id')->prepend(trans(tenant()->id.'/global.pleaseSelect'), '');
 
         $goodReceipt = GoodReceipt::latest()->withTrashed()->first();
 
@@ -124,9 +124,9 @@ class GoodReceiptController extends Controller
     {
         abort_if(Gate::denies('good_receipt_edit'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        $stores = Store::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
+        $stores = Store::pluck('name', 'id')->prepend(trans(tenant()->id.'/global.pleaseSelect'), '');
 
-        $vendors = Vendor::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
+        $vendors = Vendor::pluck('name', 'id')->prepend(trans(tenant()->id.'/global.pleaseSelect'), '');
 
         $goodReceipt->load('store', 'vendor');
 

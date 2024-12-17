@@ -1,0 +1,522 @@
+* {
+    box-sizing: border-box;
+}
+
+html,
+body {
+    padding: 0;
+    margin: 0;
+}
+
+.login-container {
+    height: 100vh;
+    width: 100%;
+    background: url("../img/pcom/login-bg.png") no-repeat;
+    background-position: center;
+    background-size: cover;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+a {
+    font-size: 16px;
+}
+
+.login-content {
+    width: 400px;
+    min-height: 45vh;
+    background-color: #fff;
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    border-radius: 10px;
+}
+
+.title {
+    font-size: 29px;
+    font-weight: 500;
+    color: gray;
+}
+
+.title span {
+    color: #166b10;
+}
+
+.btn-primary-login {
+    width: 100%;
+    height: 50px;
+    background-color: #166b10;
+    color: #fff;
+    font-size: 19px;
+    outline: none;
+    border: none;
+    border-radius: 6px;
+}
+
+.btn-primary-login:hover {
+    color: #fff;
+}
+
+/* .footer {
+    position: absolute;
+    bottom: 0px;
+  } */
+
+.pitb-logo {
+    width: 40px;
+    height: auto;
+}
+
+.footer .title {
+    color: #fff;
+    font-size: 14px;
+}
+
+.w-40 {
+    width: 40%;
+}
+
+.divider {
+    width: 314.79px;
+    height: 0px;
+    border-top: 1px solid #d9e6f7;
+}
+
+.side-bar {
+    border-radius: 20px;
+}
+
+.right-bar {
+    border-radius: 20px;
+}
+
+.side-bar-content {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    padding: 20px;
+    border-radius: 10px;
+}
+
+.sbc-name {
+    font-style: normal;
+    font-weight: 700;
+    font-size: 16px;
+    line-height: 24px;
+    letter-spacing: 0.2px;
+    color: #4b4b4b;
+}
+
+.sbc-desig {
+    font-style: normal;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 24px;
+    letter-spacing: 0.2px;
+    color: #4b4b4b;
+}
+
+.rb-dept {
+    font-style: normal;
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 24px;
+    letter-spacing: 0.2px;
+    color: #4b4b4b;
+    opacity: 0.5;
+}
+
+.rb-title {
+    font-style: normal;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 24px;
+    letter-spacing: 0.2px;
+    color: #4b4b4b;
+    padding-right: 20%;
+    text-align: left;
+    margin-left: auto;
+}
+
+.sbc-text {
+    font-style: normal;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 24px;
+    letter-spacing: 0.2px;
+    color: #4b4b4b;
+}
+
+.custom-mb {
+    margin-bottom: 0px;
+}
+
+.custom-table-padding {
+    padding: 20px;
+}
+
+@media (max-width: 1180px) {
+    .divider {
+        width: 50%;
+    }
+
+    .w-40 {
+        width: 100%;
+    }
+}
+
+@media (max-width: 380px) {
+    .login-content {
+        width: 75%;
+    }
+
+    .title {
+        font-size: 18px !important;
+    }
+
+    a {
+        font-size: 14px !important;
+    }
+}
+
+@media (max-width: 800px) {
+    .login-content {
+        width: 75%;
+    }
+
+    .custom-mb {
+        margin-bottom: 20px;
+    }
+
+    .rb-title {
+        padding-right: 0%;
+    }
+
+    .custom-table-padding {
+        padding: 10px;
+    }
+}
+
+.custom-height-depeends {
+    height: 45%;
+}
+
+/* Revised Login */
+
+/*--------------------------------------------------------------
+    # Header
+    --------------------------------------------------------------*/
+.logo {
+    line-height: 1;
+}
+
+@media (min-width: 1200px) {
+    .logo {
+        width: 227px;
+    }
+}
+
+@media (max-width: 1200px) {
+    .login-content {
+        width: 100% !important;
+    }
+}
+
+.logo img {
+    max-height: 26px;
+    margin-right: 6px;
+}
+
+.login-container-revised {
+    height: 80vh;
+    width: 80%;
+}
+
+.login-left-side {
+    height: 100%;
+    background: url("../img/pcom/pcom.jpg") no-repeat;
+    background-size: cover;
+}
+
+.custom-border-radius {
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;
+}
+
+.custom-view-fluid {
+    height: 100vh;
+    width: 100%;
+    background: url("../img/pcom/primary-bg.png") no-repeat;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.login_text {
+    font-size: 28px;
+    font-weight: 600;
+}
+
+.login_text .lrs {
+    font-size: 24px;
+    font-weight: 200;
+}
+
+.lc-title {
+    font-style: normal;
+    font-weight: 700;
+    font-size: 35.5882px;
+    line-height: 120%;
+    color: #166b10;
+}
+
+.lc-title span {
+    font-style: 600;
+    font-weight: 500;
+    font-size: 35.5882px;
+    line-height: 120%;
+    color: #01411c;
+}
+
+.lc-desc {
+    font-style: normal;
+    font-weight: 600;
+    font-size: 25px;
+    line-height: 120%;
+    color: #1e1e1e;
+    margin: 20px 0;
+}
+
+.lc-desc span {
+    color: #ccb326;
+}
+
+.login-labels {
+    font-style: normal;
+    font-weight: 400;
+    font-size: 12px;
+    line-height: 120%;
+    margin-bottom: 5px;
+    color: #1e1e1e;
+}
+
+svg {
+    margin-right: 5px;
+}
+
+.sidebar-nav .nav-link svg:hover {
+    fill: #fff !important;
+}
+
+.sidebar-nav .nav-link svg:hover {
+    stroke: #fff;
+}
+
+.custom-sm-view {
+    display: none;
+}
+
+@media (max-width: 400px) {
+    .custom-flex {
+        flex-direction: column;
+        align-items: flex-start !important;
+    }
+
+    .custom-sm-view {
+        display: block !important;
+        margin-top: -30px !important;
+    }
+}
+
+.login-inputs {
+    height: 50px;
+    background: #ffffff;
+    border: 1px solid #444444;
+    border-radius: 35px !important;
+    font-style: normal;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 120%;
+    color: #000 !important;
+    opacity: 0.5;
+    padding: 10px 40px;
+    position: relative;
+}
+
+.input-icons {
+    position: absolute;
+    left: 13px;
+    top: 11px;
+}
+
+.login-content {
+    width: 60%;
+}
+
+.footer {
+    /* position: absolute;
+    bottom: 0px; */
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    flex-direction: column;
+    height: 100%;
+    padding-bottom: 20px;
+}
+
+.pitb-logo {
+    width: 40px;
+    height: auto;
+}
+
+.footer .title {
+    color: #fff;
+    font-size: 14px;
+}
+
+.chart-boxes canvas {
+    display: block;
+    box-sizing: border-box;
+    height: 400px;
+    width: 400px;
+}
+
+.chart-boxes {
+    display: flex;
+    align-items: start;
+    justify-content: space-between;
+    flex-wrap: wrap;
+}
+
+@media (max-width: 600px) {
+    .login-content {
+        width: 90%;
+    }
+
+    .chart-boxes {
+        align-items: center;
+    }
+
+    .lc-title {
+        font-size: 22px;
+    }
+
+    .lc-title span {
+        font-size: 22px;
+    }
+
+    .lrs {
+        font-size: 14px !important;
+    }
+
+    .ms {
+        font-size: 14px !important;
+    }
+
+    .chart-boxes canvas {
+        display: block;
+        box-sizing: border-box;
+        height: 200px !important;
+        width: 200px !important;
+    }
+}
+
+@media (max-width: 900px) {
+    .chart-boxes {
+        align-items: center;
+    }
+
+    .login-left-side {
+        display: none;
+    }
+}
+
+.other-page-title {
+    font-style: normal;
+    font-weight: 700;
+    font-size: 22px;
+    line-height: 26px;
+    display: flex;
+    align-items: center;
+    color: #434343;
+}
+
+.submit-btn-login {
+    height: 50px;
+    width: 100%;
+    background: #166b10;
+    border-radius: 35px;
+    font-style: normal;
+    font-weight: 600;
+    font-size: 14px;
+    line-height: 120%;
+    text-align: center;
+    color: #ffffff;
+    margin-top: 30px;
+    outline: none;
+    border: none;
+}
+
+.right-check {
+    font-style: normal;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 120%;
+    color: #166b10;
+}
+
+.no-acc {
+    font-style: normal;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 120%;
+    color: #434343;
+    text-align: center;
+    margin-top: 10px;
+}
+
+.sign-up-link {
+    font-style: normal;
+    font-weight: 600;
+    font-size: 14px;
+    line-height: 120%;
+    color: #febd0a;
+}
+
+.sign-up-link:hover {
+    color: #febd0a;
+}
+
+.left-check {
+    font-style: normal;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 120%;
+}
+
+.left-check input {
+    accent-color: #166b10;
+}
+
+.icon-bg {
+    height: 40px;
+    width: 40px;
+    background: #01411c;
+    border-radius: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.custom-icons-body-dashboard {
+    height: 300px;
+    width: 100%;
+    background-color: yellow;
+}

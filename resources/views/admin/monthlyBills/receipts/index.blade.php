@@ -1,4 +1,4 @@
-@extends('layouts.admin')
+@extends('layouts.'.tenant()->id.'.admin')
 @section('content')
 @section('styles')
 <style>
@@ -18,16 +18,20 @@
     }
 </style>
 @endsection
+<div style="margin-bottom: 10px;" class="row">
+    <div class="col-lg-12">
+        <h4>
+        {{ trans(tenant()->id.'/cruds.paymentReceipts.title') }} {{ trans(tenant()->id.'/global.list') }}
+        </h4>
+        {{-- <a class="btn btn-success" href="{{ route('admin.monthlyBilling.create-advance-payment-receipt') }}">
+            {{ trans(tenant()->id.'/global.add') }} {{ trans(tenant()->id.'/cruds.paymentReceipts.create_advance_payment') }}
+        </a> --}}
+    </div>
+    
+</div>
 <div class="card">
     <div class="card-header">
-        <div class="row align-items-center">
-            <div class="col-sm-6">
-                <h4>
-                {{ trans('cruds.paymentReceipts.title') }} {{ trans('global.list') }}
-                </h4>
-            </div>
-            
-        </div>
+        
     </div>
 
     <div class="card-body">
@@ -35,40 +39,41 @@
             <thead>
                 <tr>
                     <th>
-                        {{ trans('cruds.paymentReceipts.fields.id') }}
+                        {{ trans(tenant()->id.'/cruds.paymentReceipts.fields.id') }}
                     </th>
                     <th>
-                        {{ trans('cruds.member.fields.name') }}
+                        {{ trans(tenant()->id.'/cruds.paymentReceipts.fields.receipt_date') }}
                     </th>
                     <th>
-                        {{ trans('cruds.member.fields.membership_no') }}
+                        {{ trans(tenant()->id.'/cruds.member.fields.membership_no') }}
                     </th>
                     <th>
-                        {{ trans('cruds.paymentReceipts.fields.receipt_no') }}
+                        {{ trans(tenant()->id.'/cruds.member.fields.name') }}
                     </th>
                     <th>
-                        {{ trans('cruds.paymentReceipts.fields.receipt_date') }}
+                        {{ trans(tenant()->id.'/cruds.paymentReceipts.fields.pay_mode') }}
                     </th>
                     <th>
-                        {{ trans('cruds.paymentReceipts.fields.bill_type') }}
+                        {{ trans(tenant()->id.'/cruds.paymentReceipts.fields.received_amount') }}
+                    </th>
+                    {{-- <th>
+                        {{ trans(tenant()->id.'/cruds.paymentReceipts.fields.receipt_no') }}
                     </th>
                     <th>
-                        {{ trans('cruds.paymentReceipts.fields.billing_month') }}
+                        {{ trans(tenant()->id.'/cruds.paymentReceipts.fields.bill_type') }}
                     </th>
                     <th>
-                        {{ trans('cruds.paymentReceipts.fields.invoice_number') }}
+                        {{ trans(tenant()->id.'/cruds.paymentReceipts.fields.billing_month') }}
                     </th>
                     <th>
-                        {{ trans('cruds.paymentReceipts.fields.invoice_amount') }}
+                        {{ trans(tenant()->id.'/cruds.paymentReceipts.fields.invoice_number') }}
                     </th>
                     <th>
-                        {{ trans('cruds.paymentReceipts.fields.received_amount') }}
-                    </th>
+                        {{ trans(tenant()->id.'/cruds.paymentReceipts.fields.invoice_amount') }}
+                    </th> --}}
+                    
                     <th>
-                        {{ trans('cruds.paymentReceipts.fields.pay_mode') }}
-                    </th>
-                    <th>
-                        {{ trans('global.action') }}
+                        {{ trans(tenant()->id.'/global.action') }}
                     </th>
                 </tr>
             </thead>
@@ -94,17 +99,17 @@
             ajax: "{{ route('admin.monthlyBilling.get-all-receipts') }}",
             columns: [
             { data: 'id', name: 'id' },
-            { data: 'member.name', name: 'member.name' },
-            { data: 'member.membership_no', name: 'member.membership_no' },
-            { data: 'receipt_no', name: 'receipt_no' },
             { data: 'receipt_date', name: 'receipt_date' },
-            { data: 'bill_type', name: 'bill_type' },
-            { data: 'billing_month', name: 'billing_month' },
-            { data: 'invoice_number', name: 'invoice_number' },
-            { data: 'invoice_amount', name: 'invoice_amount' },
-            { data: 'received_amount', name: 'received_amount' },
+            { data: 'member.membership_no', name: 'member.membership_no' },
+            { data: 'member.name', name: 'member.name' },
             { data: 'pay_mode', name: 'pay_mode' },
-            { data: 'actions', name: '{{ trans('global.actions') }}' }
+            { data: 'received_amount', name: 'received_amount' },
+            // { data: 'receipt_no', name: 'receipt_no' },
+            // { data: 'bill_type', name: 'bill_type' },
+            // { data: 'billing_month', name: 'billing_month' },
+            // { data: 'invoice_number', name: 'invoice_number' },
+            // { data: 'invoice_amount', name: 'invoice_amount' },
+            { data: 'actions', name: '{{ trans(tenant()->id.'/global.actions') }}' }
             ],
             orderCellsTop: true,
             pageLength: 15,

@@ -33,7 +33,7 @@ class MenuItemCategoryController extends Controller
                 $deleteGate = 'menu_item_category_delete';
                 $crudRoutePart = 'menu-item-categories';
 
-                return view('partials.datatablesActions', compact(
+                return view('partials.'.tenant()->id.'.datatablesActions', compact(
                     'viewGate',
                     'editGate',
                     'deleteGate',

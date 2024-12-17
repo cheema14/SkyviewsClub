@@ -28,6 +28,15 @@
                         </div>
                     @endif
                 </div>
+                <div class="input-group d-flex flex-column">
+                    <img style="width: 200px;margin: 12px;" src="{{ captcha_src() }}" alt="captcha">
+                    <input class="login-inputs {{ $errors->has('captcha') ? ' is-invalid' : '' }}" type="text" name="captcha">
+                    @if($errors->has('captcha'))
+                        <div class="invalid-feedback">
+                            {{ $errors->first('captcha') }}
+                        </div>
+                    @endif
+                </div>
 
                 <div class="w-100 d-flex align-items-center justify-content-between custom-flex">
                     {{-- <div class="left-check"><input type="checkbox" name="" id="" class="m-2">Remember me</div> --}}

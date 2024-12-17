@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use App\Models\Section;
+use App\Rules\AlphaSpaces;
 use Gate;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Response;
@@ -20,6 +21,8 @@ class StoreSectionRequest extends FormRequest
             'name' => [
                 'string',
                 'required',
+                new AlphaSpaces,
+                'size:100',
             ],
         ];
     }

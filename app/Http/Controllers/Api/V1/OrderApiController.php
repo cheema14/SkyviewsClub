@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\V1;
 use App\Events\PrintKitchenReceiptEvent;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Traits\ApiResponser;
+use App\Models\KitchenOrderHistory;
 use App\Models\Order;
 use App\Models\TableTop;
 use Illuminate\Http\Request;
@@ -98,11 +99,18 @@ class OrderApiController extends Controller
 
         // $keysWithoutUnderscore = count($keysWithoutUnderscore);
         $recieptData['iterations'] = $keysWithoutUnderscore;
-                 
+        
+        
+        // Add items and order id into Kitchen Order History model
+        // dd($data->items->toArray());
+        $items = $data->items->toArray();
+        $kitchen_order = new KitchenOrderHistory();
+        $kitchen_order->order_id = $order->id;
+        $kitchen_order->items_data = json_encode($items,TRUE);
+        $kitchen_order->save();
 
-        // dd($recieptData);
-        // dd($recieptData['orderDetails'],$recieptData['tableTop']);
-        PrintKitchenReceiptEvent::dispatch($recieptData);
+        
+        // PrintKitchenReceiptEvent::dispatch($recieptData);
 
         return $this->success(
             ['order' => $order], __('apis.order.save')

@@ -6,10 +6,11 @@ use DateTimeInterface;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Stancl\Tenancy\Database\Concerns\BelongsToTenant;
 
 class Role extends Model
 {
-    use SoftDeletes, HasFactory;
+    use SoftDeletes, HasFactory, BelongsToTenant;
 
     public $table = 'roles';
 
@@ -34,5 +35,10 @@ class Role extends Model
     public function permissions()
     {
         return $this->belongsToMany(Permission::class);
+    }
+
+    public function menus()
+    {
+        return $this->belongsToMany(Menu::class,'menu_role');
     }
 }

@@ -36,7 +36,7 @@ class ItemController extends Controller
                 $deleteGate = 'item_delete';
                 $crudRoutePart = 'items';
 
-                return view('partials.datatablesActions', compact(
+                return view('partials.'.tenant()->id.'.datatablesActions', compact(
                     'viewGate',
                     'editGate',
                     'deleteGate',
@@ -84,7 +84,7 @@ class ItemController extends Controller
 
         $menus = Menu::pluck('title', 'id');
 
-        $menu_item_categories = MenuItemCategory::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
+        $menu_item_categories = MenuItemCategory::pluck('name', 'id')->prepend(trans(tenant()->id.'/global.pleaseSelect'), '');
 
         return view('admin.items.create', compact('menu_item_categories', 'menus'));
     }
@@ -103,7 +103,7 @@ class ItemController extends Controller
 
         $menus = Menu::pluck('title', 'id');
 
-        $menu_item_categories = MenuItemCategory::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
+        $menu_item_categories = MenuItemCategory::pluck('name', 'id')->prepend(trans(tenant()->id.'/global.pleaseSelect'), '');
 
         $item->load('menus', 'menu_item_category');
 
@@ -166,8 +166,14 @@ class ItemController extends Controller
 
         abort_if(Gate::denies('store_item_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        $menu = Menu::find($request->menu_id);
-
-        // dd($menu->menuCategories);
+        $menu = Menu::with('menuCategories.menuItemCategoryItems')->find($request->menu_id);
+        $items = [];
+        foreach ($menu->menuCategories as $category) {
+            foreach ($category->menuItemCategoryItems as $item) {
+                // Access each item
+                $items[] = $item;
+            }
+        }
+        return response()->json(['item' => $items]);
     }
 }

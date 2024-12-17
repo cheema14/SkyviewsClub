@@ -2,7 +2,7 @@
     <div style="margin-bottom: 10px;display:none !important;" class="row">
         <div class="col-lg-12">
             <a class="btn btn-success" href="{{ route('admin.stock-issue-items.create') }}">
-                {{ trans('global.add') }} {{ trans('cruds.stockIssueItem.title_singular') }}
+                {{ trans(tenant()->id.'/global.add') }} {{ trans(tenant()->id.'/cruds.stockIssueItem.title_singular') }}
             </a>
         </div>
     </div>
@@ -13,13 +13,13 @@
         <div class="row align-items-center">
             <div class="col-sm-6">
                 <h4>
-                {{-- {{ trans('cruds.stockIssueItem.title_singular') }} {{ trans('global.list') }} --}}
+                {{-- {{ trans(tenant()->id.'/cruds.stockIssueItem.title_singular') }} {{ trans(tenant()->id.'/global.list') }} --}}
                 </h4>
             </div>
             @can('stock_issue_item_create')
             <div class="col-sm-6 ml-auto text-sm-right">
                 <a class="btn btn-info px-4" href="{{ route('admin.stock-issue-items.create') }}">
-                {{ trans('global.add') }} {{ trans('cruds.stockIssueItem.title_singular') }}
+                {{ trans(tenant()->id.'/global.add') }} {{ trans(tenant()->id.'/cruds.stockIssueItem.title_singular') }}
                 </a>
             </div>
             @endcan
@@ -35,25 +35,25 @@
 
                         </th>
                         <th>
-                            {{ trans('cruds.stockIssueItem.fields.id') }}
+                            {{ trans(tenant()->id.'/cruds.stockIssueItem.fields.id') }}
                         </th>
                         <th>
-                            {{ trans('cruds.stockIssueItem.fields.item') }}
+                            {{ trans(tenant()->id.'/cruds.stockIssueItem.fields.item') }}
                         </th>
                         <th>
-                            {{ trans('cruds.stockIssueItem.fields.unit') }}
+                            {{ trans(tenant()->id.'/cruds.stockIssueItem.fields.unit') }}
                         </th>
                         <th>
-                            {{ trans('cruds.stockIssueItem.fields.lot_no') }}
+                            {{ trans(tenant()->id.'/cruds.stockIssueItem.fields.lot_no') }}
                         </th>
                         <th>
-                            {{ trans('cruds.stockIssueItem.fields.stock_required') }}
+                            {{ trans(tenant()->id.'/cruds.stockIssueItem.fields.stock_required') }}
                         </th>
                         <th>
-                            {{ trans('cruds.stockIssueItem.fields.issued_qty') }}
+                            {{ trans(tenant()->id.'/cruds.stockIssueItem.fields.issued_qty') }}
                         </th>
                         <th>
-                            {{ trans('cruds.stockIssueItem.fields.stock_issue') }}
+                            {{ trans(tenant()->id.'/cruds.stockIssueItem.fields.stock_issue') }}
                         </th>
                         {{-- <th class="text-center">
                             Actions
@@ -90,21 +90,21 @@
                             <td class="text-center">
                                 @can('stock_issue_item_show')
                                     <a class="btn btn-xs btn-primary" href="{{ route('admin.stock-issue-items.show', $stockIssueItem->id) }}">
-                                        {{ trans('global.view') }}
+                                        {{ trans(tenant()->id.'/global.view') }}
                                     </a>
                                 @endcan
 
                                 @can('stock_issue_item_edit')
                                     <a class="btn btn-xs btn-info" href="{{ route('admin.stock-issue-items.edit', $stockIssueItem->id) }}">
-                                        {{ trans('global.edit') }}
+                                        {{ trans(tenant()->id.'/global.edit') }}
                                     </a>
                                 @endcan
 
                                 @can('stock_issue_item_delete')
-                                    <form action="{{ route('admin.stock-issue-items.destroy', $stockIssueItem->id) }}" method="POST" onsubmit="return confirm('{{ trans('global.areYouSure') }}');" style="display: inline-block;">
+                                    <form action="{{ route('admin.stock-issue-items.destroy', $stockIssueItem->id) }}" method="POST" onsubmit="return confirm('{{ trans(tenant()->id.'/global.areYouSure') }}');" style="display: inline-block;">
                                         <input type="hidden" name="_method" value="DELETE">
                                         <input type="hidden" name="_token" value="{{ csrf_token() }}">
-                                        <input type="submit" class="btn btn-xs btn-danger" value="{{ trans('global.delete') }}">
+                                        <input type="submit" class="btn btn-xs btn-danger" value="{{ trans(tenant()->id.'/global.delete') }}">
                                     </form>
                                 @endcan
 
@@ -124,7 +124,7 @@
     $(function () {
   let dtButtons = $.extend(true, [], $.fn.dataTable.defaults.buttons)
 @can('stock_issue_item_delete')
-  let deleteButtonTrans = '{{ trans('global.datatables.delete') }}'
+  let deleteButtonTrans = '{{ trans(tenant()->id.'/global.datatables.delete') }}'
   let deleteButton = {
     text: deleteButtonTrans,
     url: "{{ route('admin.stock-issue-items.massDestroy') }}",
@@ -135,12 +135,12 @@
       });
 
       if (ids.length === 0) {
-        alert('{{ trans('global.datatables.zero_selected') }}')
+        alert('{{ trans(tenant()->id.'/global.datatables.zero_selected') }}')
 
         return
       }
 
-      if (confirm('{{ trans('global.areYouSure') }}')) {
+      if (confirm('{{ trans(tenant()->id.'/global.areYouSure') }}')) {
         $.ajax({
           headers: {'x-csrf-token': _token},
           method: 'POST',

@@ -11,7 +11,7 @@
 </head>
 
 <body>
-
+   
     <div id="receiptDiv" class="">
 
         <div class="modal-dialog " style="">
@@ -23,12 +23,12 @@
                         <tbody>
                             <tr>
                                 <td colspan="4" style="text-align: center !important;">
-                                    <img alt="logo" src="{{ asset('img/golf-logo.png') }}" width="80">
+                                    <img alt="logo" src="{{ asset('img/'.tenant()->id.'/golf-logo.png') }}" width="80">
                                 </td>
                             </tr>
                             <tr>
                                 <td colspan="4" class="center_text ">
-                                    <h3>{{ env('APP_NAME') }}</h3>
+                                    <h3>{{ tenant()->name }}</h3>
                                 </td>
                             </tr>
                             <tr>
@@ -96,25 +96,68 @@
                                         <strong>QTY</strong></label>
                                 </td>
                             </tr>
+{{-- 
+    new_added_item ->yes
+    new_quantity > 0 
+    Quantity update
+
+     new_added_item -> yes
+     new_quantity 0 <0
+        Update order
 
 
+      new_added_item -> no
+      new_quantity --  0 
+       New Order
+    
+    --}}
+                            
                             @foreach ($data->items as $value)
-
+                            
                                 <tr class="center_text">
                                     <td class="left_text">
                                         <label class="control-label text_size">
                                             <strong>{{ $loop->iteration }}</strong></label>
                                     </td>
+                                    
                                     <td class="left_text">
                                         <label class="control-label text_size">
-                                            <strong>{{ $value->title }}</strong></label>
+                                            
+                                            {{-- First time kitchen receipt print --}}
+                                            @if ($value->pivot->new_added_item == 'no' && $value->pivot->new_quantity == 0)
+                                                <strong>{{ $value->title }}</strong></label>
+
+                                            {{-- Update but new item added in existing order --}}
+                                            @elseif($value->pivot->new_added_item == 'yes' && $value->pivot->new_quantity == 0) 
+                                                <strong>{{ $value->title }} (New Item)</strong></label>
+                                                
+                                            {{-- Update but existing item`s quantity is changed --}}
+                                            @elseif($value->pivot->new_added_item == 'no' && $value->pivot->new_quantity > 0)
+                                                <strong>{{ $value->title }}</strong></label>
+                                            
+                                            @endif
+
                                     </td>
+                                   
                                     <td class="right_text">
                                         <label class="control-label text_size">
-                                            <strong>{{ $value->pivot->quantity }}</strong></label>
-                                    </td>
-                                </tr>
+                                            
+                                            {{-- First time kitchen receipt print --}}
+                                            @if ($value->pivot->new_added_item == 'no' && $value->pivot->new_quantity == 0)
+                                                <strong>{{ $value->pivot->quantity }}</strong></label>
 
+                                            {{-- Update but new item added in existing order --}}
+                                            @elseif($value->pivot->new_added_item == 'yes' && $value->pivot->new_quantity == 0)
+                                                <strong>{{ $value->pivot->quantity }}</strong></label>
+
+                                            {{-- Update but existing item`s quantity is changed --}}
+                                            @elseif($value->pivot->new_added_item == 'no' && $value->pivot->new_quantity > 0)
+                                                <strong>{{ $value->pivot->new_quantity }}</strong></label>
+                                            @endif
+                                    </td>
+                                    
+                                </tr>    
+                            
                             @endforeach
                         </tbody>
                     </table>
@@ -127,5 +170,6 @@
     </div>
 
 </body>
+
 
 </html>

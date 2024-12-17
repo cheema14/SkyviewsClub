@@ -30,7 +30,7 @@ class ItemClassController extends Controller
     {
         abort_if(Gate::denies('item_class_create'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        $item_types = ItemType::pluck('type', 'id')->prepend(trans('global.pleaseSelect'), '');
+        $item_types = ItemType::pluck('type', 'id')->prepend(trans(tenant()->id.'/global.pleaseSelect'), '');
 
         return view('admin.itemClasses.create', compact('item_types'));
     }
@@ -46,7 +46,7 @@ class ItemClassController extends Controller
     {
         abort_if(Gate::denies('item_class_edit'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        $item_types = ItemType::pluck('type', 'id')->prepend(trans('global.pleaseSelect'), '');
+        $item_types = ItemType::pluck('type', 'id')->prepend(trans(tenant()->id.'/global.pleaseSelect'), '');
 
         $itemClass->load('item_type');
 

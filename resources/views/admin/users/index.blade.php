@@ -1,17 +1,17 @@
-@extends('layouts.admin')
+@extends('layouts.'.tenant()->id.'.admin')
 @section('content')
 <div class="card">
     <div class="card-header">
     <div class="row align-items-center">
             <div class="col-sm-6">
                 <h4>
-                    {{ trans('cruds.user.title_singular') }} {{ trans('global.list') }}
+                    {{ trans(tenant()->id .'/cruds.user.title_singular') }} {{ trans(tenant()->id .'/global.list') }}
                 </h4>
             </div>
             <div class="col-lg-3 col-md-4 col-sm-6 ml-auto text-sm-right">
             @can('user_create')
                 <a class="btn btn-info px-4" href="{{ route('admin.users.create') }}">
-                {{ trans('global.add') }} {{ trans('cruds.user.title_singular') }}
+                {{ trans(tenant()->id .'/global.add') }} {{ trans(tenant()->id .'/cruds.user.title_singular') }}
                 </a>
             @endcan
             </div>
@@ -28,19 +28,19 @@
 
                         </th> --}}
                         <th>
-                            {{ trans('cruds.user.fields.id') }}
+                            {{ trans(tenant()->id .'/cruds.user.fields.id') }}
                         </th>
                         <th>
-                            {{ trans('cruds.user.fields.name') }}
+                            {{ trans(tenant()->id .'/cruds.user.fields.name') }}
                         </th>
                         <th>
-                            {{ trans('cruds.user.fields.email') }}
+                            {{ trans(tenant()->id .'/cruds.user.fields.email') }}
                         </th>
                         <th>
-                            {{ trans('cruds.user.fields.email_verified_at') }}
+                            {{ trans(tenant()->id .'/cruds.user.fields.email_verified_at') }}
                         </th>
                         <th>
-                            {{ trans('cruds.user.fields.roles') }}
+                            {{ trans(tenant()->id .'/cruds.user.fields.roles') }}
                         </th>
                         <th>
                             &nbsp;
@@ -73,21 +73,21 @@
                             <td>
                                 @can('user_show')
                                     <a class="btn btn-xs btn-primary" href="{{ route('admin.users.show', $user->id) }}">
-                                        {{ trans('global.view') }}
+                                        {{ trans(tenant()->id .'/global.view') }}
                                     </a>
                                 @endcan
 
                                 @can('user_edit')
                                     <a class="btn btn-xs btn-info" href="{{ route('admin.users.edit', $user->id) }}">
-                                        {{ trans('global.edit') }}
+                                        {{ trans(tenant()->id .'/global.edit') }}
                                     </a>
                                 @endcan
 
                                 @can('user_delete')
-                                    <form action="{{ route('admin.users.destroy', $user->id) }}" method="POST" onsubmit="return confirm('{{ trans('global.areYouSure') }}');" style="display: inline-block;">
+                                    <form action="{{ route('admin.users.destroy', $user->id) }}" method="POST" onsubmit="return confirm('{{ trans(tenant()->id .'/global.areYouSure') }}');" style="display: inline-block;">
                                         <input type="hidden" name="_method" value="DELETE">
                                         <input type="hidden" name="_token" value="{{ csrf_token() }}">
-                                        <input type="submit" class="btn btn-xs btn-danger" value="{{ trans('global.delete') }}">
+                                        <input type="submit" class="btn btn-xs btn-danger" value="{{ trans(tenant()->id .'/global.delete') }}">
                                     </form>
                                 @endcan
 
@@ -110,7 +110,7 @@
     $(function () {
   let dtButtons = $.extend(true, [], $.fn.dataTable.defaults.buttons)
 @can('user_delete')
-  let deleteButtonTrans = '{{ trans('global.datatables.delete') }}'
+  let deleteButtonTrans = '{{ trans(tenant()->id .'/global.datatables.delete') }}'
   let deleteButton = {
     text: deleteButtonTrans,
     url: "{{ route('admin.users.massDestroy') }}",
@@ -121,12 +121,12 @@
       });
 
       if (ids.length === 0) {
-        alert('{{ trans('global.datatables.zero_selected') }}')
+        alert('{{ trans(tenant()->id .'/global.datatables.zero_selected') }}')
 
         return
       }
 
-      if (confirm('{{ trans('global.areYouSure') }}')) {
+      if (confirm('{{ trans(tenant()->id .'/global.areYouSure') }}')) {
         $.ajax({
           headers: {'x-csrf-token': _token},
           method: 'POST',

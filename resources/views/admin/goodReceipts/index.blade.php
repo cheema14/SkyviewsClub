@@ -1,10 +1,10 @@
-@extends('layouts.admin')
+@extends('layouts.'.tenant()->id.'/admin')
 @section('content')
 <!-- @can('good_receipt_create')
     <div style="margin-bottom: 10px;" class="row">
         <div class="col-lg-12">
             <a class="btn btn-success" href="{{ route('admin.good-receipts.create') }}">
-                {{ trans('global.add') }} {{ trans('cruds.goodReceipt.title_singular') }}
+                {{ trans(tenant()->id.'/global.add') }} {{ trans(tenant()->id.'/cruds.goodReceipt.title_singular') }}
             </a>
         </div>
     </div>
@@ -14,13 +14,13 @@
         <div class="row align-items-center">
             <div class="col-sm-6">
                 <h4>
-                {{ trans('cruds.goodReceipt.title_singular') }} {{ trans('global.list') }}
+                {{ trans(tenant()->id.'/cruds.goodReceipt.title_singular') }} {{ trans(tenant()->id.'/global.list') }}
                 </h4>
             </div>
             @can('good_receipt_create')
             <div class="col-sm-6 ml-auto text-sm-right">
                 <a class="btn btn-info px-4" href="{{ route('admin.good-receipts.create') }}">
-                {{ trans('global.add') }} {{ trans('cruds.goodReceipt.title_singular') }}
+                {{ trans(tenant()->id.'/global.add') }} {{ trans(tenant()->id.'/cruds.goodReceipt.title_singular') }}
                 </a>
             </div>
             @endcan
@@ -35,25 +35,25 @@
 
                     </th> --}}
                     <th>
-                        {{ trans('cruds.goodReceipt.fields.id') }}
+                        {{ trans(tenant()->id.'/cruds.goodReceipt.fields.id') }}
                     </th>
                     <th>
-                        {{ trans('cruds.goodReceipt.fields.gr_number') }}
+                        {{ trans(tenant()->id.'/cruds.goodReceipt.fields.gr_number') }}
                     </th>
                     <th>
-                        {{ trans('cruds.goodReceipt.fields.store') }}
+                        {{ trans(tenant()->id.'/cruds.goodReceipt.fields.store') }}
                     </th>
                     <th>
-                        {{ trans('cruds.goodReceipt.fields.gr_date') }}
+                        {{ trans(tenant()->id.'/cruds.goodReceipt.fields.gr_date') }}
                     </th>
                     <th>
-                        {{ trans('cruds.goodReceipt.fields.vendor') }}
+                        {{ trans(tenant()->id.'/cruds.goodReceipt.fields.vendor') }}
                     </th>
                     {{-- <th>
-                        {{ trans('cruds.goodReceipt.fields.pay_type') }}
+                        {{ trans(tenant()->id.'/cruds.goodReceipt.fields.pay_type') }}
                     </th> --}}
                     <th>
-                        {{ trans('cruds.goodReceipt.fields.remarks') }}
+                        {{ trans(tenant()->id.'/cruds.goodReceipt.fields.remarks') }}
                     </th>
                     <th>
                        Actions
@@ -73,7 +73,7 @@
     $(function () {
   let dtButtons = $.extend(true, [], $.fn.dataTable.defaults.buttons)
 @can('good_receipt_delete')
-  let deleteButtonTrans = '{{ trans('global.datatables.delete') }}';
+  let deleteButtonTrans = '{{ trans(tenant()->id.'/global.datatables.delete') }}';
   let deleteButton = {
     text: deleteButtonTrans,
     url: "{{ route('admin.good-receipts.massDestroy') }}",
@@ -84,12 +84,12 @@
       });
 
       if (ids.length === 0) {
-        alert('{{ trans('global.datatables.zero_selected') }}')
+        alert('{{ trans(tenant()->id.'/global.datatables.zero_selected') }}')
 
         return
       }
 
-      if (confirm('{{ trans('global.areYouSure') }}')) {
+      if (confirm('{{ trans(tenant()->id.'/global.areYouSure') }}')) {
         $.ajax({
           headers: {'x-csrf-token': _token},
           method: 'POST',
@@ -118,7 +118,7 @@
 { data: 'vendor_name', name: 'vendor.name' },
 // { data: 'pay_type', name: 'pay_type' },
 { data: 'remarks', name: 'remarks' },
-{ data: 'actions', name: '{{ trans('global.actions') }}' }
+{ data: 'actions', name: '{{ trans(tenant()->id.'/global.actions') }}' }
     ],
     orderCellsTop: true,
     order: [[ 0, 'desc' ]],

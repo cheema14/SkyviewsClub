@@ -1,10 +1,10 @@
-@extends('layouts.admin')
+@extends('layouts.'.tenant()->id.'.admin')
 @section('content')
 <!-- @can('stock_issue_create')
     <div style="margin-bottom: 10px;" class="row">
         <div class="col-lg-12">
             <a class="btn btn-success" href="{{ route('admin.stock-issues.create') }}">
-                {{ trans('global.add') }} {{ trans('cruds.stockIssue.title_singular') }}
+                {{ trans(tenant()->id.'/global.add') }} {{ trans(tenant()->id.'/cruds.stockIssue.title_singular') }}
             </a>
         </div>
     </div>
@@ -14,13 +14,13 @@
         <div class="row align-items-center">
             <div class="col-sm-6">
                 <h4>
-                {{ trans('cruds.stockIssue.title_singular') }} {{ trans('global.list') }}
+                {{ trans(tenant()->id.'/cruds.stockIssue.title_singular') }} {{ trans(tenant()->id.'/global.list') }}
                 </h4>
             </div>
             @can('stock_issue_create')
             <div class="col-sm-6 ml-auto text-sm-right">
                 <a class="btn btn-info px-4" href="{{ route('admin.stock-issues.create') }}">
-                {{ trans('global.add') }} {{ trans('cruds.stockIssue.title_singular') }}
+                {{ trans(tenant()->id.'/global.add') }} {{ trans(tenant()->id.'/cruds.stockIssue.title_singular') }}
                 </a>
             </div>
             @endcan
@@ -35,25 +35,25 @@
 
                     </th> --}}
                     <th>
-                        {{ trans('cruds.stockIssue.fields.id') }}
+                        {{ trans(tenant()->id.'/cruds.stockIssue.fields.id') }}
                     </th>
                     <th>
-                        {{ trans('cruds.stockIssue.fields.issue_no') }}
+                        {{ trans(tenant()->id.'/cruds.stockIssue.fields.issue_no') }}
                     </th>
                     <th>
-                        {{ trans('cruds.stockIssue.fields.issue_date') }}
+                        {{ trans(tenant()->id.'/cruds.stockIssue.fields.issue_date') }}
                     </th>
                     <th>
-                        {{ trans('cruds.stockIssue.fields.section') }}
+                        {{ trans(tenant()->id.'/cruds.stockIssue.fields.section') }}
                     </th>
                     <th>
-                        {{ trans('cruds.stockIssue.fields.store') }}
+                        {{ trans(tenant()->id.'/cruds.stockIssue.fields.store') }}
                     </th>
                     <th>
-                        {{ trans('cruds.stockIssue.fields.employee') }}
+                        {{ trans(tenant()->id.'/cruds.stockIssue.fields.employee') }}
                     </th>
                     <th>
-                        {{ trans('cruds.stockIssue.fields.remarks') }}
+                        {{ trans(tenant()->id.'/cruds.stockIssue.fields.remarks') }}
                     </th>
                     <th>
                         Actions
@@ -73,7 +73,7 @@
     $(function () {
   let dtButtons = $.extend(true, [], $.fn.dataTable.defaults.buttons)
 @can('stock_issue_delete')
-  let deleteButtonTrans = '{{ trans('global.datatables.delete') }}';
+  let deleteButtonTrans = '{{ trans(tenant()->id.'/global.datatables.delete') }}';
   let deleteButton = {
     text: deleteButtonTrans,
     url: "{{ route('admin.stock-issues.massDestroy') }}",
@@ -84,12 +84,12 @@
       });
 
       if (ids.length === 0) {
-        alert('{{ trans('global.datatables.zero_selected') }}')
+        alert('{{ trans(tenant()->id.'/global.datatables.zero_selected') }}')
 
         return
       }
 
-      if (confirm('{{ trans('global.areYouSure') }}')) {
+      if (confirm('{{ trans(tenant()->id.'/global.areYouSure') }}')) {
         $.ajax({
           headers: {'x-csrf-token': _token},
           method: 'POST',
@@ -118,7 +118,7 @@
 { data: 'store_name', name: 'store.name' },
 { data: 'employee_name', name: 'employee.name' },
 { data: 'remarks', name: 'remarks' },
-{ data: 'actions', name: '{{ trans('global.actions') }}' }
+{ data: 'actions', name: '{{ trans(tenant()->id.'/global.actions') }}' }
     ],
     orderCellsTop: true,
     order: [[ 0, 'desc' ]],

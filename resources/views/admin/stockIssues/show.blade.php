@@ -1,10 +1,10 @@
-@extends('layouts.admin')
+@extends('layouts.'.tenant()->id.'.admin')
 @section('content')
 
 <div class="card">
     <div class="card-header">
         <h4>
-        {{ trans('global.show') }} {{ trans('cruds.stockIssue.title') }}
+        {{ trans(tenant()->id.'/global.show') }} {{ trans(tenant()->id.'/cruds.stockIssue.title') }}
         </h4>
     </div>
 
@@ -12,14 +12,14 @@
         <div class="table-responsive">
             <!-- <div class="form-group">
                 <a class="btn btn-default" href="{{ route('admin.stock-issues.index') }}">
-                    {{ trans('global.back_to_list') }}
+                    {{ trans(tenant()->id.'/global.back_to_list') }}
                 </a>
             </div> -->
             <table class="table table-bordered table-striped">
                 <tbody>
                     <tr>
                         <th>
-                            {{ trans('cruds.stockIssue.fields.id') }}
+                            {{ trans(tenant()->id.'/cruds.stockIssue.fields.id') }}
                         </th>
                         <td>
                             {{ $stockIssue->id }}
@@ -27,7 +27,7 @@
                     </tr>
                     <tr>
                         <th>
-                            {{ trans('cruds.stockIssue.fields.issue_no') }}
+                            {{ trans(tenant()->id.'/cruds.stockIssue.fields.issue_no') }}
                         </th>
                         <td>
                             {{ $stockIssue->issue_no }}
@@ -35,7 +35,7 @@
                     </tr>
                     <tr>
                         <th>
-                            {{ trans('cruds.stockIssue.fields.issue_date') }}
+                            {{ trans(tenant()->id.'/cruds.stockIssue.fields.issue_date') }}
                         </th>
                         <td>
                             {{ $stockIssue->issue_date }}
@@ -43,7 +43,7 @@
                     </tr>
                     <tr>
                         <th>
-                            {{ trans('cruds.stockIssue.fields.section') }}
+                            {{ trans(tenant()->id.'/cruds.stockIssue.fields.section') }}
                         </th>
                         <td>
                             {{ $stockIssue->section->name ?? '' }}
@@ -51,7 +51,7 @@
                     </tr>
                     <tr>
                         <th>
-                            {{ trans('cruds.stockIssue.fields.store') }}
+                            {{ trans(tenant()->id.'/cruds.stockIssue.fields.store') }}
                         </th>
                         <td>
                             {{ $stockIssue->store->name ?? '' }}
@@ -59,7 +59,7 @@
                     </tr>
                     <tr>
                         <th>
-                            {{ trans('cruds.stockIssue.fields.employee') }}
+                            {{ trans(tenant()->id.'/cruds.stockIssue.fields.employee') }}
                         </th>
                         <td>
                             {{ $stockIssue->employee->name ?? '' }}
@@ -67,7 +67,7 @@
                     </tr>
                     <tr>
                         <th>
-                            {{ trans('cruds.stockIssue.fields.remarks') }}
+                            {{ trans(tenant()->id.'/cruds.stockIssue.fields.remarks') }}
                         </th>
                         <td>
                             {{ $stockIssue->remarks }}
@@ -77,7 +77,7 @@
             </table>
             <!-- <div class="form-group">
                 <a class="btn btn-default" href="{{ route('admin.stock-issues.index') }}">
-                    {{ trans('global.back_to_list') }}
+                    {{ trans(tenant()->id.'/global.back_to_list') }}
                 </a>
             </div> -->
         </div>
@@ -87,13 +87,13 @@
 <div class="card">
     <div class="card-header">
         <h4>
-        {{ trans('global.relatedData') }}
+        {{ trans(tenant()->id.'/global.relatedData') }}
         </h4>
     </div>
     <ul class="nav nav-tabs" role="tablist" id="relationship-tabs">
         <li class="nav-item">
             <a class="nav-link active" href="#stock_issue_stock_issue_items" role="tab" data-toggle="tab">
-                {{ trans('cruds.stockIssueItem.title') }}
+                {{ trans(tenant()->id.'/cruds.stockIssueItem.title') }}
             </a>
         </li>
     </ul>

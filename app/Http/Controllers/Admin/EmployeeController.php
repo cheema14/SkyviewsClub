@@ -35,6 +35,15 @@ class EmployeeController extends Controller
     public function store(StoreEmployeeRequest $request)
     {
         $employee = Employee::create($request->all());
+        $tenant_id = tenant()->id;
+        tenancy()->central(function () use ($employee, $request,$tenant_id) {
+            if ($request->input('employee_photo',false)) {
+                $employee->addMedia(storage_path('tenant'.$tenant_id.'/tmp/uploads/'.basename($request->input('employee_photo'))))->toMediaCollection('employee_photo', 'employees');
+            }
+        });
+
+        $employee->load('media');
+
 
         return redirect()->route('admin.employees.index')->with('created', 'New Employee Added.');
     }
@@ -49,14 +58,28 @@ class EmployeeController extends Controller
     public function update(UpdateEmployeeRequest $request, Employee $employee)
     {
         $employee->update($request->all());
-
+        $tenant_id = tenant()->id;
+        
+        if ($request->input('employee_photo', false)) {
+            if (! $employee->employee_photo || $request->input('employee_photo') !== $employee->employee_photo->file_name) {
+                if ($employee->employee_photo) {
+                    $employee->employee_photo->delete();
+                }
+                tenancy()->central(function () use ($employee, $request,$tenant_id) {
+                    if ($request->input('employee_photo',false)) {
+                        $employee->addMedia(storage_path('tenant'.$tenant_id.'/tmp/uploads/'.basename($request->input('employee_photo'))))->toMediaCollection('employee_photo', 'employees');
+                    }
+                });
+            }
+        } elseif ($employee->employee_photo) {
+            $employee->employee_photo->delete();
+        }
         return redirect()->route('admin.employees.index')->with('updated', 'Employee Updated.');
     }
 
     public function show(Employee $employee)
     {
         abort_if(Gate::denies('employee_show'), Response::HTTP_FORBIDDEN, '403 Forbidden');
-
         return view('admin.employees.show', compact('employee'));
     }
 

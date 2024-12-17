@@ -1,14 +1,14 @@
-@extends('layouts.admin')
+@extends('layouts.'.tenant()->id.'.admin')
 @section('content')
 <div class="form-group">
     <a class="btn btn-dark" href="{{ route('admin.roles.index') }}">
-        {{ trans('global.back_to_list') }}
+        {{ trans(tenant()->id.'/global.back_to_list') }}
     </a>
 </div>
 <div class="card">
     <div class="card-header">
         <h4>
-            {{ trans('global.show') }} {{ trans('cruds.role.title') }}
+            {{ trans(tenant()->id.'/global.show') }} {{ trans(tenant()->id.'/cruds.role.title') }}
         </h4>
     </div>
 
@@ -17,7 +17,7 @@
             <tbody>
                 <tr>
                     <th>
-                        {{ trans('cruds.role.fields.id') }}
+                        {{ trans(tenant()->id.'/cruds.role.fields.id') }}
                     </th>
                     <td>
                         {{ $role->id }}
@@ -25,7 +25,7 @@
                 </tr>
                 <tr>
                     <th>
-                        {{ trans('cruds.role.fields.title') }}
+                        {{ trans(tenant()->id.'/cruds.role.fields.title') }}
                     </th>
                     <td>
                         {{ $role->title }}
@@ -33,7 +33,7 @@
                 </tr>
                 <tr>
                     <th>
-                        {{ trans('cruds.role.fields.permissions') }}
+                        {{ trans(tenant()->id.'/cruds.role.fields.permissions') }}
                     </th>
                     <td>
                         @foreach($role->permissions as $key => $permissions)

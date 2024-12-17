@@ -30,13 +30,13 @@ class StoreItemController extends Controller
     {
         abort_if(Gate::denies('store_item_create'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        $stores = Store::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
+        $stores = Store::pluck('name', 'id')->prepend(trans(tenant()->id.'/global.pleaseSelect'), '');
 
-        $items = ItemType::pluck('type', 'id')->prepend(trans('global.pleaseSelect'), '');
+        $items = ItemType::pluck('type', 'id')->prepend(trans(tenant()->id.'/global.pleaseSelect'), '');
 
-        $item_classes = ItemClass::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
+        $item_classes = ItemClass::pluck('name', 'id')->prepend(trans(tenant()->id.'/global.pleaseSelect'), '');
 
-        $units = Unit::pluck('type', 'id')->prepend(trans('global.pleaseSelect'), '');
+        $units = Unit::pluck('type', 'id')->prepend(trans(tenant()->id.'/global.pleaseSelect'), '');
 
         return view('admin.storeItems.create', compact('item_classes', 'items', 'stores', 'units'));
     }
@@ -52,13 +52,13 @@ class StoreItemController extends Controller
     {
         abort_if(Gate::denies('store_item_edit'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        $stores = Store::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
+        $stores = Store::pluck('name', 'id')->prepend(trans(tenant()->id.'/global.pleaseSelect'), '');
 
-        $items = ItemType::pluck('type', 'id')->prepend(trans('global.pleaseSelect'), '');
+        $items = ItemType::pluck('type', 'id')->prepend(trans(tenant()->id.'/global.pleaseSelect'), '');
 
-        $item_classes = ItemClass::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
+        $item_classes = ItemClass::pluck('name', 'id')->prepend(trans(tenant()->id.'/global.pleaseSelect'), '');
 
-        $units = Unit::pluck('type', 'id')->prepend(trans('global.pleaseSelect'), '');
+        $units = Unit::pluck('type', 'id')->prepend(trans(tenant()->id.'/global.pleaseSelect'), '');
 
         $storeItem->load('store', 'item', 'item_class', 'unit');
 
@@ -100,9 +100,9 @@ class StoreItemController extends Controller
         if (! $request->item_id) {
             $data = 'Not Item Found!';
         } else {
-            $data = StoreItem::find($request->item_id);
+            $data = StoreItem::with('gr_item')->find($request->item_id);
         }
 
-        return response()->json(['unit' => $data->unit]);
+        return response()->json(['unit' => $data->unit,'quantity'=>$data->gr_item?->quantity]);
     }
 }

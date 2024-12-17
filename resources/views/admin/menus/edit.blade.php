@@ -1,10 +1,10 @@
-@extends('layouts.admin')
+@extends('layouts.'.tenant()->id.'.admin')
 @section('content')
 
 <div class="card">
     <div class="card-header">
         <h4>
-        {{ trans('global.edit') }} {{ trans('cruds.menu.title_singular') }}
+        {{ trans(tenant()->id.'/global.edit') }} {{ trans(tenant()->id.'/cruds.menu.title_singular') }}
         </h4>
     </div>
 
@@ -13,28 +13,50 @@
             @method('PUT')
             @csrf
             <div class="form-group">
-                <label class="required" for="title">{{ trans('cruds.menu.fields.title') }}</label>
-                <input class="form-control {{ $errors->has('title') ? 'is-invalid' : '' }}" type="text" name="title" id="title" value="{{ old('title', $menu->title) }}" required>
+                <label class="required" for="title">{{ trans(tenant()->id.'/cruds.menu.fields.title') }}</label>
+                <input maxlength="30" class="form-control {{ $errors->has('title') ? 'is-invalid' : '' }}" type="text" name="title" id="title" value="{{ old('title', $menu->title) }}" required>
                 @if($errors->has('title'))
                     <div class="invalid-feedback">
                         {{ $errors->first('title') }}
                     </div>
                 @endif
-                <span class="help-block">{{ trans('cruds.menu.fields.title_helper') }}</span>
+                <span class="help-block">{{ trans(tenant()->id.'/cruds.menu.fields.title_helper') }}</span>
             </div>
             <div class="form-group">
-                <label for="summary">{{ trans('cruds.menu.fields.summary') }}</label>
+                <label for="summary">{{ trans(tenant()->id.'/cruds.menu.fields.summary') }}</label>
                 <textarea class="form-control {{ $errors->has('summary') ? 'is-invalid' : '' }}" name="summary" id="summary">{{ old('summary', $menu->summary) }}</textarea>
                 @if($errors->has('summary'))
                     <div class="invalid-feedback">
                         {{ $errors->first('summary') }}
                     </div>
                 @endif
-                <span class="help-block">{{ trans('cruds.menu.fields.summary_helper') }}</span>
+                <span class="help-block">{{ trans(tenant()->id.'/cruds.menu.fields.summary_helper') }}</span>
+            </div>
+            <div class="form-group">
+                <label class="required" for="roles">{{ trans(tenant()->id.'/cruds.user.fields.roles') }}</label>
+                <select multiple="true" class="form-control select2 {{ $errors->has('roles') ? 'is-invalid' : '' }}" name="roles[]" id="roles" required>
+                    @foreach($roles as $id => $role)
+                    <option value="{{ $id }}" {{ (in_array($id, old('roles', [])) || $menu->roles->contains($id)) ? 'selected' : '' }}>{{ $role }}</option>    
+                    {{-- <option value="{{ $id }}" {{ ($id ==  $menu->role_id) ? 'selected' : '' }}>{{ $role }}</option> --}}
+                    @endforeach
+                </select>
+                @if($errors->has('roles'))
+                    <div class="invalid-feedback">
+                        {{ $errors->first('roles') }}
+                    </div>
+                @endif
+                <span class="help-block">{{ trans(tenant()->id.'/cruds.user.fields.roles_helper') }}</span>
+            </div>
+            <div class="form-check mb-5">
+                <input type="hidden" value="0"  name="has_discount">
+                <input {{ $menu->has_discount == 1 ? 'checked' : '' }} class="form-check-input" type="checkbox" value="1"  name="has_discount" id="has_discount">
+                <label class="form-check-label" for="form_discount">
+                    Please check this box if this menu offers discount
+                </label>
             </div>
             <div class="form-group">
                 <button class="btn btn-info px-5" type="submit">
-                    {{ trans('global.save') }}
+                    {{ trans(tenant()->id.'/global.save') }}
                 </button>
             </div>
         </form>

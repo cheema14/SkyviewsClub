@@ -4,10 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Stancl\Tenancy\Database\Concerns\BelongsToTenant;
 
 class Bill extends Model
 {
-    use HasFactory;
+    use HasFactory,BelongsToTenant;
 
     public $table = 'bills';
 
@@ -28,6 +29,16 @@ class Bill extends Model
         'created_at',
         'updated_at',
         'deleted_at',
+        'card_fee',
+        'practice_range_coaching_fee',
+        'locker_fee',
+        'fee',
+        'snooker_fee',
+        'proshop_fee',
+        'golf_simulator',
+        'golf_locker',
+        'golf_course',
+        'golf_cart_fee',
     ];
 
     public const BILLING_MONTHS = [
@@ -51,9 +62,14 @@ class Bill extends Model
         'Stalled' => 'Stalled',
         'Pending' => 'Pending',
         'Partial' => 'Partial',
+        'Locked' => 'Locked',
     ];
 
     public function receipts(){
         return $this->hasMany(PaymentReceipt::class,'bill_id')->where('is_deducted', false);
+    }
+
+    public function member(){
+        return $this->belongsTo(Member::class);
     }
 }

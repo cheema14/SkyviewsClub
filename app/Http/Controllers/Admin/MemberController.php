@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Events\DiscountedMembershipFeeEvent;
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\Traits\AbsenteeMemberTrait;
 use App\Http\Controllers\Traits\CsvImportTrait;
 use App\Http\Controllers\Traits\MediaUploadingTrait;
 use App\Http\Requests\MassDestroyMemberRequest;
@@ -10,6 +12,7 @@ use App\Http\Requests\StoreMemberRequest;
 use App\Http\Requests\UpdateMemberRequest;
 use App\Models\Department;
 use App\Models\Designation;
+use App\Models\DiscountedMembershipFee;
 use App\Models\Member;
 use App\Models\MembershipCategory;
 use App\Models\MembershipType;
@@ -21,7 +24,7 @@ use Yajra\DataTables\Facades\DataTables;
 
 class MemberController extends Controller
 {
-    use MediaUploadingTrait, CsvImportTrait;
+    use MediaUploadingTrait, CsvImportTrait, AbsenteeMemberTrait;
 
     public function index(Request $request)
     {
@@ -46,7 +49,7 @@ class MemberController extends Controller
                 $viewBill = 'view_bill';
                 $crudRoutePart = 'members';
 
-                return view('partials.memberDataTableActions', compact(
+                return view('/partials.'.tenant()->id.'.memberDataTableActions', compact(
                     'viewGate',
                     'editGate',
                     'deleteGate',
@@ -115,7 +118,7 @@ class MemberController extends Controller
                 $viewBill = 'view_bill';
                 $crudRoutePart = 'members';
 
-                return view('partials.memberDataTableActions', compact(
+                return view('partials.'.tenant()->id.'.memberDataTableActions', compact(
                     'viewGate',
                     'editGate',
                     'deleteGate',
@@ -158,17 +161,78 @@ class MemberController extends Controller
         return view('admin.members.serving_members');
     }
 
+    public function load_absentees_members(Request $request){
+        abort_if(Gate::denies('member_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+
+        if ($request->ajax()) {
+            $query = Member::with(['membership_category','discountedMembershipFees'])->where('monthly_type', '=', 'Absentees')->select(sprintf('%s.*', (new Member)->table));
+            $table = Datatables::of($query);
+
+            $table->addColumn('placeholder', '&nbsp;');
+            $table->addColumn('actions', '&nbsp;');
+
+            $table->addColumn('status_color', ' ');
+
+            $table->editColumn('actions', function ($row) {
+                $viewGate = 'member_show';
+                $editGate = 'member_edit';
+                $deleteGate = 'member_delete';
+                $showDependents = 'dependent_list';
+                $viewBill = 'view_bill';
+                $crudRoutePart = 'members';
+
+                return view('partials.'.tenant()->id.'.memberDataTableActions', compact(
+                    'viewGate',
+                    'editGate',
+                    'deleteGate',
+                    'crudRoutePart',
+                    'showDependents',
+                    'row'
+                ));
+            });
+
+            $table->editColumn('id', function ($row) {
+                return $row->id ? $row->id : '';
+            });
+            $table->editColumn('name', function ($row) {
+                return $row->name ? $row->name : '';
+            });
+            $table->editColumn('membership_no', function ($row) {
+                return $row->membership_no ? $row->membership_no : '';
+            });
+            
+            $table->editColumn('membership_category.name', function ($row) {
+                return $row->membership_category ? $row->membership_category->name : '';
+            });
+            
+            $table->editColumn('discounted_membership_fees.implemented_from', function ($row) {
+                return $row->discounted_membership_fees ? $row->discounted_membership_fees->implemented_from : '';
+            });
+            
+
+            $table->editColumn('status_color', function ($row) {
+                return $row->membership_status && Member::STATUS_COLOR[$row->membership_status] ? Member::STATUS_COLOR[$row->membership_status] : 'none';
+            });
+
+            $table->rawColumns(['actions', 'placeholder']);
+
+            return $table->make(true);
+        }
+
+        return view('admin.members.absentees_members');
+    }
+
     public function create()
     {
         abort_if(Gate::denies('member_create'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        $designations = Designation::pluck('title', 'id')->prepend(trans('global.pleaseSelect'), '');
+        $designations = Designation::pluck('title', 'id')->prepend(trans(tenant()->id.'/global.pleaseSelect'), '');
 
-        $departments = Department::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
+        $departments = Department::pluck('name', 'id')->prepend(trans(tenant()->id.'/global.pleaseSelect'), '');
 
-        $membership_categories = MembershipCategory::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
+        $membership_categories = MembershipCategory::pluck('name', 'id')->prepend(trans(tenant()->id.'/global.pleaseSelect'), '');
 
-        $membership_types = MembershipType::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
+        $membership_types = MembershipType::pluck('name', 'id')->prepend(trans(tenant()->id.'/global.pleaseSelect'), '');
 
         return view('admin.members.create', compact('departments', 'designations', 'membership_categories', 'membership_types'));
     }
@@ -176,23 +240,64 @@ class MemberController extends Controller
     public function store(StoreMemberRequest $request)
     {
 
+        
         $member = Member::create($request->all());
 
-        if ($request->input('photo', false)) {
-            $member->addMedia(storage_path('tmp/uploads/'.basename($request->input('photo'))))->toMediaCollection('photo');
+        if($request->discount_on_membership_fee){
+            $data['discount_on_membership_fee'] = $request->discount_on_membership_fee;
+            $data['column'] = 'discount_on_membership_fee';
+            $data['member_id'] = $member->id;
+            DiscountedMembershipFeeEvent::dispatch($data);
         }
+        // Now we can store the information 
+        // for the discounted subscription fee
+        
+        $discounted_membership_fee = new DiscountedMembershipFee();
+        
+        $discounted_membership_fee->monthly_subscription_revised = $request->monthly_subscription_revised;
+        $discounted_membership_fee->no_of_months = $request->no_of_months;
+        $discounted_membership_fee->member_id = $member->id;
+        $discounted_membership_fee->implemented_from = date('Y-m-d');
+        $discounted_membership_fee->remaining_months = $request->no_of_months;
+        $discounted_membership_fee->is_active = 1;
+        $discounted_membership_fee->save();
+        
+        $tenant_id = tenant()->id;
+        // tenancy()->central(function () use ($employee, $request,$tenant_id) {
+        //     if ($request->input('employee_photo',false)) {
+        //         $employee->addMedia(storage_path('tenant'.$tenant_id.'/tmp/uploads/'.basename($request->input('employee_photo'))))->toMediaCollection('employee_photo', 'employees');
+        //     }
+        // });
 
-        if ($request->input('signature', false)) {
-            $member->addMedia(storage_path('tmp/uploads/'.basename($request->input('signature'))))->toMediaCollection('signature');
-        }
+        
+        tenancy()->central(function () use ($member, $request,$tenant_id,$discounted_membership_fee) {
+            
+            if ($request->input('photo',false)) {
+                $member->addMedia(storage_path('tenant'.$tenant_id.'/tmp/uploads/'.basename($request->input('photo'))))->toMediaCollection('photo','members');
+            }
 
-        if ($request->input('cnic_front', false)) {
-            $member->addMedia(storage_path('tmp/uploads/'.basename($request->input('cnic_front'))))->toMediaCollection('cnic_front');
-        }
-
-        if ($request->input('cnic_back', false)) {
-            $member->addMedia(storage_path('tmp/uploads/'.basename($request->input('cnic_back'))))->toMediaCollection('cnic_back');
-        }
+            if($discounted_membership_fee){
+                if ($request->input('absentees_application', false)) {
+                    $discounted_membership_fee->addMedia(storage_path('tenant'.$tenant_id.'/tmp/uploads/'.basename($request->input('absentees_application'))))->toMediaCollection('absentees_application','absentees');
+                }
+            }
+    
+            if ($request->input('signature', false)) {
+                $member->addMedia(storage_path('tenant'.$tenant_id.'/tmp/uploads/'.basename($request->input('signature'))))->toMediaCollection('signature','signature');
+            }
+    
+            if ($request->input('cnic_front', false)) {
+                $member->addMedia(storage_path('tenant'.$tenant_id.'/tmp/uploads/'.basename($request->input('cnic_front'))))->toMediaCollection('cnic_front','cnic');
+            }
+    
+            if ($request->input('cnic_back', false)) {
+                $member->addMedia(storage_path('tenant'.$tenant_id.'/tmp/uploads/'.basename($request->input('cnic_back'))))->toMediaCollection('cnic_back','cnic');
+            }
+        });
+        
+        
+        
+        // $member->load('media');
 
         if ($media = $request->input('ck-media', false)) {
             Media::whereIn('id', $media)->update(['model_id' => $member->id]);
@@ -205,29 +310,44 @@ class MemberController extends Controller
     {
         abort_if(Gate::denies('member_edit'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        $designations = Designation::pluck('title', 'id')->prepend(trans('global.pleaseSelect'), '');
+        $designations = Designation::pluck('title', 'id')->prepend(trans(tenant()->id.'/global.pleaseSelect'), '');
 
-        $departments = Department::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
+        $departments = Department::pluck('name', 'id')->prepend(trans(tenant()->id.'/global.pleaseSelect'), '');
 
-        $membership_categories = MembershipCategory::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
+        $membership_categories = MembershipCategory::pluck('name', 'id')->prepend(trans(tenant()->id.'/global.pleaseSelect'), '');
 
-        $membership_types = MembershipType::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
+        $membership_types = MembershipType::pluck('name', 'id')->prepend(trans(tenant()->id.'/global.pleaseSelect'), '');
 
-        $member->load('designation', 'department', 'membership_category', 'membership_type');
-
+        $member->load('designation', 'department', 'membership_category', 'membership_type','discountedMembershipFees');
+        
         return view('admin.members.edit', compact('departments', 'designations', 'member', 'membership_categories', 'membership_types'));
     }
 
     public function update(UpdateMemberRequest $request, Member $member)
     {
+        
         $member->update($request->all());
+
+        // We shall use this tenant id in the central domain check
+        $tenant_id = tenant()->id;
+
+        $data['discount_on_membership_fee'] = $request->discount_on_membership_fee;
+        $data['column'] = 'discount_on_membership_fee';
+        $data['member_id'] = $member->id;
+        $data['update_call'] = true;
+        $data['absentees_monthly_subscription'] = false;
+        // DiscountedMembershipFeeEvent::dispatch($data);
 
         if ($request->input('photo', false)) {
             if (! $member->photo || $request->input('photo') !== $member->photo->file_name) {
                 if ($member->photo) {
                     $member->photo->delete();
                 }
-                $member->addMedia(storage_path('tmp/uploads/'.basename($request->input('photo'))))->toMediaCollection('photo');
+                tenancy()->central(function () use ($member, $request,$tenant_id) {
+                    if ($request->input('photo',false)) {
+                        $member->addMedia(storage_path('tenant'.$tenant_id.'/tmp/uploads/'.basename($request->input('photo'))))->toMediaCollection('photo', 'members');
+                    }
+                });
             }
         } elseif ($member->photo) {
             $member->photo->delete();
@@ -238,7 +358,11 @@ class MemberController extends Controller
                 if ($member->signature) {
                     $member->signature->delete();
                 }
-                $member->addMedia(storage_path('tmp/uploads/'.basename($request->input('signature'))))->toMediaCollection('signature');
+                tenancy()->central(function () use ($member, $request,$tenant_id) {
+                    if ($request->input('signature',false)) {
+                        $member->addMedia(storage_path('tenant'.$tenant_id.'/tmp/uploads/'.basename($request->input('signature'))))->toMediaCollection('signature', 'signature');
+                    }
+                });
             }
         } elseif ($member->signature) {
             $member->signature->delete();
@@ -249,7 +373,11 @@ class MemberController extends Controller
                 if ($member->cnic_front) {
                     $member->cnic_front->delete();
                 }
-                $member->addMedia(storage_path('tmp/uploads/'.basename($request->input('cnic_front'))))->toMediaCollection('cnic_front');
+                tenancy()->central(function () use ($member, $request,$tenant_id) {
+                    if ($request->input('cnic_front',false)) {
+                        $member->addMedia(storage_path('tenant'.$tenant_id.'/tmp/uploads/'.basename($request->input('cnic_front'))))->toMediaCollection('cnic_front', 'cnic');
+                    }
+                });
             }
         } elseif ($member->cnic_front) {
             $member->cnic_front->delete();
@@ -260,11 +388,36 @@ class MemberController extends Controller
                 if ($member->cnic_back) {
                     $member->cnic_back->delete();
                 }
-                $member->addMedia(storage_path('tmp/uploads/'.basename($request->input('cnic_back'))))->toMediaCollection('cnic_back');
+                tenancy()->central(function () use ($member, $request,$tenant_id) {
+                    if ($request->input('cnic_back',false)) {
+                        $member->addMedia(storage_path('tenant'.$tenant_id.'/tmp/uploads/'.basename($request->input('cnic_back'))))->toMediaCollection('cnic_back', 'cnic');
+                    }
+                });
             }
         } elseif ($member->cnic_back) {
             $member->cnic_back->delete();
         }
+
+        if($member->monthly_type == 'Absentees'){
+            $discounted_membership_fee = $this->update_absentee_monthly_type($request->all(),$member->id);
+
+            if ($request->input('absentees_application', false)) {
+                if (! $discounted_membership_fee->absentees_application || $request->input('absentees_application') !== $discounted_membership_fee->absentees_application->file_name) {
+                    if ($discounted_membership_fee->absentees_application) {
+                        $discounted_membership_fee->absentees_application->delete();
+                    }
+                    tenancy()->central(function () use ($discounted_membership_fee, $request,$tenant_id) {
+                        if ($request->input('absentees_application',false)) {
+                            $discounted_membership_fee->addMedia(storage_path('tenant'.$tenant_id.'/tmp/uploads/'.basename($request->input('absentees_application'))))->toMediaCollection('absentees_application', 'absentees');
+                        }
+                    });
+                }
+            } elseif ($discounted_membership_fee->cnic_back) {
+                $discounted_membership_fee->cnic_back->delete();
+            }
+            
+        }
+
 
         return redirect()->route('admin.members.index')->with('updated', 'Member Updated.');
     }
@@ -272,8 +425,10 @@ class MemberController extends Controller
     public function show(Member $member)
     {
         abort_if(Gate::denies('member_show'), Response::HTTP_FORBIDDEN, '403 Forbidden');
-
         $member->load('designation', 'department', 'membership_category', 'membership_type', 'memberOrders');
+        
+        
+        // dd($member->photo);
 
         return view('admin.members.show', compact('member'));
     }
@@ -313,8 +468,10 @@ class MemberController extends Controller
     public function get_member_name(Request $request)
     {
         abort_if(Gate::denies('member_show'), Response::HTTP_FORBIDDEN, '403 Forbidden');
-
+    
+        
         $data = [];
+        
         if (! $request->membershipNumber) {
             $data = 'Not Item Found!';
         } else {
@@ -322,7 +479,7 @@ class MemberController extends Controller
                 ->where('serving_officer_type', null)
                 ->with('dependents') // Eager load the "dependents" relationship
                 ->first();
-            $data['color'] = $data->membership_status && Member::STATUS_COLOR[$data->membership_status] ? Member::STATUS_COLOR[$data->membership_status] : 'none';
+            $data['color'] = $data?->membership_status && Member::STATUS_COLOR[$data?->membership_status] ? Member::STATUS_COLOR[$data?->membership_status] : 'none';
         }
 
         return response()->json(['memberInfo' => $data]);

@@ -9,14 +9,14 @@
         @can($viewGate)
             <a class="dropdown-item" href="{{ route('admin.' . $crudRoutePart . '.view-payment-receipt',['id' => $row->id]) }}">
                 <i style="margin-right:10px; " class="fa fa-eye fa-lg"></i>
-                {{ trans('cruds.paymentReceipts.view_payment_receipt') }}
+                {{ trans(tenant()->id.'/cruds.paymentReceipts.view_payment_receipt') }}
             </a>
         @endcan
         
         @can($downLoadGate)
             <a class="dropdown-item" href="{{ route('admin.' . $crudRoutePart . '.download-payment-receipt',['id' => $row->id]) }}">
                 <i style="margin-right:10px; " class="fa fa-file fa-lg"></i>
-                {{ trans('cruds.paymentReceipts.download_payment_receipt') }}
+                {{ trans(tenant()->id.'/cruds.paymentReceipts.download_payment_receipt') }}
             </a>
         @endcan
 

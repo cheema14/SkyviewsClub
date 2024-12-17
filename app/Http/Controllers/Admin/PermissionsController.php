@@ -15,6 +15,7 @@ class PermissionsController extends Controller
 {
     public function index()
     {
+       
         abort_if(Gate::denies('permission_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
         $permissions = Permission::all();

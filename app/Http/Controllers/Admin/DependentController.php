@@ -38,7 +38,7 @@ class DependentController extends Controller
                 $deleteGate = 'dependent_delete';
                 $crudRoutePart = 'dependents';
 
-                return view('partials.datatableDependentActions', compact(
+                return view('partials.'.tenant()->id.'.datatableDependentActions', compact(
                     'editGate',
                     'deleteGate',
                     'crudRoutePart',
@@ -101,13 +101,21 @@ class DependentController extends Controller
 
         $dependent = Dependent::create(array_merge($request->all(), ['member_id' => $member->id]));
 
-        if ($request->input('photo', false)) {
-            $dependent->addMedia(storage_path('tmp/uploads/'.basename($request->input('photo'))))->toMediaCollection('photo');
-        }
+        $tenant_id = tenant()->id;
 
-        if ($media = $request->input('ck-media', false)) {
-            Media::whereIn('id', $media)->update(['model_id' => $dependent->id]);
-        }
+        tenancy()->central(function () use ($dependent, $request,$tenant_id) {
+            
+            if ($request->input('photo', false)) {
+                $dependent->addMedia(storage_path('tenant'.$tenant_id.'/tmp/uploads/'.basename($request->input('photo'))))->toMediaCollection('photo','membersDependents');
+            }
+    
+            // if ($media = $request->input('ck-media', false)) {
+            //     Media::whereIn('id', $media)->update(['model_id' => $dependent->id]);
+            // }
+            
+        });
+
+        
 
         return redirect()->route('admin.members.index');
     }

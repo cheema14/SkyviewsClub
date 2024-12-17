@@ -70,6 +70,10 @@ class StoreSportsBillingRequest extends FormRequest
                 'string',
                 'nullable',
             ],
+            'pay_mode' => [
+                'required',
+                'string',
+            ],
             'gross_total' => [
                 'nullable',
                 'numeric',
@@ -82,9 +86,9 @@ class StoreSportsBillingRequest extends FormRequest
                 'min:-2147483648',
                 'max:2147483647',
             ],
-            'bank_charges' => [
-                'numeric',
-            ],
+            // 'bank_charges' => [
+            //     'numeric',
+            // ],
             'net_pay' => [
                 'numeric',
             ],

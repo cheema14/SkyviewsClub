@@ -23,3 +23,17 @@ Artisan::command('freeTables',function(){
     \App\Models\TableTop::query()->update(['status' => 'free']);
     $this->info('Table tops status updated to "free" for all rows.');
 })->purpose('Set the table tops to free to make orders');
+
+Artisan::command('empty:tables {tables*}', function ($tables) {
+    
+    DB::statement('SET FOREIGN_KEY_CHECKS=0');
+    
+    foreach ($tables as $table) {
+        \DB::table($table)->truncate();
+    }
+    
+
+    DB::statement('SET FOREIGN_KEY_CHECKS=1');
+    
+    $this->info('Tables truncated successfully.');
+})->describe('Truncate specified tables');

@@ -1,4 +1,4 @@
-@extends('layouts.admin')
+@extends('layouts.'.tenant()->id.'.admin')
 @section('content')
 @section('styles')
 <style>
@@ -22,34 +22,34 @@
     <div style="margin-bottom: 10px;" class="row">
         <div class="col-lg-12">
             <a class="btn btn-success" href="{{ route('admin.members.create') }}">
-                {{ trans('global.add') }} {{ trans('cruds.member.title_singular') }}
+                {{ trans(tenant()->id.'/global.add') }} {{ trans(tenant()->id.'/cruds.member.title_singular') }}
             </a>
             @can('csv_import')
                 <button class="btn btn-warning" data-toggle="modal" data-target="#csvImportModal">
-                    {{ trans('global.app_csvImport') }}
+                    {{ trans(tenant()->id.'/global.app_csvImport') }}
                 </button>
             @endcan
             @include('csvImport.modal', ['model' => 'Member', 'route' => 'admin.members.parseCsvImport'])
         </div>
     </div>
 @endcan -->
-@include('partials.flash_messages')
+@include('partials.'.tenant()->id.'.flash_messages')
 <div class="card">
     <div class="card-header">
         <div class="row align-items-center">
             <div class="col-sm-6">
                 <h4>
-                {{ trans('cruds.member.title_singular') }} {{ trans('global.list') }}
+                {{ trans(tenant()->id.'/cruds.member.title_singular') }} {{ trans(tenant()->id.'/global.list') }}
                 </h4>
             </div>
             @can('member_create')
             <div class="col-sm-6 ml-auto text-sm-right">
                 <a class="btn btn-info px-4 mr-2" href="{{ route('admin.members.create') }}">
-                {{ trans('global.add') }} {{ trans('cruds.member.title_singular') }}
+                {{ trans(tenant()->id.'/global.add') }} {{ trans(tenant()->id.'/cruds.member.title_singular') }}
                 </a>
                 @can('csv_import')
                     <button class="btn btn-outline-info" data-toggle="modal" data-target="#csvImportModal">
-                        {{ trans('global.app_csvImport') }}
+                        {{ trans(tenant()->id.'/global.app_csvImport') }}
                     </button>
                 @endcan
                 @include('csvImport.modal', ['model' => 'Member', 'route' => 'admin.members.parseCsvImport'])
@@ -63,34 +63,34 @@
             <thead>
                 <tr>
                     <th>
-                        {{ trans('cruds.member.fields.id') }}
+                        {{ trans(tenant()->id.'/cruds.member.fields.id') }}
                     </th>
                     <th>
-                        {{ trans('cruds.member.fields.name') }}
+                        {{ trans(tenant()->id.'/cruds.member.fields.name') }}
                     </th>
                     <th>
-                        {{ trans('cruds.member.fields.membership_no') }}
+                        {{ trans(tenant()->id.'/cruds.member.fields.membership_no') }}
                     </th>
                     <th>
-                        {{ trans('cruds.member.fields.cnic_no') }}
+                        {{ trans(tenant()->id.'/cruds.member.fields.cnic_no') }}
                     </th>
                     <th>
-                        {{ trans('cruds.member.fields.husband_father_name') }}
+                        {{ trans(tenant()->id.'/cruds.member.fields.husband_father_name') }}
                     </th>
                     <th>
-                        {{ trans('cruds.member.fields.arrears') }}
+                        {{ trans(tenant()->id.'/cruds.member.fields.arrears') }}
                     </th>
                     <th>
-                        {{ trans('cruds.member.fields.membership_status') }}
+                        {{ trans(tenant()->id.'/cruds.member.fields.membership_status') }}
                     </th>
                     <th>
-                        {{ trans('cruds.member.fields.membership_category') }}
+                        {{ trans(tenant()->id.'/cruds.member.fields.membership_category') }}
                     </th>
                     <th>
-                        {{ trans('cruds.member.fields.membership_type') }}
+                        {{ trans(tenant()->id.'/cruds.member.fields.membership_type') }}
                     </th>
                     <th>
-                        {{ trans('cruds.member.fields.cell_no') }}
+                        {{ trans(tenant()->id.'/cruds.member.fields.cell_no') }}
                     </th>
                     <th>
                         Actions
@@ -110,7 +110,7 @@
     $(function () {
         let dtButtons = $.extend(true, [], $.fn.dataTable.defaults.buttons)
         @can('member_delete')
-        let deleteButtonTrans = '{{ trans('global.datatables.delete') }}';
+        let deleteButtonTrans = '{{ trans(tenant()->id.'/global.datatables.delete') }}';
         let deleteButton = {
             text: deleteButtonTrans,
             url: "{{ route('admin.members.massDestroy') }}",
@@ -121,12 +121,12 @@
             });
 
             if (ids.length === 0) {
-                alert('{{ trans('global.datatables.zero_selected') }}')
+                alert('{{ trans(tenant()->id.'/global.datatables.zero_selected') }}')
 
                 return
             }
 
-            if (confirm('{{ trans('global.areYouSure') }}')) {
+            if (confirm('{{ trans(tenant()->id.'/global.areYouSure') }}')) {
                 $.ajax({
                 headers: {'x-csrf-token': _token},
                 method: 'POST',
@@ -140,7 +140,7 @@
         @endcan
 
         @can('dependent_list')
-            // let listButtonTrans = '{{ trans('cruds.dependent.fields.list_dependent') }}';
+            // let listButtonTrans = '{{ trans(tenant()->id.'/cruds.dependent.fields.list_dependent') }}';
             // let listButton = {
             //     text: listButtonTrans,
             //     url: "{{ route('admin.members.massDestroy') }}",
@@ -170,7 +170,7 @@
             { data: 'membership_category.name', name: 'membership_category.name' },
             { data: 'membership_type.name', name: 'membership_type.name' },
             { data: 'cell_no', name: 'cell_no' },
-            { data: 'actions', name: '{{ trans('global.actions') }}' }
+            { data: 'actions', name: '{{ trans(tenant()->id.'/global.actions') }}' }
             ],
             createdRow: (row, data, dataIndex, cells) => {
                 $(cells[6]).css('background-color', data.status_color)

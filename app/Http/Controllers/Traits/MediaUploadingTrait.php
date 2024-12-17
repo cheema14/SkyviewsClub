@@ -24,7 +24,7 @@ trait MediaUploadingTrait
                 ),
             ]);
         }
-
+        
         $path = storage_path('tmp/uploads');
 
         try {

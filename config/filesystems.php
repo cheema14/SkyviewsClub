@@ -55,6 +55,48 @@ return [
             'use_path_style_endpoint' => env('AWS_USE_PATH_STYLE_ENDPOINT', false),
             'throw' => false,
         ],
+        
+        'employees' => [
+            'driver' => 'local',
+            'root' => storage_path('app/public/employees'),
+            'url' => env('APP_URL').'/storage/employees',
+            'visibility' => 'public',
+        ],
+
+        'members' => [
+            'driver' => 'local',
+            'root' => storage_path('app/public/members'),
+            'url' => env('APP_URL').'/storage/members',
+            'visibility' => 'public',
+        ],
+
+        'membersDependents' => [
+            'driver' => 'local',
+            'root' => storage_path('app/public/member-dependents'),
+            'url' => env('APP_URL').'/storage/member-dependents',
+            'visibility' => 'public',
+        ],
+
+        'absentees' => [
+            'driver' => 'local',
+            'root' => storage_path('app/public/members/absentees'),
+            'url' => env('APP_URL').'/storage/members/absentees',
+            'visibility' => 'public',
+        ],
+
+        'signature' => [
+            'driver' => 'local',
+            'root' => storage_path('app/public/members/signature'),
+            'url' => env('APP_URL').'/storage/members/signature',
+            'visibility' => 'public',
+        ],
+
+        'cnic' => [
+            'driver' => 'local',
+            'root' => storage_path('app/public/members/cnic'),
+            'url' => env('APP_URL').'/storage/members/cnic',
+            'visibility' => 'public',
+        ],
 
     ],
 

@@ -1,10 +1,10 @@
-@extends('layouts.admin')
+@extends('layouts.'.tenant()->id.'.admin')
 @section('content')
 
 <div class="card">
     <div class="card-header">
         <h4>
-        {{ trans('global.show') }} {{ trans('cruds.order.title') }}
+        {{ trans(tenant()->id.'/global.show') }} {{ trans(tenant()->id.'/cruds.order.title') }}
         </h4>
     </div>
 
@@ -12,14 +12,14 @@
         <div class="form-group">
             <!-- <div class="form-group">
                 <a class="btn btn-default" href="{{ route('admin.orders.index') }}">
-                    {{ trans('global.back_to_list') }}
+                    {{ trans(tenant()->id.'/global.back_to_list') }}
                 </a>
             </div> -->
             <table class="table table-borderless table-striped">
                 <tbody>
                     <tr>
                         <th>
-                            {{ trans('cruds.order.fields.id') }}
+                            {{ trans(tenant()->id.'/cruds.order.fields.id') }}
                         </th>
                         <td>
                             {{ $order->id }}
@@ -27,7 +27,7 @@
                     </tr>
                     <tr>
                         <th>
-                            {{ trans('cruds.order.fields.user') }}
+                            {{ trans(tenant()->id.'/cruds.order.fields.user') }}
                         </th>
                         <td>
                             {{ $order->user->name ?? '' }}
@@ -35,7 +35,7 @@
                     </tr>
                     <tr>
                         <th>
-                            {{ trans('cruds.order.fields.member') }}
+                            {{ trans(tenant()->id.'/cruds.order.fields.member') }}
                         </th>
                         <td>
                             {{ $order->member->name ?? '' }}
@@ -43,7 +43,7 @@
                     </tr>
                     <tr>
                         <th>
-                            {{ trans('cruds.order.fields.status') }}
+                            {{ trans(tenant()->id.'/cruds.order.fields.status') }}
                         </th>
                         <td>
                             {{ App\Models\Order::STATUS_SELECT[$order->status] ?? '' }}
@@ -51,7 +51,7 @@
                     </tr>
                     <tr>
                         <th>
-                            {{ trans('cruds.order.fields.item_discount') }}
+                            {{ trans(tenant()->id.'/cruds.order.fields.item_discount') }}
                         </th>
                         <td>
                             {{ $order->item_discount }}
@@ -59,7 +59,7 @@
                     </tr>
                     <tr>
                         <th>
-                            {{ trans('cruds.order.fields.sub_total') }}
+                            {{ trans(tenant()->id.'/cruds.order.fields.sub_total') }}
                         </th>
                         <td>
                             {{ $order->sub_total }}
@@ -67,7 +67,7 @@
                     </tr>
                     <tr>
                         <th>
-                            {{ trans('cruds.order.fields.tax') }}
+                            {{ trans(tenant()->id.'/cruds.order.fields.tax') }}
                         </th>
                         <td>
                             {{ $order->tax }}
@@ -75,7 +75,7 @@
                     </tr>
                     <tr>
                         <th>
-                            {{ trans('cruds.order.fields.total') }}
+                            {{ trans(tenant()->id.'/cruds.order.fields.total') }}
                         </th>
                         <td>
                             {{ $order->total }}
@@ -83,7 +83,7 @@
                     </tr>
                     <tr>
                         <th>
-                            {{ trans('cruds.order.fields.promo') }}
+                            {{ trans(tenant()->id.'/cruds.order.fields.promo') }}
                         </th>
                         <td>
                             {{ $order->promo }}
@@ -91,7 +91,7 @@
                     </tr>
                     <tr>
                         <th>
-                            {{ trans('cruds.order.fields.discount') }}
+                            {{ trans(tenant()->id.'/cruds.order.fields.discount') }}
                         </th>
                         <td>
                             {{ $order->discount }}
@@ -99,7 +99,7 @@
                     </tr>
                     <tr>
                         <th>
-                            {{ trans('cruds.order.fields.grand_total') }}
+                            {{ trans(tenant()->id.'/cruds.order.fields.grand_total') }}
                         </th>
                         <td>
                             {{ $order->grand_total }}
@@ -107,7 +107,7 @@
                     </tr>
                     <tr>
                         <th>
-                            {{ trans('cruds.order.fields.item') }}
+                            {{ trans(tenant()->id.'/cruds.order.fields.item') }}
                         </th>
                         <td>
                             @foreach($order->items as $key => $item)
@@ -119,7 +119,7 @@
             </table>
             <!-- <div class="form-group">
                 <a class="btn btn-default" href="{{ route('admin.orders.index') }}">
-                    {{ trans('global.back_to_list') }}
+                    {{ trans(tenant()->id.'/global.back_to_list') }}
                 </a>
             </div> -->
         </div>
@@ -129,13 +129,13 @@
 {{-- <div class="card">
     <div class="card-header">
         <h4>
-        {{ trans('global.relatedData') }}
+        {{ trans(tenant()->id.'/global.relatedData') }}
         </h4>
     </div>
     <ul class="nav nav-tabs" role="tablist" id="relationship-tabs">
         <li class="nav-item">
             <a class="nav-link" href="#order_transactions" role="tab" data-toggle="tab">
-                {{ trans('cruds.transaction.title') }}
+                {{ trans(tenant()->id.'/cruds.transaction.title') }}
             </a>
         </li>
     </ul>

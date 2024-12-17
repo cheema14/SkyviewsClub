@@ -1,10 +1,10 @@
-@extends('layouts.admin')
+@extends('layouts.'.tenant()->id.'.admin')
 @section('content')
-<div class="content">
+<div class="content"> 
     <div class="page-title mb-4">
         <h1>Dashboard</h1>
-        <h6>Welcome to Pakistan Airforce Skyview</h6>
-    </div>
+        <h6>{{ trans(tenant()->id.'/global.project_title') }}</h6>
+    </div> 
     <div class="row">
         <div class="col-lg-4 col-md-4 col-sm-12">
             <div class="custom-icons-body-dashboard">
@@ -60,7 +60,7 @@
                         <tr>
                             @foreach($settings2['fields'] as $key => $value)
                             <th>
-                                {{ trans(sprintf('cruds.%s.fields.%s', $settings2['translation_key'] ?? 'pleaseUpdateWidget', $key)) }}
+                                {{ trans(sprintf(tenant()->id.'/cruds.%s.fields.%s', $settings2['translation_key'] ?? 'pleaseUpdateWidget', $key)) }}
                             </th>
                             @endforeach
                         </tr>

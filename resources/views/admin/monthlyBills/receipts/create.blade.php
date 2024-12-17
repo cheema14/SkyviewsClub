@@ -1,4 +1,4 @@
-@extends('layouts.admin')
+@extends('layouts.'.tenant()->id.'.admin')
 @section('content')
 @section('styles')
 <style>
@@ -11,7 +11,7 @@
 <div class="card">
     <div class="card-header">
         <h4>
-            {{ trans('cruds.paymentReceipts.title') }}
+            {{ trans(tenant()->id.'/cruds.paymentReceipts.title') }}
         </h4>
     </div>
 
@@ -20,51 +20,52 @@
         <div class="card-body">
             <div class="row">
                 <div class="form-group col-md-3">
-                    <label for="receipt_no">{{ trans('cruds.paymentReceipts.fields.receipt_no') }}</label>
-                    <input type="text" name="receipt_no" id="receipt_no" class="form-control" readonly value="mo-re-{{ $receiptNo }}">
+                    <label for="receipt_no">{{ trans(tenant()->id.'/cruds.paymentReceipts.fields.receipt_no') }}</label>
+                    <input type="text" name="receipt_no" id="receipt_no" class="form-control" readonly value="mo-re-{{ date('M') }}-{{ $receiptNo ?? 1 }}">
                 </div>
 
                 <div class="form-group col-md-3">
-                    <label for="receipt_date">{{ trans('cruds.paymentReceipts.fields.receipt_date') }}</label>
+                    <label for="receipt_date">{{ trans(tenant()->id.'/cruds.paymentReceipts.fields.receipt_date') }}</label>
                     <input type="text" name="receipt_date" id="receipt_date" class="form-control" readonly value="{{ now()->format('Y-m-d') }}">
                 </div>
 
                 <div class="form-group col-md-3">
-                    <label for="bill_type">{{ trans('cruds.paymentReceipts.fields.bill_type') }}</label>
+                    <label for="bill_type">{{ trans(tenant()->id.'/cruds.paymentReceipts.fields.bill_type') }}</label>
                     <input type="text" name="bill_type" id="bill_type" class="form-control" value="Monthly Bill" readonly>
                 </div>
 
                 <div class="form-group col-md-3">
-                    <label for="billing_month">{{ trans('cruds.paymentReceipts.fields.billing_month') }}</label>
-                    <input type="text" name="billing_month" id="billing_month" class="form-control" value="{{ now()->createFromFormat('Y-m-d', $billDetails->latestBill->bill_month)->format('F Y') }}" readonly>
+                    <label for="billing_month">{{ trans(tenant()->id.'/cruds.paymentReceipts.fields.billing_month') }}</label>
+                    <input type="text" name="billing_month" id="billing_month" class="form-control" value="{{ $billDetails->latestBill ? now()->createFromFormat('Y-m-d', $billDetails->latestBill?->bill_month)->format('F Y') : 'N/A' }}" readonly>
                 </div>
 
                 <div class="form-group col-md-4">
-                    <label for="invoice_number">{{ trans('cruds.paymentReceipts.fields.invoice_number') }}</label>
-                    <input type="text" name="invoice_number" id="invoice_number" class="form-control" value="mo-bi-inv-{{ $billDetails->latestBill->id }}" readonly>
+                    <label for="invoice_number">{{ trans(tenant()->id.'/cruds.paymentReceipts.fields.invoice_number') }}</label>
+                    <input type="text" name="invoice_number" id="invoice_number" class="form-control" value="mo-bi-inv-{{ date('M') }}-{{ $billDetails->latestBill?->id }}" readonly>
                 </div>
-
+                <input type="hidden" name="bill_id" value="{{ $billDetails->latestBill?->id }}" >
                 <div class="form-group col-md-4">
-                    <label for="invoice_amount">{{ trans('cruds.paymentReceipts.fields.invoice_amount') }}</label>
-                    <input type="text" name="invoice_amount" id="invoice_amount" class="form-control" value="{{ $billDetails->latestBill->total }}" readonly>
+                    <label for="invoice_amount">{{ trans(tenant()->id.'/cruds.paymentReceipts.fields.invoice_amount') }}</label>
+                    <input type="text" name="invoice_amount" id="invoice_amount" class="form-control" value="{{ $billDetails->latestBill?->net_balance_payable + $payment_receipts_bill_types?->received_amount }}" readonly>
                 </div>
                 
                 <div class="form-group col-md-4">
-                    <label for="total_payable">{{ trans('cruds.paymentReceipts.fields.total_payable') }}</label>
+                    <label for="total_payable">{{ trans(tenant()->id.'/cruds.paymentReceipts.fields.total_payable') }}</label>
                     <input type="text" name="total_payable" id="total_payable" class="form-control" value="{{ $billDetails->arrears }}" readonly>
+                    <p style="color:{{ $color }}">{{ $arrear_message }}</p>
                 </div>
                 
                 <div class="form-group col-md-4">
-                    <label for="received_amount">{{ trans('cruds.paymentReceipts.fields.received_amount') }}</label>
+                    <label for="received_amount">{{ trans(tenant()->id.'/cruds.paymentReceipts.fields.received_amount') }}</label>
                     <input type="text" name="received_amount" id="received_amount" class="form-control" value="">
                 </div>
 
                 <div class="form-group col-md-4">
-                    <label for="pay_mode">{{ trans('cruds.paymentReceipts.fields.pay_mode') }}</label>
+                    <label for="pay_mode">{{ trans(tenant()->id.'/cruds.paymentReceipts.fields.pay_mode') }}</label>
                     <select class="form-control {{ $errors->has('pay_mode') ? 'is-invalid' : '' }}" name="pay_mode" id="pay_mode">
-                        <option value disabled {{ old('pay_mode', null) === null ? 'selected' : '' }}>{{ trans('global.pleaseSelect') }}</option>
+                        <option value disabled {{ old('pay_mode', null) === null ? 'selected' : '' }}>{{ trans(tenant()->id.'/global.pleaseSelect') }}</option>
                             @foreach(App\Models\PaymentReceipt::PAY_MODE as $key => $label)
-                                @if ($key != 'Transfer')
+                                @if ($key != 'Transfer' && $key != 'Advance' && $key != 'Arrear')
                                     <option value="{{ $key }}" {{ old('pay_mode', '') === (string) $key ? 'selected' : '' }}>{{ $label }}</option>
                                 @endif
                             @endforeach
@@ -74,14 +75,14 @@
                 {{-- Cheque details when pay mode is cheque --}}
                 
                 <div class="form-group col-md-4 cheque_div">
-                    <label for="cheque_number">{{ trans('cruds.paymentReceipts.fields.cheque_number') }}</label>
+                    <label for="cheque_number">{{ trans(tenant()->id.'/cruds.paymentReceipts.fields.cheque_number') }}</label>
                     <input type="text" name="cheque_number" id="cheque_number" class="form-control" value="">
                 </div>
 
                 <div class="form-group col-md-4 cheque_div">
-                    <label for="bank_name">{{ trans('cruds.paymentReceipts.fields.bank_name') }}</label>
+                    <label for="bank_name">{{ trans(tenant()->id.'/cruds.paymentReceipts.fields.bank_name') }}</label>
                     <select class="form-control {{ $errors->has('bank_name') ? 'is-invalid' : '' }}" name="bank_name" id="bank_name">
-                        <option value disabled {{ old('bank_name', null) === null ? 'selected' : '' }}>{{ trans('global.pleaseSelect') }}</option>
+                        <option value disabled {{ old('bank_name', null) === null ? 'selected' : '' }}>{{ trans(tenant()->id.'/global.pleaseSelect') }}</option>
                             @foreach(App\Models\PaymentReceipt::BANK_NAMES as $key => $label)
                                 @if ($key != 'Transfer')
                                     <option value="{{ $key }}" {{ old('bank_name', '') === (string) $key ? 'selected' : '' }}>{{ $label }}</option>
@@ -91,12 +92,12 @@
                 </div>
 
                 <div class="form-group col-md-4 cheque_div">
-                    <label for="cheque_date">{{ trans('cruds.paymentReceipts.fields.cheque_date') }}</label>
-                    <input type="text" name="cheque_date" id="cheque_date" class="form-control cheque_date" value="">
+                    <label for="cheque_date">{{ trans(tenant()->id.'/cruds.paymentReceipts.fields.cheque_date') }}</label>
+                    <input type="text" name="cheque_date" id="cheque_date" class="form-control cheque_date">
                 </div>
 
                 <div class="form-group col-md-4 cheque_div">
-                    <label for="cheque_photo">{{ trans('cruds.paymentReceipts.fields.cheque_photo') }}</label>
+                    <label for="cheque_photo">{{ trans(tenant()->id.'/cruds.paymentReceipts.fields.cheque_photo') }}</label>
                         <div class="needsclick dropzone {{ $errors->has('cheque_photo') ? 'is-invalid' : '' }}" id="cheque-dropzone">
                         </div>
                         @if($errors->has('cheque_photo'))
@@ -104,20 +105,20 @@
                                 {{ $errors->first('cheque_photo') }}
                             </div>
                         @endif
-                        <span class="help-block">{{ trans('cruds.paymentReceipts.fields.cheque_photo_helper') }}</span>
+                        <span class="help-block">{{ trans(tenant()->id.'/cruds.paymentReceipts.fields.cheque_photo_helper') }}</span>
                 </div>
 
                 {{-- Deposit details when pay mode is deposit/online etc --}}
 
                 <div class="form-group col-md-4 deposit_div">
-                    <label for="deposit_slip_number">{{ trans('cruds.paymentReceipts.fields.deposit_slip_number') }}</label>
+                    <label for="deposit_slip_number">{{ trans(tenant()->id.'/cruds.paymentReceipts.fields.deposit_slip_number') }}</label>
                     <input type="text" name="deposit_slip_number" id="deposit_slip_number" class="form-control" value="">
                 </div>
 
                 <div class="form-group col-md-4 deposit_div">
-                    <label for="deposit_bank_name">{{ trans('cruds.paymentReceipts.fields.deposit_bank_name') }}</label>
+                    <label for="deposit_bank_name">{{ trans(tenant()->id.'/cruds.paymentReceipts.fields.deposit_bank_name') }}</label>
                     <select class="form-control {{ $errors->has('deposit_bank_name') ? 'is-invalid' : '' }}" name="deposit_bank_name" id="deposit_bank_name">
-                        <option value disabled {{ old('bank_name', null) === null ? 'selected' : '' }}>{{ trans('global.pleaseSelect') }}</option>
+                        <option value disabled {{ old('bank_name', null) === null ? 'selected' : '' }}>{{ trans(tenant()->id.'/global.pleaseSelect') }}</option>
                             @foreach(App\Models\PaymentReceipt::BANK_NAMES as $key => $label)
                                 @if ($key != 'Transfer')
                                     <option value="{{ $key }}" {{ old('deposit_bank_name', '') === (string) $key ? 'selected' : '' }}>{{ $label }}</option>
@@ -127,12 +128,12 @@
                 </div>
 
                 <div class="form-group col-md-4 deposit_div">
-                    <label for="deposit_date">{{ trans('cruds.paymentReceipts.fields.deposit_date') }}</label>
+                    <label for="deposit_date">{{ trans(tenant()->id.'/cruds.paymentReceipts.fields.deposit_date') }}</label>
                     <input type="text" name="deposit_date" id="deposit_date" class="form-control deposit_date" value="">
                 </div>
 
                 <div class="form-group col-md-4 deposit_div">
-                    <label for="deposit_photo">{{ trans('cruds.paymentReceipts.fields.deposit_photo') }}</label>
+                    <label for="deposit_photo">{{ trans(tenant()->id.'/cruds.paymentReceipts.fields.deposit_photo') }}</label>
                         <div class="needsclick dropzone {{ $errors->has('deposit_photo') ? 'is-invalid' : '' }}" id="deposit-dropzone">
                         </div>
                         @if($errors->has('deposit_photo'))
@@ -140,14 +141,14 @@
                                 {{ $errors->first('deposit_photo') }}
                             </div>
                         @endif
-                        <span class="help-block">{{ trans('cruds.paymentReceipts.fields.deposit_photo_helper') }}</span>
+                        <span class="help-block">{{ trans(tenant()->id.'/cruds.paymentReceipts.fields.deposit_photo_helper') }}</span>
                 </div>
 
 
 
                 <div class="form-group col-md-6">
                     <button class="btn btn-success px-5 submit_form" type="submit">
-                        {{ trans('global.save') }}
+                        {{ trans(tenant()->id.'/global.save') }}
                     </button>
                 </div>
 

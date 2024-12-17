@@ -6,10 +6,11 @@ use DateTimeInterface;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Stancl\Tenancy\Database\Concerns\BelongsToTenant;
 
 class StockIssueItem extends Model
 {
-    use SoftDeletes, HasFactory;
+    use SoftDeletes, HasFactory,BelongsToTenant;
 
     public $table = 'stock_issue_items';
 

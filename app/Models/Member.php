@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\PaymentReceipt;
 use Carbon\Carbon;
 use DateTimeInterface;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -11,10 +12,12 @@ use Laravel\Sanctum\HasApiTokens;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
+use Stancl\Tenancy\Database\Concerns\BelongsToTenant;
+use Storage;
 
 class Member extends Authenticatable implements HasMedia
 {
-    use SoftDeletes, InteractsWithMedia, HasFactory, HasApiTokens;
+    use SoftDeletes, InteractsWithMedia, HasFactory, HasApiTokens, BelongsToTenant;
 
     public $table = 'members';
 
@@ -30,6 +33,7 @@ class Member extends Authenticatable implements HasMedia
         'Sleeping' => '#00BFFF',
         'Cancelled' => '#FFFF99',
         'Blocked' => '#ff040463',
+        'Absentees' => '#04ffff',
     ];
 
     public const GENDER_SELECT = [
@@ -105,6 +109,7 @@ class Member extends Authenticatable implements HasMedia
         'BPS-17' => 'BPS-17',
         'BPS-18' => 'BPS-18',
         'BPS-19' => 'BPS-19',
+        'NA' => 'NA',
     ];
 
     public const MEMBERSHIP_STATUS_SELECT = [
@@ -112,6 +117,17 @@ class Member extends Authenticatable implements HasMedia
         'Sleeping' => 'Sleeping',
         'Cancelled' => 'Cancelled',
         'Blocked' => 'Blocked',
+        'Absentees' => 'Absentees',
+    ];
+
+    public const VERIFIED_BY = [
+        'VICEPRESIDENT' => 'VICE PRESIDENT',
+        'AOC' => 'AOC',
+    ];
+
+    public const APPROVED_BY = [
+        'VICEPRESIDENT' => 'VICE PRESIDENT',
+        'AOC' => 'AOC',
     ];
 
     protected $fillable = [
@@ -149,12 +165,19 @@ class Member extends Authenticatable implements HasMedia
         'monthly_type',
         'monthly_subscription_revised',
         'arrears',
+        'previous_paid_arrears',
         'member_age',
         'payment_method',
         'organization',
         'member_security_fee',
         'is_non_member',
         'serving_officer_type',
+        'no_of_months',
+        'business_name',
+        'business_information',
+        'verified_by',
+        'approved_by',
+        'discount_on_membership_fee',
     ];
 
     protected function serializeDate(DateTimeInterface $date)
@@ -166,7 +189,7 @@ class Member extends Authenticatable implements HasMedia
     {
         $this->addMediaConversion('thumb')->fit('crop', 50, 50);
         $this->addMediaConversion('preview')->fit('crop', 300, 300);
-        // $this->addMediaConversion('profile')->fit('crop', 300, 300);
+        //$this->addMediaConversion('profile')->fit('crop', 300, 300);
     }
 
     public function memberOrders()
@@ -189,10 +212,29 @@ class Member extends Authenticatable implements HasMedia
         return $this->belongsTo(Department::class, 'department_id');
     }
 
+    // public function getPhotoAttribute()
+    // {
+    //     $mediaItem = $this->getFirstMedia('photo');
+        
+    //     dd(tenant()->domains->first()->pluck('domain'));
+    //     if ($mediaItem) {
+    //         // Check if the request is on a tenant or central domain
+    //         if(request()->getHost() === config('tenancy.central_domain')) {
+    //             $url = config('app.url') . "/storage/members/{$mediaItem->id}/{$mediaItem->file_name}";
+    //         } else if(request()->getHost() === tenant())
+    //         $url = request()->getHost() === config('tenancy.central_domain')
+    //             ? config('app.url') . "/storage/members/{$mediaItem->id}/{$mediaItem->file_name}"
+    //             : config('tenancy.tenant_base_url') . "/storage/members/{$mediaItem->id}/{$mediaItem->file_name}";
+    //             return $url;
+    //     }
+    //     return null;
+    // }
+
     public function getPhotoAttribute()
     {
-
         $file = $this->getMedia('photo')?->last();
+        // dd(Storage::disk('employees')->url($file));
+
         if ($file) {
             $file->url = $file->getUrl();
             $file->thumbnail = $file->getUrl('thumb');
@@ -229,6 +271,7 @@ class Member extends Authenticatable implements HasMedia
         return $file;
     }
 
+
     public function getDateOfBirthAttribute($value)
     {
         return $value ? Carbon::parse($value)->format(config('panel.date_format')) : null;
@@ -236,7 +279,8 @@ class Member extends Authenticatable implements HasMedia
 
     public function setDateOfBirthAttribute($value)
     {
-        $this->attributes['date_of_birth'] = $value ? Carbon::createFromFormat(config('panel.birth_date_format'), $value)->format('Y-m-d') : null;
+        // dd($value);
+        $this->attributes['date_of_birth'] = $value ? Carbon::createFromFormat(config('panel.date_format'), $value)->format('Y-m-d') : null;
     }
 
     public function membership_category()
@@ -247,6 +291,22 @@ class Member extends Authenticatable implements HasMedia
     public function membership_type()
     {
         return $this->belongsTo(MembershipType::class, 'membership_type_id');
+    }
+
+    public function getMonthlySubscriptionAttribute()
+    {
+        // Get the membership type monthly fee
+        $monthly_fee = $this->membership_type ? $this->membership_type->monthly_fee : 100;
+
+        // Check if the member has a discount
+        if ($this->discount_on_membership_fee) {
+            $discount_percentage = $this->discount_on_membership_fee;
+            $discount_amount = $monthly_fee * ($discount_percentage / 100);
+            $monthly_fee -= $discount_amount;
+        }
+
+        // Subtract the fixed amount (100)
+        return $monthly_fee;
     }
 
     public function getDateOfMembershipAttribute($value)
@@ -314,12 +374,74 @@ class Member extends Authenticatable implements HasMedia
     }
 
     public function payments(){
-        return $this->hasMany(PaymentReceipt::class,'member_id');
+        return $this->hasMany(PaymentReceipt::class,'member_id')->where('pay_mode',PaymentReceipt::PAY_MODE['Cash'])->where('billing_section_new',NULL);
+    }
+
+    public function latestPayments()
+    {
+        // return $this->hasOne(PaymentReceipt::class)
+        // ->whereHas('bill', function ($query) {
+        //     $query->where('billing_month', '<', now()->startOfMonth()->format('F Y'));
+        // })
+        // ->latest();
+        return $this->hasOne(PaymentReceipt::class)->where('billing_month', '<', now()->startOfMonth()->format('F Y'))->latest();
     }
 
     public function getSumReceivedAmountAttribute()
     {
         // 
+
+    }
+
+    public function discountedMembershipFees(){
+        return $this->hasOne(DiscountedMembershipFee::class,'member_id');
+    }
+
+    // Fetch All arrears and latest too
+    public function monthlyBills()
+    {
+        return $this->hasMany(MonthlyBill::class,'membership_no','membership_no');
+    }
+
+    public function latestMonthlyBill()
+    {
+        return $this->hasOne(MonthlyBill::class,'membership_no','membership_no')->latestOfMany();
+    }
+
+    public function paymentReceipts()
+    {
+        return $this->hasMany(PaymentReceipt::class, 'member_id', 'id');
+    }
+
+    public function caddy_payment($start_date,$end_date,$billing_section,$member_id){
+        return $this->hasOne(PaymentReceipt::class)
+                ->whereIn('billing_section_new', PaymentReceipt::BILLING_SECTION[$billing_section])
+                ->where('billing_section',NULL)
+                ->where('member_id','=',$member_id)
+                ->whereBetween('created_at',[$start_date,$end_date])->pluck('received_amount');
+    }
+    
+    public function fetchReceiptsBySection($start_date, $end_date, $billing_section, $member_id)
+    {
+        return $this->paymentReceipts()
+                    ->whereIn('billing_section_new', [PaymentReceipt::BILLING_SECTION[$billing_section]])
+                    ->where('bill_type', NULL)
+                    ->where('member_id', $member_id)
+                    ->whereBetween('created_at', [$start_date, $end_date])
+                    ->get();
+    }
+
+    // For Pcom tenant - tenant()->id == 'pcom'
+    public function lastMonthCreditOnlyBookingTransactions()
+    {
+        $lastMonthStart = Carbon::now()->subMonth()->startOfMonth();
+        $lastMonthEnd = Carbon::now()->subMonth()->endOfMonth();
+        
+        
+        return $this->hasManyThrough(Transaction::class, RoomBooking::class,'room_bookings_member_id','booking_id')
+        ->where('transactions.status', 'Success')
+        ->where('transactions.type', 'Credit')
+        ->whereBetween('transactions.created_at', [$lastMonthStart, $lastMonthEnd]);
 
     }
 }

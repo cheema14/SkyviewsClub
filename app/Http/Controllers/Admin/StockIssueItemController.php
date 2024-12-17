@@ -34,7 +34,7 @@ class StockIssueItemController extends Controller
                 $deleteGate    = 'stock_issue_item_delete';
                 $crudRoutePart = 'stock-issue-items';
 
-                return view('partials.datatablesActions', compact(
+                return view('partials.'.tenant()->id.'.datatablesActions', compact(
                     'viewGate',
                     'editGate',
                     'deleteGate',
@@ -77,9 +77,9 @@ class StockIssueItemController extends Controller
 
         abort_if(Gate::denies('stock_issue_item_create'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        $items = StoreItem::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
+        $items = StoreItem::pluck('name', 'id')->prepend(trans(tenant()->id.'/global.pleaseSelect'), '');
 
-        $units = Unit::pluck('type', 'id')->prepend(trans('global.pleaseSelect'), '');
+        $units = Unit::pluck('type', 'id')->prepend(trans(tenant()->id.'/global.pleaseSelect'), '');
 
         $stock_issues  = StockIssue::all();
 
@@ -97,9 +97,9 @@ class StockIssueItemController extends Controller
     {
         abort_if(Gate::denies('stock_issue_item_edit'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        $items = StoreItem::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
+        $items = StoreItem::pluck('name', 'id')->prepend(trans(tenant()->id.'/global.pleaseSelect'), '');
 
-        $units = Unit::pluck('type', 'id')->prepend(trans('global.pleaseSelect'), '');
+        $units = Unit::pluck('type', 'id')->prepend(trans(tenant()->id.'/global.pleaseSelect'), '');
 
         $stockIssueItem->load('item', 'unit');
 

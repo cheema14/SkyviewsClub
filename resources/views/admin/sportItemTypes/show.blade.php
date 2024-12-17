@@ -1,16 +1,16 @@
-@extends('layouts.admin')
+@extends('layouts.'.tenant()->id.'.admin')
 @section('content')
 
 <div class="card">
     <div class="card-header">
-        {{ trans('global.show') }} {{ trans('cruds.sportItemType.title') }}
+        {{ trans(tenant()->id.'/global.show') }} {{ trans(tenant()->id.'/cruds.sportItemType.title') }}
     </div>
 
     <div class="card-body">
         <div class="form-group">
             <div class="form-group">
                 <a class="btn btn-default" href="{{ route('admin.sport-item-types.index') }}">
-                    {{ trans('global.back_to_list') }}
+                    {{ trans(tenant()->id.'/global.back_to_list') }}
                 </a>
             </div>
 
@@ -19,7 +19,7 @@
                 <tbody>
                     <tr>
                         <th>
-                            {{ trans('cruds.sportItemType.fields.id') }}
+                            {{ trans(tenant()->id.'/cruds.sportItemType.fields.id') }}
                         </th>
                         <td>
                             {{ $sportItemType->id }}
@@ -27,7 +27,7 @@
                     </tr>
                     <tr>
                         <th>
-                            {{ trans('cruds.sportItemType.fields.item_type') }}
+                            {{ trans(tenant()->id.'/cruds.sportItemType.fields.item_type') }}
                         </th>
                         <td>
                             {{ $sportItemType->item_type }}
@@ -35,7 +35,7 @@
                     </tr>
                     <tr>
                         <th>
-                            {{ trans('cruds.sportItemType.fields.division') }}
+                            {{ trans(tenant()->id.'/cruds.sportItemType.fields.division') }}
                         </th>
                         <td>
                             {{ $sportItemType->sportsDivision->division ?? '' }}
@@ -45,7 +45,7 @@
             </table>
             <div class="form-group">
                 <a class="btn btn-default" href="{{ route('admin.sport-item-types.index') }}">
-                    {{ trans('global.back_to_list') }}
+                    {{ trans(tenant()->id.'/global.back_to_list') }}
                 </a>
             </div>
         </div>

@@ -1,18 +1,18 @@
-@extends('layouts.admin')
+@extends('layouts.'.tenant()->id.'.admin')
 @section('content')
 @can('sport_item_name_create')
     <div style="margin-bottom: 10px;" class="row">
         <div class="col-lg-12">
             <a class="btn btn-success" href="{{ route('admin.sport-item-names.create') }}">
-                {{ trans('global.add') }} {{ trans('cruds.sportItemName.title_singular') }}
+                {{ trans(tenant()->id.'/global.add') }} {{ trans(tenant()->id.'/cruds.sportItemName.title_singular') }}
             </a>
         </div>
     </div>
 @endcan
-@include('partials.flash_messages')
+@include('partials.'.tenant()->id.'.flash_messages')
 <div class="card">
     <div class="card-header">
-        {{ trans('cruds.sportItemName.title_singular') }} {{ trans('global.list') }}
+        {{ trans(tenant()->id.'/cruds.sportItemName.title_singular') }} {{ trans(tenant()->id.'/global.list') }}
     </div>
 
     <div class="card-body">
@@ -24,22 +24,22 @@
 
                         </th> --}}
                         <th>
-                            {{ trans('cruds.sportItemName.fields.id') }}
+                            {{ trans(tenant()->id.'/cruds.sportItemName.fields.id') }}
                         </th>
                         <th>
-                            {{ trans('cruds.sportItemName.fields.item_name') }}
+                            {{ trans(tenant()->id.'/cruds.sportItemName.fields.item_name') }}
                         </th>
                         <th>
-                            {{ trans('cruds.sportItemName.fields.item_class') }}
+                            {{ trans(tenant()->id.'/cruds.sportItemName.fields.item_class') }}
                         </th>
                         <th>
-                            {{ trans('cruds.sportItemName.fields.item_rate') }}
+                            {{ trans(tenant()->id.'/cruds.sportItemName.fields.item_rate') }}
                         </th>
                         <th>
-                            {{ trans('cruds.sportItemName.fields.unit') }}
+                            {{ trans(tenant()->id.'/cruds.sportItemName.fields.unit') }}
                         </th>
                         <th>
-                            {{ trans('global.actions') }}
+                            {{ trans(tenant()->id.'/global.actions') }}
                         </th>
                     </tr>
                 </thead>
@@ -67,21 +67,21 @@
                             <td>
                                 @can('sport_item_name_show')
                                     <a class="btn btn-xs btn-primary" href="{{ route('admin.sport-item-names.show', $sportItemName->id) }}">
-                                        {{ trans('global.view') }}
+                                        {{ trans(tenant()->id.'/global.view') }}
                                     </a>
                                 @endcan
 
                                 @can('sport_item_name_edit')
                                     <a class="btn btn-xs btn-info" href="{{ route('admin.sport-item-names.edit', $sportItemName->id) }}">
-                                        {{ trans('global.edit') }}
+                                        {{ trans(tenant()->id.'/global.edit') }}
                                     </a>
                                 @endcan
 
                                 @can('sport_item_name_delete')
-                                    <form action="{{ route('admin.sport-item-names.destroy', $sportItemName->id) }}" method="POST" onsubmit="return confirm('{{ trans('global.areYouSure') }}');" style="display: inline-block;">
+                                    <form action="{{ route('admin.sport-item-names.destroy', $sportItemName->id) }}" method="POST" onsubmit="return confirm('{{ trans(tenant()->id.'/global.areYouSure') }}');" style="display: inline-block;">
                                         <input type="hidden" name="_method" value="DELETE">
                                         <input type="hidden" name="_token" value="{{ csrf_token() }}">
-                                        <input type="submit" class="btn btn-xs btn-danger" value="{{ trans('global.delete') }}">
+                                        <input type="submit" class="btn btn-xs btn-danger" value="{{ trans(tenant()->id.'/global.delete') }}">
                                     </form>
                                 @endcan
 
@@ -104,7 +104,7 @@
     $(function () {
   let dtButtons = $.extend(true, [], $.fn.dataTable.defaults.buttons)
 @can('sport_item_name_delete')
-  let deleteButtonTrans = '{{ trans('global.datatables.delete') }}'
+  let deleteButtonTrans = '{{ trans(tenant()->id.'/global.datatables.delete') }}'
   let deleteButton = {
     text: deleteButtonTrans,
     url: "{{ route('admin.sport-item-names.massDestroy') }}",
@@ -115,12 +115,12 @@
       });
 
       if (ids.length === 0) {
-        alert('{{ trans('global.datatables.zero_selected') }}')
+        alert('{{ trans(tenant()->id.'/global.datatables.zero_selected') }}')
 
         return
       }
 
-      if (confirm('{{ trans('global.areYouSure') }}')) {
+      if (confirm('{{ trans(tenant()->id.'/global.areYouSure') }}')) {
         $.ajax({
           headers: {'x-csrf-token': _token},
           method: 'POST',

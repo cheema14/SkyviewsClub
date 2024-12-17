@@ -10,10 +10,11 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
+use Stancl\Tenancy\Database\Concerns\BelongsToTenant;
 
 class PaymentReceipt extends Model implements HasMedia
 {
-    use  InteractsWithMedia, HasFactory;
+    use  InteractsWithMedia, HasFactory, BelongsToTenant;
 
     public $table = 'payment_receipts';
 
@@ -24,9 +25,11 @@ class PaymentReceipt extends Model implements HasMedia
 
     public const PAY_MODE = [
         'Cash' => 'Cash',
-        'OnlineTransfer' => 'Online Transfer',
+        'Online' => 'Online',
         'Transfer' => 'Transfer',
         'Cheque' => 'Cheque',
+        'Advance' => 'Advance',
+        'Arrear' => 'Arrear',
     ];
 
     public const BANK_NAMES = [
@@ -55,6 +58,25 @@ class PaymentReceipt extends Model implements HasMedia
         'ZaraiTaraqiati' => 'Zarai Taraqiati Bank Limited',
     ];
 
+    public const BILLING_SECTION = [
+        'Card' => 'Card',
+        'Locker' => 'Locker',
+        'Others' => 'Others',
+        'Restaurant' => 'Restaurant',
+        'Snooker' => 'Snooker',
+        'Proshop' => 'Proshop',
+        'Practice' => 'Practice',
+        'GolfSimulator' => 'GolfSimulator',
+        'GolfLocker' => 'GolfLocker',
+        'GolfCourse' => 'GolfCourse',
+        'GolfCartFee' => 'GolfCartFee',
+        'GymSubscription' => 'GymSubscription',
+        'SwimmingSubscription' => 'SwimmingSubscription',
+        'Tennischarges' => 'Tennischarges',
+        'Billboardcharges' => 'Billboardcharges',
+
+    ];
+
     protected $fillable = [
         'receipt_no',
         'receipt_date',
@@ -76,6 +98,9 @@ class PaymentReceipt extends Model implements HasMedia
         'created_at',
         'updated_at',
         'deleted_at',
+        'billing_section',
+        'billing_section_new',
+        'billing_section_other',
     ];
 
     protected function serializeDate(DateTimeInterface $date)
@@ -118,8 +143,8 @@ class PaymentReceipt extends Model implements HasMedia
     }
 
     public function setChequeDateAttribute($value)
-    {
-        $this->attributes['cheque_date'] = $value ? Carbon::createFromFormat(config('panel.birth_date_format'), $value)->format('Y-m-d') : null;
+    {        
+        $this->attributes['cheque_date'] = $value ? Carbon::createFromFormat(config('panel.cheque_date'), $value)->format('Y-m-d') : null;
     }
 
     public function getChequeDateAttribute($value)
@@ -129,7 +154,7 @@ class PaymentReceipt extends Model implements HasMedia
 
     public function setDepositDateAttribute($value)
     {
-        $this->attributes['deposit_date'] = $value ? Carbon::createFromFormat(config('panel.birth_date_format'), $value)->format('Y-m-d') : null;
+        $this->attributes['deposit_date'] = $value ? Carbon::createFromFormat(config('panel.cheque_date'), $value)->format('Y-m-d') : null;
     }
 
     public function getDepositDateAttribute($value)

@@ -60,6 +60,18 @@ class PaymentHistoryController extends Controller
                 return '<a class="btn btn-success" target="_blank" href="'.route("admin.paymentHistory.view-member-payment-history",['billing_month' => $row->billing_month,'member_id'=>$row->member_id]).'"><i style="margin-right:10px; " class="fa fa-edit fa-lg"></i>View History</a>';
             });
 
+            // $table->editColumn('actions', function ($row) {
+            //     // dd($row);
+            //     if (!empty($row->billing_month)) {
+            //         $billingMonth = urlencode($row->billing_month); // URL encode the billing month
+            //         return '<a class="btn btn-success" target="_blank" href="'.route("admin.paymentHistory.view-member-payment-history", ['billing_month' => $billingMonth, 'member_id' => $row->member_id]).'">
+            //                 <i style="margin-right:10px;" class="fa fa-edit fa-lg"></i>View History</a>';
+            //     } else {
+            //         // Handle when billing_month is null or empty, either by disabling the link or showing a message
+            //         return '<button class="btn btn-secondary" disabled><i style="margin-right:10px;" class="fa fa-ban fa-lg"></i>No History Available</button>';
+            //     }
+            // });
+
 
             $table->rawColumns(['actions']);
 
@@ -70,10 +82,8 @@ class PaymentHistoryController extends Controller
     }
 
     public function view_member_payment_history(Request $request,$billingMonth,$member_id){
+        
         $billingMonth = str_replace('-',' ',$billingMonth);
-        
-        // dd($request->all,$billingMonth,$member_id);
-        
         $paymentHistory = PaymentReceipt::with('member')
                             ->where('billing_month',$billingMonth)->get();
         $memberData = collect($paymentHistory->pluck('member')->first());

@@ -2,15 +2,16 @@
 
 namespace App\Models;
 
-use DateTimeInterface;
 use App\Models\MenuItemCategory;
+use DateTimeInterface;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Stancl\Tenancy\Database\Concerns\BelongsToTenant;
 
 class Menu extends Model
 {
-    use SoftDeletes, HasFactory;
+    use SoftDeletes, HasFactory, BelongsToTenant;
 
     public $table = 'menus';
 
@@ -26,6 +27,7 @@ class Menu extends Model
         'created_at',
         'updated_at',
         'deleted_at',
+        'has_discount',
     ];
 
     protected function serializeDate(DateTimeInterface $date)
@@ -40,6 +42,11 @@ class Menu extends Model
 
     public function menuCategories(){
         return $this->belongsToMany(MenuItemCategory::class);
+    }
+
+    public function roles()
+    {
+        return $this->belongsToMany(Role::class,'menu_role');
     }
 
 }

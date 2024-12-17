@@ -1,27 +1,27 @@
-@extends('layouts.admin')
+@extends('layouts.'.tenant()->id.'.admin')
 @section('content')
 <!-- @can('table_top_create')
     <div style="margin-bottom: 10px;" class="row">
         <div class="col-lg-12">
             <a class="btn btn-success" href="{{ route('admin.table-tops.create') }}">
-                {{ trans('global.add') }} {{ trans('cruds.tableTop.title_singular') }}
+                {{ trans(tenant()->id.'/global.add') }} {{ trans(tenant()->id.'/cruds.tableTop.title_singular') }}
             </a>
         </div>
     </div>
 @endcan -->
-@include('partials.flash_messages')
+@include('partials.'.tenant()->id.'.flash_messages')
 <div class="card">
     <div class="card-header">
         <div class="row align-items-center">
             <div class="col-sm-6">
                 <h4>
-                    {{ trans('cruds.tableTop.title_singular') }} {{ trans('global.list') }}
+                    {{ trans(tenant()->id.'/cruds.tableTop.title_singular') }} {{ trans(tenant()->id.'/global.list') }}
                 </h4>
             </div>
             @can('table_top_create')
             <div class="col-sm-6 ml-auto text-sm-right">
                 <a class="btn btn-info px-4" href="{{ route('admin.table-tops.create') }}">
-                {{ trans('global.add') }} {{ trans('cruds.tableTop.title_singular') }}
+                {{ trans(tenant()->id.'/global.add') }} {{ trans(tenant()->id.'/cruds.tableTop.title_singular') }}
                 </a>
             </div>
             @endcan
@@ -36,16 +36,16 @@
 
                     </th> --}}
                     <th>
-                        {{ trans('cruds.tableTop.fields.id') }}
+                        {{ trans(tenant()->id.'/cruds.tableTop.fields.id') }}
                     </th>
                     <th>
-                        {{ trans('cruds.tableTop.fields.code') }}
+                        {{ trans(tenant()->id.'/cruds.tableTop.fields.code') }}
                     </th>
                     <th>
-                        {{ trans('cruds.tableTop.fields.capacity') }}
+                        {{ trans(tenant()->id.'/cruds.tableTop.fields.capacity') }}
                     </th>
                     <th>
-                        {{ trans('cruds.tableTop.fields.status') }}
+                        {{ trans(tenant()->id.'/cruds.tableTop.fields.status') }}
                     </th>
                     <th class="text-center">
                         Actions
@@ -65,7 +65,7 @@
     $(function () {
   let dtButtons = $.extend(true, [], $.fn.dataTable.defaults.buttons)
 @can('table_top_delete')
-  let deleteButtonTrans = '{{ trans('global.datatables.delete') }}';
+  let deleteButtonTrans = '{{ trans(tenant()->id.'/global.datatables.delete') }}';
   let deleteButton = {
     text: deleteButtonTrans,
     url: "{{ route('admin.table-tops.massDestroy') }}",
@@ -76,12 +76,12 @@
       });
 
       if (ids.length === 0) {
-        alert('{{ trans('global.datatables.zero_selected') }}')
+        alert('{{ trans(tenant()->id.'/global.datatables.zero_selected') }}')
 
         return
       }
 
-      if (confirm('{{ trans('global.areYouSure') }}')) {
+      if (confirm('{{ trans(tenant()->id.'/global.areYouSure') }}')) {
         $.ajax({
           headers: {'x-csrf-token': _token},
           method: 'POST',
@@ -107,7 +107,7 @@
 { data: 'code', name: 'code' },
 { data: 'capacity', name: 'capacity' },
 { data: 'status', name: 'status' },
-{ data: 'actions', name: '{{ trans('global.actions') }}' }
+{ data: 'actions', name: '{{ trans(tenant()->id.'/global.actions') }}' }
     ],
     orderCellsTop: true,
     order: [[ 0, 'desc' ]],

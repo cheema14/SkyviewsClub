@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\Traits\Stocks\ManageStockQuantityTrait;
 use App\Http\Requests\MassDestroyStockIssueRequest;
 use App\Http\Requests\StoreStockIssueRequest;
 use App\Http\Requests\UpdateStockIssueRequest;
@@ -19,6 +20,8 @@ use Yajra\DataTables\Facades\DataTables;
 
 class StockIssueController extends Controller
 {
+   use ManageStockQuantityTrait;
+    
     public function index(Request $request)
     {
         abort_if(Gate::denies('stock_issue_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
@@ -36,7 +39,7 @@ class StockIssueController extends Controller
                 $deleteGate    = 'stock_issue_delete';
                 $crudRoutePart = 'stock-issues';
 
-                return view('partials.datatablesActions', compact(
+                return view('partials.'.tenant()->id.'.datatablesActions', compact(
                     'viewGate',
                     'editGate',
                     'deleteGate',
@@ -81,15 +84,20 @@ class StockIssueController extends Controller
 
         abort_if(Gate::denies('stock_issue_create'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        $sections = Section::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
+        $sections = Section::pluck('name', 'id')->prepend(trans(tenant()->id.'/global.pleaseSelect'), '');
 
-        $stores = Store::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
+        $stores = Store::pluck('name', 'id')->prepend(trans(tenant()->id.'/global.pleaseSelect'), '');
 
-        $employees = Employee::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
-
-        $items = StoreItem::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
-
-        $units = Unit::pluck('type', 'id')->prepend(trans('global.pleaseSelect'), '');
+        $employees = Employee::pluck('name', 'id')->prepend(trans(tenant()->id.'/global.pleaseSelect'), '');
+        
+        $items = StoreItem::pluck('name', 'id')->prepend(trans(tenant()->id.'/global.pleaseSelect'), '');
+        
+        $items = StoreItem::whereHas('gr_item', function($query) {
+            $query->where('quantity', '>', 0);
+        })->pluck('name', 'id')->prepend(trans(tenant()->id.'/global.pleaseSelect'), '');
+        
+        
+        $units = Unit::pluck('type', 'id')->prepend(trans(tenant()->id.'/global.pleaseSelect'), '');
 
         $last_id = StockIssue::latest()->first();
 
@@ -102,12 +110,14 @@ class StockIssueController extends Controller
             $last_id = $last_id->id + 1;
         }
 
-        return view('admin.stockIssues.create', compact('employees', 'sections', 'stores','items', 'units','last_id'));
+        return view('admin.stockIssues.create', compact('employees', 'sections', 'stores', 'units','last_id'));
     }
 
     public function store(StoreStockIssueRequest $request)
     {
         $stockIssue = StockIssue::create($request->all());
+        
+        $this->manage_stock_item_quantity($request->all());
 
         foreach($request->items as $key => $value){
 
@@ -127,11 +137,11 @@ class StockIssueController extends Controller
     {
         abort_if(Gate::denies('stock_issue_edit'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        $sections = Section::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
+        $sections = Section::pluck('name', 'id')->prepend(trans(tenant()->id.'/global.pleaseSelect'), '');
 
-        $stores = Store::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
+        $stores = Store::pluck('name', 'id')->prepend(trans(tenant()->id.'/global.pleaseSelect'), '');
 
-        $employees = Employee::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
+        $employees = Employee::pluck('name', 'id')->prepend(trans(tenant()->id.'/global.pleaseSelect'), '');
 
         $stockIssue->load('section', 'store', 'employee');
 
@@ -180,5 +190,16 @@ class StockIssueController extends Controller
 
     public function get_lot_no_by_items(Request $request){
 
+    }
+
+    public function get_store_items(Request $request){
+        
+        abort_if(Gate::denies('stock_issue_create'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        
+        $storeId = $request->storeId;
+        
+        $items = StoreItem::where('store_id','=',$storeId)->get();
+
+        return response()->json(['items' => $items]);
     }
 }

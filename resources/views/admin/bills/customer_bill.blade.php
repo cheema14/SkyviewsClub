@@ -5,8 +5,9 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>Report</title>
-        </head>
+        <title>Customer Bill</title>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    </head>
         <body>
 
 <div id="receiptDiv" class="">
@@ -188,12 +189,12 @@
                 <tbody>
                     <tr>
                         <td colspan="6" style="text-align: center !important;">
-                            <img alt="logo" src="{{ asset('img/golf-logo.png') }}" width="80"></td>
+                            <img alt="logo" src="{{ asset('img/'.tenant()->id.'/golf-logo.png') }}" width="80"></td>
                     </tr>
                     <tr>
 
                         <td colspan="6" class="center_text ">
-                         <h3>PAF Skyviews</h3>
+                         <h3>{{ tenant()->name }}</h3>
                         </td>
                     </tr>
                     <tr>
@@ -392,9 +393,15 @@
                     </td>
                     <td colspan="3">
                         <label class="control-label text_size">
-                       <strong>Prepared By</strong></label> <span>{{ $order->user->name }}</span>
+                       <strong>Order Taker</strong></label> <span>{{ $order->user->name }}</span>
                    </td>
-
+                </tr>
+                
+                <tr class="center_text">
+                    <td colspan="3" class="left_text">
+                         <label class="control-label text_size">
+                        <strong>Prepared By:</strong></label> <span>{{ auth()->user()->name }}</span>
+                    </td>
                 </tr>
 
                 <tr class="center_text">
@@ -421,7 +428,7 @@
                 <tr class="center_text">
                     <td colspan="6" class="left_text" style="padding-top: 30px;">
                         <label class="control-label text_size">
-                        <strong>PayMode: {{ $order->latestTransaction?->type }}</strong></label>
+                        <strong>PayMode: {{ $order->payment_type }}</strong></label>
                     </td>
 
                 </tr>
@@ -431,8 +438,6 @@
         </div>
     </div>
 </div>
-
 </div>
-
 </body>
 </html>

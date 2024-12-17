@@ -7,10 +7,11 @@ use DateTimeInterface;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Stancl\Tenancy\Database\Concerns\BelongsToTenant;
 
 class SportsBilling extends Model
 {
-    use SoftDeletes, HasFactory;
+    use SoftDeletes, HasFactory, BelongsToTenant;
 
     public $table = 'sports_billings';
 

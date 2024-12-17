@@ -1,10 +1,10 @@
-@extends('layouts.admin')
+@extends('layouts.'.tenant()->id.'.admin')
 @section('content')
 
 <div class="card">
     <div class="card-header">
         <h4>
-        {{ trans('global.edit') }} {{ trans('cruds.membershipType.title_singular') }}
+        {{ trans(tenant()->id.'/global.edit') }} {{ trans(tenant()->id.'/cruds.membershipType.title_singular') }}
         </h4>
     </div>
 
@@ -13,58 +13,61 @@
             @method('PUT')
             @csrf
             <div class="form-group">
-                <label class="required" for="name">{{ trans('cruds.membershipType.fields.name') }}</label>
-                <input class="form-control {{ $errors->has('name') ? 'is-invalid' : '' }}" type="text" name="name" id="name" value="{{ old('name', $membershipType->name) }}" required>
+                <label class="required" for="name">{{ trans(tenant()->id.'/cruds.membershipType.fields.name') }}</label>
+                <input maxlength="100" class="form-control {{ $errors->has('name') ? 'is-invalid' : '' }}" type="text" name="name" id="name" value="{{ old('name', $membershipType->name) }}" required>
                 @if($errors->has('name'))
                     <div class="invalid-feedback">
                         {{ $errors->first('name') }}
                     </div>
                 @endif
-                <span class="help-block">{{ trans('cruds.membershipType.fields.name_helper') }}</span>
+                <span class="help-block">{{ trans(tenant()->id.'/cruds.membershipType.fields.name_helper') }}</span>
             </div>
             <div class="form-group">
-                <label class="required" for="effective_from">{{ trans('cruds.membershipType.fields.effective_from') }}</label>
+                <label class="required" for="effective_from">{{ trans(tenant()->id.'/cruds.membershipType.fields.effective_from') }}</label>
                 <input class="form-control date {{ $errors->has('effective_from') ? 'is-invalid' : '' }}" type="text" name="effective_from" id="effective_from" value="{{ old('effective_from', $membershipType->effective_from) }}" required>
                 @if($errors->has('effective_from'))
                     <div class="invalid-feedback">
                         {{ $errors->first('effective_from') }}
                     </div>
                 @endif
-                <span class="help-block">{{ trans('cruds.membershipType.fields.effective_from_helper') }}</span>
+                <span class="help-block">{{ trans(tenant()->id.'/cruds.membershipType.fields.effective_from_helper') }}</span>
             </div>
-            <div class="form-group">
-                <label class="required" for="subscription_fee">{{ trans('cruds.membershipType.fields.subscription_fee') }}</label>
-                <input class="form-control {{ $errors->has('subscription_fee') ? 'is-invalid' : '' }}" type="number" name="subscription_fee" id="subscription_fee" value="{{ old('subscription_fee', $membershipType->subscription_fee) }}" step="0.01" required>
+            <div x-data="{ mask: null }" class="form-group">
+                <label class="required" for="subscription_fee">{{ trans(tenant()->id.'/cruds.membershipType.fields.subscription_fee') }}</label>
+                <input x-bind:x-mask="mask || '999999[.99]'"
+                x-on:input="mask = $event.target.value.includes('.') ? '999999.99' : '999999'" class="form-control {{ $errors->has('subscription_fee') ? 'is-invalid' : '' }}" type="number" name="subscription_fee" id="subscription_fee" value="{{ old('subscription_fee', $membershipType->subscription_fee) }}" step="0.01" required>
                 @if($errors->has('subscription_fee'))
                     <div class="invalid-feedback">
                         {{ $errors->first('subscription_fee') }}
                     </div>
                 @endif
-                <span class="help-block">{{ trans('cruds.membershipType.fields.subscription_fee_helper') }}</span>
+                <span class="help-block">{{ trans(tenant()->id.'/cruds.membershipType.fields.subscription_fee_helper') }}</span>
             </div>
-            <div class="form-group">
-                <label class="required" for="security_fee">{{ trans('cruds.membershipType.fields.security_fee') }}</label>
-                <input class="form-control {{ $errors->has('security_fee') ? 'is-invalid' : '' }}" type="number" name="security_fee" id="security_fee" value="{{ old('security_fee', $membershipType->security_fee) }}" step="0.01" required>
+            <div x-data="{ mask: null }" class="form-group">
+                <label class="required" for="security_fee">{{ trans(tenant()->id.'/cruds.membershipType.fields.security_fee') }}</label>
+                <input x-bind:x-mask="mask || '999999[.99]'"
+                x-on:input="mask = $event.target.value.includes('.') ? '999999.99' : '999999'" class="form-control {{ $errors->has('security_fee') ? 'is-invalid' : '' }}" type="number" name="security_fee" id="security_fee" value="{{ old('security_fee', $membershipType->security_fee) }}" step="0.01" required>
                 @if($errors->has('security_fee'))
                     <div class="invalid-feedback">
                         {{ $errors->first('security_fee') }}
                     </div>
                 @endif
-                <span class="help-block">{{ trans('cruds.membershipType.fields.security_fee_helper') }}</span>
+                <span class="help-block">{{ trans(tenant()->id.'/cruds.membershipType.fields.security_fee_helper') }}</span>
             </div>
-            <div class="form-group">
-                <label class="required" for="monthly_fee">{{ trans('cruds.membershipType.fields.monthly_fee') }}</label>
-                <input class="form-control {{ $errors->has('monthly_fee') ? 'is-invalid' : '' }}" type="number" name="monthly_fee" id="monthly_fee" value="{{ old('monthly_fee', $membershipType->monthly_fee) }}" step="0.01" required>
+            <div x-data="{ mask: null }" class="form-group">
+                <label class="required" for="monthly_fee">{{ trans(tenant()->id.'/cruds.membershipType.fields.monthly_fee') }}</label>
+                <input x-bind:x-mask="mask || '999999[.99]'"
+                x-on:input="mask = $event.target.value.includes('.') ? '999999.99' : '999999'" class="form-control {{ $errors->has('monthly_fee') ? 'is-invalid' : '' }}" type="number" name="monthly_fee" id="monthly_fee" value="{{ old('monthly_fee', $membershipType->monthly_fee) }}" step="0.01" required>
                 @if($errors->has('monthly_fee'))
                     <div class="invalid-feedback">
                         {{ $errors->first('monthly_fee') }}
                     </div>
                 @endif
-                <span class="help-block">{{ trans('cruds.membershipType.fields.monthly_fee_helper') }}</span>
+                <span class="help-block">{{ trans(tenant()->id.'/cruds.membershipType.fields.monthly_fee_helper') }}</span>
             </div>
             <div class="form-group">
                 <button class="btn btn-info px-5" type="submit">
-                    {{ trans('global.save') }}
+                    {{ trans(tenant()->id.'/global.save') }}
                 </button>
             </div>
         </form>

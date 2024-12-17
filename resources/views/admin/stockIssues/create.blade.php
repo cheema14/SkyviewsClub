@@ -1,10 +1,10 @@
-@extends('layouts.admin')
+@extends('layouts.'.tenant()->id.'.admin')
 @section('content')
 
-<div class="card">
+<div class="card" x-data="handler()">
     <div class="card-header">
         <h4>
-        {{ trans('global.create') }} {{ trans('cruds.stockIssue.title_singular') }}
+        {{ trans(tenant()->id.'/global.create') }} {{ trans(tenant()->id.'/cruds.stockIssue.title_singular') }}
         </h4>
     </div>
 
@@ -12,27 +12,27 @@
         @csrf
         <div class="card-body row">
             <div class="form-group col-md-4" x-data>
-                <label class="required" for="issue_no">{{ trans('cruds.stockIssue.fields.issue_no') }}</label>
+                <label class="required" for="issue_no">{{ trans(tenant()->id.'/cruds.stockIssue.fields.issue_no') }}</label>
                 <input x-mask="IS-No-99999" value="IS-No-{{ $last_id }}" readonly class="form-control {{ $errors->has('issue_no') ? 'is-invalid' : '' }}" type="text" name="issue_no" id="issue_no" value="{{ old('issue_no', '') }}" required>
                 @if($errors->has('issue_no'))
                     <div class="invalid-feedback">
                         {{ $errors->first('issue_no') }}
                     </div>
                 @endif
-                <span class="help-block">{{ trans('cruds.stockIssue.fields.issue_no_helper') }}</span>
+                <span class="help-block">{{ trans(tenant()->id.'/cruds.stockIssue.fields.issue_no_helper') }}</span>
             </div>
             <div class="form-group col-md-4">
-                <label class="required" for="issue_date">{{ trans('cruds.stockIssue.fields.issue_date') }}</label>
+                <label class="required" for="issue_date">{{ trans(tenant()->id.'/cruds.stockIssue.fields.issue_date') }}</label>
                 <input class="form-control date {{ $errors->has('issue_date') ? 'is-invalid' : '' }}" type="text" name="issue_date" id="issue_date" value="{{ old('issue_date') }}" required>
                 @if($errors->has('issue_date'))
                     <div class="invalid-feedback">
                         {{ $errors->first('issue_date') }}
                     </div>
                 @endif
-                <span class="help-block">{{ trans('cruds.stockIssue.fields.issue_date_helper') }}</span>
+                <span class="help-block">{{ trans(tenant()->id.'/cruds.stockIssue.fields.issue_date_helper') }}</span>
             </div>
             <div class="form-group col-md-4">
-                <label class="required" for="section_id">{{ trans('cruds.stockIssue.fields.section') }}</label>
+                <label class="required" for="section_id">{{ trans(tenant()->id.'/cruds.stockIssue.fields.section') }}</label>
                 <select class="form-control select2 {{ $errors->has('section') ? 'is-invalid' : '' }}" name="section_id" id="section_id" required>
                     @foreach($sections as $id => $entry)
                         <option value="{{ $id }}" {{ old('section_id') == $id ? 'selected' : '' }}>{{ $entry }}</option>
@@ -43,11 +43,11 @@
                         {{ $errors->first('section') }}
                     </div>
                 @endif
-                <span class="help-block">{{ trans('cruds.stockIssue.fields.section_helper') }}</span>
+                <span class="help-block">{{ trans(tenant()->id.'/cruds.stockIssue.fields.section_helper') }}</span>
             </div>
-            <div class="form-group col-md-4">
-                <label class="required" for="store_id">{{ trans('cruds.stockIssue.fields.store') }}</label>
-                <select class="form-control select2 {{ $errors->has('store') ? 'is-invalid' : '' }}" name="store_id" id="store_id" required>
+            <div class="form-group col-md-4" >
+                <label class="required" for="store_id">{{ trans(tenant()->id.'/cruds.stockIssue.fields.store') }}</label>
+                <select class="form-control {{ $errors->has('store') ? 'is-invalid' : '' }}" name="store_id" id="store_id" x-on:change="getStoreItems($event.target.value)" x-model="shared.storeId" required>
                     @foreach($stores as $id => $entry)
                         <option value="{{ $id }}" {{ old('store_id') == $id ? 'selected' : '' }}>{{ $entry }}</option>
                     @endforeach
@@ -57,10 +57,10 @@
                         {{ $errors->first('store') }}
                     </div>
                 @endif
-                <span class="help-block">{{ trans('cruds.stockIssue.fields.store_helper') }}</span>
+                <span class="help-block">{{ trans(tenant()->id.'/cruds.stockIssue.fields.store_helper') }}</span>
             </div>
             <div class="form-group col-md-4">
-                <label class="required" for="employee_id">{{ trans('cruds.stockIssue.fields.employee') }}</label>
+                <label class="required" for="employee_id">{{ trans(tenant()->id.'/cruds.stockIssue.fields.employee') }}</label>
                 <select class="form-control select2 {{ $errors->has('employee') ? 'is-invalid' : '' }}" name="employee_id" id="employee_id" required>
                     @foreach($employees as $id => $entry)
                         <option value="{{ $id }}" {{ old('employee_id') == $id ? 'selected' : '' }}>{{ $entry }}</option>
@@ -71,22 +71,22 @@
                         {{ $errors->first('employee') }}
                     </div>
                 @endif
-                <span class="help-block">{{ trans('cruds.stockIssue.fields.employee_helper') }}</span>
+                <span class="help-block">{{ trans(tenant()->id.'/cruds.stockIssue.fields.employee_helper') }}</span>
             </div>
             <div class="form-group col-md-12">
-                <label for="remarks">{{ trans('cruds.stockIssue.fields.remarks') }}</label>
+                <label for="remarks">{{ trans(tenant()->id.'/cruds.stockIssue.fields.remarks') }}</label>
                 <textarea class="form-control {{ $errors->has('remarks') ? 'is-invalid' : '' }}" name="remarks" id="remarks">{{ old('remarks') }}</textarea>
                 @if($errors->has('remarks'))
                     <div class="invalid-feedback">
                         {{ $errors->first('remarks') }}
                     </div>
                 @endif
-                <span class="help-block">{{ trans('cruds.stockIssue.fields.remarks_helper') }}</span>
+                <span class="help-block">{{ trans(tenant()->id.'/cruds.stockIssue.fields.remarks_helper') }}</span>
             </div>
         </div>
         <div class="card-body row">
 
-            <div class="col-md-12" x-data="handler()">
+            <div class="col-md-12">
                 <label for="photo">Stock Issue Items</label>
                 <table class="table table-bordered align-items-center table-sm">
                     <thead class="thead-light">
@@ -105,10 +105,16 @@
                             <tr>
                                 <td x-text="index + 1"></td>
                                 <td>
-                                    <select required x-model="field.item_id" x-on:change="getUnit(index)" class="form-control {{ $errors->has('item') ? 'is-invalid' : '' }}" :name="`items[${index}][item_id]`" id="item_id">
+                                    {{-- <select required x-model="field.item_id" x-on:change="getUnit(index)" class="form-control {{ $errors->has('item') ? 'is-invalid' : '' }}" :name="`items[${index}][item_id]`" id="item_id">
                                         @foreach($items as $id => $entry)
                                         <option value="{{ $id }}" {{ old('item_id') == $id ? 'selected' : '' }}>{{ $entry }}</option>
                                         @endforeach
+                                    </select> --}}
+                                    <select required x-model="field.item_id" x-on:change="getUnit(index)" class="form-control {{ $errors->has('item') ? 'is-invalid' : '' }}" :name="`items[${index}][item_id]`" id="item_id">
+                                        <option value="" disabled selected>Select Item</option>
+                                        <template x-for="item in field.items">
+                                            <option x-text="item.name" x-bind:value="item.id"></option>
+                                        </template>
                                     </select>
                                 </td>
                                 <td>
@@ -138,7 +144,7 @@
 
             <div class="form-group col-md-4">
                 <button class="btn btn-success px-5" type="submit">
-                    {{ trans('global.save') }}
+                    {{ trans(tenant()->id.'/global.save') }}
                 </button>
             </div>
         </div>
@@ -154,14 +160,20 @@
     function handler() {
 
         return {
-          fields: [
-            {
-                item_id:'',
-                unit_id:'',
-                lot_id:'',
-                stock_required:'',
-                issued_qty:'',
-            }
+            globalIndex:0,
+            shared: {
+                storeId: '',
+            },
+            fields: [
+                {
+                    item_id:'',
+                    unit_id:'',
+                    lot_id:'',
+                    stock_required:'',
+                    issued_qty:'',
+                    stock_value_in_db:'',
+                    items:[],
+                }
             ],
             addNewField() {
               this.fields.push({
@@ -171,17 +183,26 @@
                 stock_required:'',
                 issued_qty:'',
                });
+               this.globalIndex = this.globalIndex + 1;
             },
             removeField(index) {
                this.fields.splice(index, 1);
+               this.globalIndex = this.globalIndex - 1;
             },
             async getUnit(index) {
-
+                
+                this.stock_value_in_db  = '';
                 let data = await (await fetch("{{ route('admin.store-items.get_by_id') }}?item_id=" + this.fields[index].item_id)).json();
                 this.fields[index].unit = data.unit.type;
                 this.fields[index].unit_id = data.unit.id;
-
-                // this.getLot(itemId);
+                this.stock_value_in_db = data.quantity;
+                
+                // Also check if this item already exists in the catalog
+                let duplicate = this.fields.some((field, i) => i !== index && field.item_id === this.fields[index].item_id);
+                if (duplicate) {
+                    alert("You have already added this item.");
+                    this.fields[index].item_id = '';
+                }
             },
             async getLot(item_id) {
 
@@ -203,17 +224,28 @@
                 let stock_required = this.fields[index].stock_required;
                 let issued_stock = this.fields[index].issued_qty;
 
-                // console.log("field value", this.fields[index]);
+                if(stock_required > this.stock_value_in_db){
+                    alert("Required stock is not available. Available stock is:"+this.stock_value_in_db);
+                    this.fields[index].stock_required = 0;
+                }
 
-                if( issued_stock && stock_required < issued_stock) {
-                    alert("Issued stock cannot be greater than required stock.");
-                    // this.fields[index].stock_required = 0;
+                if( stock_required < issued_stock) {
+                    alert("Desired stock quantity cannot be issued.");
                     this.fields[index].issued_qty = 0;
                 }
-                // console.log("index value",index);
-            }
+            },
+            async getStoreItems(storeId){
+
+                let data = await (await fetch("{{ route('admin.store-items.get-store-items') }}?storeId=" + storeId)).json();
+                console.log("data",data.items);
+                this.fields[this.globalIndex].items = data.items;
+                
+                // Now we have added the item type globally and 
+                // it will be used for every item
+                this.shared.storeId = storeId;
+            },
         }
-     };
+    };
 
 
     </script>

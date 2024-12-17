@@ -10,10 +10,11 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
+use Stancl\Tenancy\Database\Concerns\BelongsToTenant;
 
 class Dependent extends Model implements HasMedia
 {
-    use SoftDeletes, InteractsWithMedia, HasFactory;
+    use SoftDeletes, InteractsWithMedia, HasFactory, BelongsToTenant;
 
     public $table = 'dependents';
 

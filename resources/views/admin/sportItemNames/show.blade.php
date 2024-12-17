@@ -1,23 +1,23 @@
-@extends('layouts.admin')
+@extends('layouts.'.tenant()->id.'.admin')
 @section('content')
 
 <div class="card">
     <div class="card-header">
-        {{ trans('global.show') }} {{ trans('cruds.sportItemName.title') }}
+        {{ trans(tenant()->id.'/global.show') }} {{ trans(tenant()->id.'/cruds.sportItemName.title') }}
     </div>
 
     <div class="card-body">
         <div class="form-group">
             <div class="form-group">
                 <a class="btn btn-default" href="{{ route('admin.sport-item-names.index') }}">
-                    {{ trans('global.back_to_list') }}
+                    {{ trans(tenant()->id.'/global.back_to_list') }}
                 </a>
             </div>
             <table class="table table-bordered table-striped">
                 <tbody>
                     <tr>
                         <th>
-                            {{ trans('cruds.sportItemName.fields.id') }}
+                            {{ trans(tenant()->id.'/cruds.sportItemName.fields.id') }}
                         </th>
                         <td>
                             {{ $sportItemName->id }}
@@ -25,7 +25,7 @@
                     </tr>
                     <tr>
                         <th>
-                            {{ trans('cruds.sportItemName.fields.item_name') }}
+                            {{ trans(tenant()->id.'/cruds.sportItemName.fields.item_name') }}
                         </th>
                         <td>
                             {{ $sportItemName->item_name }}
@@ -33,7 +33,7 @@
                     </tr>
                     <tr>
                         <th>
-                            {{ trans('cruds.sportItemName.fields.item_class') }}
+                            {{ trans(tenant()->id.'/cruds.sportItemName.fields.item_class') }}
                         </th>
                         <td>
                             {{ $sportItemName->item_class->item_class ?? '' }}
@@ -41,7 +41,7 @@
                     </tr>
                     <tr>
                         <th>
-                            {{ trans('cruds.sportItemName.fields.item_rate') }}
+                            {{ trans(tenant()->id.'/cruds.sportItemName.fields.item_rate') }}
                         </th>
                         <td>
                             {{ $sportItemName->item_rate }}
@@ -49,7 +49,7 @@
                     </tr>
                     <tr>
                         <th>
-                            {{ trans('cruds.sportItemName.fields.unit') }}
+                            {{ trans(tenant()->id.'/cruds.sportItemName.fields.unit') }}
                         </th>
                         <td>
                             {{ $sportItemName->unit }}
@@ -59,7 +59,7 @@
             </table>
             <div class="form-group">
                 <a class="btn btn-default" href="{{ route('admin.sport-item-names.index') }}">
-                    {{ trans('global.back_to_list') }}
+                    {{ trans(tenant()->id.'/global.back_to_list') }}
                 </a>
             </div>
         </div>

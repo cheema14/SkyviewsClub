@@ -7,9 +7,9 @@
    </head>
    <body style="width:680px; margin:0 auto; ">
         <p style='margin-top:0in;margin-right:0in;margin-bottom:18.8pt;margin-left:0in;line-height:15.9pt;font-size:19px;text-align:center;'><span style="width:143px;height:126px;">
-            <img width="114" src="{{ asset('img/logo.png') }}" alt="image"></span>
+            <img width="114" src="{{ asset('img/'.tenant()->id.'/new_logo.png') }}" alt="image"></span>
         </p>
-      <p style='margin-top:0in;margin-right:0in;margin-bottom:10pt;margin-left:0in;line-height:15.9pt;text-align:center;'><strong><span style='font-size:19px;'>PAF SKYVIEW GOLF &amp; COUNTRY CLUB, LAHORE</span></strong><span><br>&nbsp;</span><span style='font-size:15px;'>MONTHLY RECIEPT</span></p>
+      <p style='margin-top:0in;margin-right:0in;margin-bottom:10pt;margin-left:0in;line-height:15.9pt;text-align:center;'><strong><span style='font-size:19px;'>{{ trans(tenant()->id.'/global.project_title') }}</span></strong><span><br>&nbsp;</span><span style='font-size:15px;'>MONTHLY RECIEPT</span></p>
       <p style='margin-top:0in;margin-right:0in;margin-bottom:8.0pt;margin-left:0in;line-height:normal;'><span style='font-size:13px;'>Name: <strong><u>{{ $member->name }}</u></strong></span></p>
       <p style='margin-top:0in;margin-right:0in;margin-bottom:8.0pt;margin-left:0in;line-height:normal;'><span style='font-size:13px;'>Membership No. <strong>{{ $member->membership_no }}</strong> bill for the month of <strong><u>{{ date('M', strtotime('-1 month')) }}, {{ date('Y')}}</u></strong></span></p>
       <p style='margin-top:0in;margin-right:0in;margin-bottom:8.0pt;margin-left:0in;line-height:normal;'><span style='font-size:13px;'>Unit/Address: <strong><u>{{ $member->mailing_address }}. Ph- {{ $member->cell_no }}</u></strong>&nbsp;</span></p>
@@ -42,7 +42,7 @@
                   <p style='margin-top:0in;margin-right:0in;margin-bottom:.0001pt;margin-left:0in;line-height:  normal;'><span style='font-size:15px;'>Monthly Subscription</span></p>
                </td>
                <td style="width: 232.8pt;border-top: none;border-left: none;border-bottom: 1pt solid windowtext;border-right: 1pt solid windowtext;padding: 0in 5.4pt;vertical-align: top;">
-                  <p style='margin-top:0in;margin-right:0in;margin-bottom:.0001pt;margin-left:0in;line-height:normal;font-size:19px;text-align:center;'><span>{{ number_format($member->membership_type->monthly_fee) }}</span></p>
+                  <p style='margin-top:0in;margin-right:0in;margin-bottom:.0001pt;margin-left:0in;line-height:normal;font-size:19px;text-align:center;'><span>{{ number_format($member->membership_type?->monthly_fee) }}</span></p>
                </td>
                <td style="width: 232.8pt;border-top: none;border-left: none;border-bottom: 1pt solid windowtext;border-right: 1pt solid windowtext;padding: 0in 5.4pt;vertical-align: top;">
                   <p style='margin-top:0in;margin-right:0in;margin-bottom:.0001pt;margin-left:0in;line-height:normal;font-size:19px;text-align:center;'><span>-</span></p>
@@ -76,7 +76,7 @@
                </td>
                <td style="width: 232.8pt;border-top: none;border-left: none;border-bottom: 1pt solid windowtext;border-right: 1pt solid windowtext;padding: 0in 5.4pt;vertical-align: top;">
                   <p style='margin-top:0in;margin-right:0in;margin-bottom:.0001pt;margin-left:0in;line-height:normal;
-                  text-align:center;'><span>{{ number_format($member?->membership_type->monthly_fee + $member->arrears + $bill + $sportsBill) }}</span></p>
+                  text-align:center;'><span>{{ number_format($member?->membership_type?->monthly_fee + $member->arrears + $bill + $sportsBill) }}</span></p>
                </td>
                <td style="width: 232.8pt;border-top: none;border-left: none;border-bottom: 1pt solid windowtext;border-right: 1pt solid windowtext;padding: 0in 5.4pt;vertical-align: top;">
                   <p style='margin-top:0in;margin-right:0in;margin-bottom:.0001pt;margin-left:0in;line-height:normal;font-size:19px;text-align:center;'><span>{{ number_format($receipt->received_amount) }}</span></p>

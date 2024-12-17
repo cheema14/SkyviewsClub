@@ -34,7 +34,7 @@ class GrItemDetailController extends Controller
                 $deleteGate = 'gr_item_detail_delete';
                 $crudRoutePart = 'gr-item-details';
 
-                return view('partials.datatablesActions', compact(
+                return view('partials.'.tenant()->id.'.datatablesActions', compact(
                     'viewGate',
                     'editGate',
                     'deleteGate',
@@ -80,11 +80,11 @@ class GrItemDetailController extends Controller
     {
         abort_if(Gate::denies('gr_item_detail_create'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        $items = StoreItem::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
+        $items = StoreItem::pluck('name', 'id')->prepend(trans(tenant()->id.'/global.pleaseSelect'), '');
 
-        $units = Unit::pluck('type', 'id')->prepend(trans('global.pleaseSelect'), '');
+        $units = Unit::pluck('type', 'id')->prepend(trans(tenant()->id.'/global.pleaseSelect'), '');
 
-        $grs = GoodReceipt::pluck('gr_number', 'id')->prepend(trans('global.pleaseSelect'), '');
+        $grs = GoodReceipt::pluck('gr_number', 'id')->prepend(trans(tenant()->id.'/global.pleaseSelect'), '');
 
         return view('admin.grItemDetails.create', compact('grs', 'items', 'units'));
     }
@@ -100,11 +100,11 @@ class GrItemDetailController extends Controller
     {
         abort_if(Gate::denies('gr_item_detail_edit'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        $items = StoreItem::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
+        $items = StoreItem::pluck('name', 'id')->prepend(trans(tenant()->id.'/global.pleaseSelect'), '');
 
-        $units = Unit::pluck('type', 'id')->prepend(trans('global.pleaseSelect'), '');
+        $units = Unit::pluck('type', 'id')->prepend(trans(tenant()->id.'/global.pleaseSelect'), '');
 
-        $grs = GoodReceipt::pluck('gr_number', 'id')->prepend(trans('global.pleaseSelect'), '');
+        $grs = GoodReceipt::pluck('gr_number', 'id')->prepend(trans(tenant()->id.'/global.pleaseSelect'), '');
 
         $grItemDetail->load('item', 'unit', 'gr');
 

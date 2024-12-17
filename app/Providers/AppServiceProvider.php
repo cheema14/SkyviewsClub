@@ -2,8 +2,12 @@
 
 namespace App\Providers;
 
-use Illuminate\Support\ServiceProvider;
+use File;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Facades\App;
+use Illuminate\Support\ServiceProvider;
+use Illuminate\Translation\FileLoader;
+use tenancy;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -21,6 +25,6 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         // JsonResource::withoutWrapping();
-
+        
     }
 }

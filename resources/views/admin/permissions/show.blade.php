@@ -1,14 +1,14 @@
-@extends('layouts.admin')
+@extends('layouts.'.tenant()->id.'.admin')
 @section('content')
 <div class="form-group">
     <a class="btn btn-dark" href="{{ route('admin.permissions.index') }}">
-        {{ trans('global.back_to_list') }}
+        {{ trans(tenant()->id .'/global.back_to_list') }}
     </a>
 </div>
 <div class="card">
     <div class="card-header">
         <h4>
-            {{ trans('global.show') }} {{ trans('cruds.permission.title') }}
+            {{ trans(tenant()->id .'/global.show') }} {{ trans(tenant()->id .'/cruds.permission.title') }}
         </h4>
     </div>
 
@@ -17,7 +17,7 @@
             <tbody>
                 <tr>
                     <th>
-                        {{ trans('cruds.permission.fields.id') }}
+                        {{ trans(tenant()->id .'/cruds.permission.fields.id') }}
                     </th>
                     <td>
                         {{ $permission->id }}
@@ -25,7 +25,7 @@
                 </tr>
                 <tr>
                     <th>
-                        {{ trans('cruds.permission.fields.title') }}
+                        {{ trans(tenant()->id .'/cruds.permission.fields.title') }}
                     </th>
                     <td>
                         {{ $permission->title }}

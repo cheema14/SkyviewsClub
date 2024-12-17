@@ -51,7 +51,7 @@ class StorePaymentReceiptRequest extends FormRequest
             'invoice_amount' => [
                 'required',
                 'numeric',
-                'exists:bills,total'
+                // 'exists:bills,total'
             ],
             'pay_mode' => [
                 'required',

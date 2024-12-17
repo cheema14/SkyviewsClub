@@ -11,4 +11,9 @@ return [
     // Cold Bar
     'menu3' => '192.168.100.206',
 
+    'menu_1' => 'Golfers Lounge',
+    'menu_4' => 'First Floor',
+    'menu_2' => 'Roof Top',
+    'menu_3' => 'Golfers Lounge',
+    
 ];

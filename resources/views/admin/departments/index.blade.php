@@ -1,37 +1,37 @@
-@extends('layouts.admin')
+@extends('layouts.'.tenant()->id.'.admin')
 @section('content')
 <!-- @can('department_create')
     <div style="margin-bottom: 10px;" class="row">
         <div class="col-lg-12">
             <a class="btn btn-success" href="{{ route('admin.departments.create') }}">
-            {{ trans('global.add') }} {{ trans('cruds.department.title_singular') }}
+            {{ trans(tenant()->id.'/global.add') }} {{ trans(tenant()->id.'/cruds.department.title_singular') }}
             </a>
             @can('csv_import')
             <button class="btn btn-warning" data-toggle="modal" data-target="#csvImportModal">
-                {{ trans('global.app_csvImport') }}
+                {{ trans(tenant()->id.'/global.app_csvImport') }}
             </button>
             @endcan
             @include('csvImport.modal', ['model' => 'Department', 'route' => 'admin.departments.parseCsvImport'])
         </div>
     </div>
 @endcan -->
-@include('partials.flash_messages')
+@include('partials.'.tenant()->id.'.flash_messages')
 <div class="card">
     <div class="card-header">
         <div class="row align-items-center">
             <div class="col-sm-6">
                 <h4>
-                {{ trans('cruds.department.title_singular') }} {{ trans('global.list') }}
+                {{ trans(tenant()->id.'/cruds.department.title_singular') }} {{ trans(tenant()->id.'/global.list') }}
                 </h4>
             </div>
             @can('department_create')
             <div class="col-sm-6 ml-auto text-sm-right">
                 <a class="btn btn-info px-4 mr-2" href="{{ route('admin.departments.create') }}">
-                    {{ trans('global.add') }} {{ trans('cruds.department.title_singular') }}
+                    {{ trans(tenant()->id.'/global.add') }} {{ trans(tenant()->id.'/cruds.department.title_singular') }}
                 </a>
                 @can('csv_import')
                 <button class="btn btn-outline-info" data-toggle="modal" data-target="#csvImportModal">
-                    {{ trans('global.app_csvImport') }}
+                    {{ trans(tenant()->id.'/global.app_csvImport') }}
                 </button>
                 @endcan
                 @include('csvImport.modal', ['model' => 'Department', 'route' => 'admin.departments.parseCsvImport'])
@@ -47,10 +47,10 @@
                     <tr>
 
                         <th>
-                            {{ trans('cruds.department.fields.id') }}
+                            {{ trans(tenant()->id.'/cruds.department.fields.id') }}
                         </th>
                         <th>
-                            {{ trans('cruds.department.fields.name') }}
+                            {{ trans(tenant()->id.'/cruds.department.fields.name') }}
                         </th>
                         <th class="text-center">
                             Actions
@@ -71,15 +71,15 @@
 
                                 @can('department_edit')
                                     <a class="btn btn-xs btn-info" href="{{ route('admin.departments.edit', $department->id) }}">
-                                        {{ trans('global.edit') }}
+                                        {{ trans(tenant()->id.'/global.edit') }}
                                     </a>
                                 @endcan
 
                                 @can('department_delete')
-                                    <form action="{{ route('admin.departments.destroy', $department->id) }}" method="POST" onsubmit="return confirm('{{ trans('global.areYouSure') }}');" style="display: inline-block;">
+                                    <form action="{{ route('admin.departments.destroy', $department->id) }}" method="POST" onsubmit="return confirm('{{ trans(tenant()->id.'/global.areYouSure') }}');" style="display: inline-block;">
                                         <input type="hidden" name="_method" value="DELETE">
                                         <input type="hidden" name="_token" value="{{ csrf_token() }}">
-                                        <input type="submit" class="btn btn-xs btn-danger" value="{{ trans('global.delete') }}">
+                                        <input type="submit" class="btn btn-xs btn-danger" value="{{ trans(tenant()->id.'/global.delete') }}">
                                     </form>
                                 @endcan
 
@@ -102,7 +102,7 @@
     $(function () {
   let dtButtons = $.extend(true, [], $.fn.dataTable.defaults.buttons)
 @can('department_delete')
-  let deleteButtonTrans = '{{ trans('global.datatables.delete') }}'
+  let deleteButtonTrans = '{{ trans(tenant()->id.'/global.datatables.delete') }}'
   let deleteButton = {
     text: deleteButtonTrans,
     url: "{{ route('admin.departments.massDestroy') }}",
@@ -113,12 +113,12 @@
       });
 
       if (ids.length === 0) {
-        alert('{{ trans('global.datatables.zero_selected') }}')
+        alert('{{ trans(tenant()->id.'/global.datatables.zero_selected') }}')
 
         return
       }
 
-      if (confirm('{{ trans('global.areYouSure') }}')) {
+      if (confirm('{{ trans(tenant()->id.'/global.areYouSure') }}')) {
         $.ajax({
           headers: {'x-csrf-token': _token},
           method: 'POST',

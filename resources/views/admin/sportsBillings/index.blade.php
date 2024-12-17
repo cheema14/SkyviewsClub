@@ -1,17 +1,17 @@
-@extends('layouts.admin')
+@extends('layouts.'.tenant()->id.'.admin')
 @section('content')
 @can('sports_billing_create')
     <div style="margin-bottom: 10px;" class="row">
         <div class="col-lg-12">
             <a class="btn btn-success" href="{{ route('admin.sports-billings.create') }}">
-                {{ trans('global.add') }} {{ trans('cruds.sportsBilling.title_singular') }}
+                {{ trans(tenant()->id.'/global.add') }} {{ trans(tenant()->id.'/cruds.sportsBilling.title_singular') }}
             </a>
         </div>
     </div>
 @endcan
 <div class="card">
     <div class="card-header">
-        {{ trans('cruds.sportsBilling.title_singular') }} {{ trans('global.list') }}
+        {{ trans(tenant()->id.'/cruds.sportsBilling.title_singular') }} {{ trans(tenant()->id.'/global.list') }}
     </div>
 
     <div class="card-body">
@@ -19,65 +19,41 @@
             <table class=" table table-bordered table-striped table-hover datatable datatable-SportsBilling">
                 <thead>
                     <tr>
-                        {{-- <th width="10">
-
-                        </th> --}}
                         <th>
-                            {{ trans('cruds.sportsBilling.fields.id') }}
+                            {{ trans(tenant()->id.'/cruds.sportsBilling.fields.id') }}
                         </th>
                         <th>
-                            {{ trans('cruds.sportsBilling.fields.member_name') }}
+                            {{ trans(tenant()->id.'/cruds.sportsBilling.fields.member_name') }}
                         </th>
                         <th>
-                            {{ trans('cruds.sportsBilling.fields.non_member_name') }}
+                            {{ trans(tenant()->id.'/cruds.sportsBilling.fields.membership_no') }}
                         </th>
                         <th>
-                            {{ trans('cruds.sportsBilling.fields.bill_date') }}
+                            {{ trans(tenant()->id.'/cruds.sportsBilling.fields.non_member_name') }}
                         </th>
                         <th>
-                            {{ trans('cruds.sportsBilling.fields.bill_number') }}
+                            {{ trans(tenant()->id.'/cruds.sportsBilling.fields.bill_date') }}
                         </th>
                         <th>
-                            {{ trans('cruds.sportsBilling.fields.remarks') }}
-                        </th>
-                        {{-- <th>
-                            {{ trans('cruds.sportsBilling.fields.ref_club') }}
+                            {{ trans(tenant()->id.'/cruds.sportsBilling.fields.bill_number') }}
                         </th>
                         <th>
-                            {{ trans('cruds.sportsBilling.fields.club_id_ref') }}
+                            {{ trans(tenant()->id.'/cruds.sportsBilling.items') }}
                         </th>
                         <th>
-                            {{ trans('cruds.sportsBilling.fields.tee_off') }}
+                            {{ trans(tenant()->id.'/cruds.sportsBilling.fields.total_payable') }}
                         </th>
                         <th>
-                            {{ trans('cruds.sportsBilling.fields.holes') }}
+                            {{ trans(tenant()->id.'/cruds.sportsBilling.fields.net_pay') }}
                         </th>
                         <th>
-                            {{ trans('cruds.sportsBilling.fields.caddy') }}
+                            {{ trans(tenant()->id.'/cruds.sportsBilling.fields.pay_mode') }}
                         </th>
                         <th>
-                            {{ trans('cruds.sportsBilling.fields.temp_mbr') }}
+                            {{ trans(tenant()->id.'/cruds.sportsBilling.fields.remarks') }}
                         </th>
                         <th>
-                            {{ trans('cruds.sportsBilling.fields.temp_caddy') }}
-                        </th> --}}
-                        <th>
-                            {{ trans('cruds.sportsBilling.fields.pay_mode') }}
-                        </th>
-                        {{-- <th>
-                            {{ trans('cruds.sportsBilling.fields.gross_total') }}
-                        </th> --}}
-                        <th>
-                            {{ trans('cruds.sportsBilling.fields.total_payable') }}
-                        </th>
-                        <th>
-                            {{ trans('cruds.sportsBilling.fields.bank_charges') }}
-                        </th>
-                        <th>
-                            {{ trans('cruds.sportsBilling.fields.net_pay') }}
-                        </th>
-                        <th>
-                            {{  trans('global.actions') }}
+                            {{  trans(tenant()->id.'/global.actions') }}
                         </th>
                     </tr>
                 </thead>
@@ -94,6 +70,11 @@
                                 {{ $sportsBilling->member_name ?? '' }}
                             </td>
                             <td>
+                                @foreach($sportsBilling->sportsBill as $bill)
+                                    {{ $bill->membership_no }}
+                                @endforeach
+                                </td>
+                            <td>
                                 {{ $sportsBilling->non_member_name ?? '' }}
                             </td>
                             <td>
@@ -103,73 +84,45 @@
                                 {{ $sportsBilling->bill_number ?? '' }}
                             </td>
                             <td>
-                                {{ $sportsBilling->remarks ?? '' }}
+                                @foreach ($sportsBilling->sportBillingSportBillingItems as $item)
+                                    <span class="badge badge-info">{{ $item->billing_item_name->item_name ?? '' }}</span>
+                                @endforeach
                             </td>
-                            {{-- <td>
-                                {{ $sportsBilling->ref_club ?? '' }}
-                            </td>
-                            <td>
-                                {{ $sportsBilling->club_id_ref ?? '' }}
-                            </td>
-                            <td>
-                                {{ $sportsBilling->tee_off ?? '' }}
-                            </td>
-                            <td>
-                                {{ $sportsBilling->holes ?? '' }}
-                            </td>
-                            <td>
-                                {{ $sportsBilling->caddy ?? '' }}
-                            </td>
-                            <td>
-                                {{ $sportsBilling->temp_mbr ?? '' }}
-                            </td>
-                            <td>
-                                {{ $sportsBilling->temp_caddy ?? '' }}
-                            </td> --}}
-                            <td>
-                                {{ App\Models\SportsBilling::PAY_MODE_SELECT[$sportsBilling->pay_mode] ?? '' }}
-                            </td>
-                            {{-- <td>
-                                {{ $sportsBilling->gross_total ?? '' }}
-                            </td> --}}
                             <td>
                                 {{ $sportsBilling->total_payable ?? '' }}
                             </td>
-                            @if ($sportsBilling->pay_mode == 'card')
-                                <td>
-                                    {{ $sportsBilling->bank_charges ?? '' }}
-                                </td> 
-                            @else
-                                <td>
-                                    N/A
-                                </td> 
-                            @endif
                             <td>
                                 {{ $sportsBilling->net_pay ?? '' }}
                             </td>
                             <td>
+                                {{ App\Models\SportsBilling::PAY_MODE_SELECT[$sportsBilling->pay_mode] ?? '' }}
+                            </td>
+                            <td>
+                                {{ $sportsBilling->remarks ?? '' }}
+                            </td>
+                            <td>
                                 @can('sports_billing_show')
                                     <a class="btn btn-xs btn-primary" href="{{ route('admin.sports-billings.show', $sportsBilling->id) }}">
-                                        {{ trans('global.view') }}
+                                        {{ trans(tenant()->id.'/global.view') }}
                                     </a>
                                 @endcan
 
                                 @can('sports_billing_edit')
                                     <a class="btn btn-xs btn-info" href="{{ route('admin.sports-billings.edit', $sportsBilling->id) }}">
-                                        {{ trans('global.edit') }}
+                                        {{ trans(tenant()->id.'/global.edit') }}
                                     </a>
                                 @endcan
 
                                 @can('sports_billing_delete')
-                                    <form action="{{ route('admin.sports-billings.destroy', $sportsBilling->id) }}" method="POST" onsubmit="return confirm('{{ trans('global.areYouSure') }}');" style="display: inline-block;">
+                                    <form action="{{ route('admin.sports-billings.destroy', $sportsBilling->id) }}" method="POST" onsubmit="return confirm('{{ trans(tenant()->id.'/global.areYouSure') }}');" style="display: inline-block;">
                                         <input type="hidden" name="_method" value="DELETE">
                                         <input type="hidden" name="_token" value="{{ csrf_token() }}">
-                                        <input type="submit" class="btn btn-xs btn-danger" value="{{ trans('global.delete') }}">
+                                        <input type="submit" class="btn btn-xs btn-danger" value="{{ trans(tenant()->id.'/global.delete') }}">
                                     </form>
                                 @endcan
                                 
                                 <a target="_blank" class="btn btn-xs btn-success" href="{{ route('admin.sports-billings.printBill', $sportsBilling->id) }}">
-                                    {{ trans('global.datatables.print') }}
+                                    {{ trans(tenant()->id.'/global.datatables.print') }}
                                 </a>
 
 
@@ -192,7 +145,7 @@
     $(function () {
   let dtButtons = $.extend(true, [], $.fn.dataTable.defaults.buttons)
 @can('sports_billing_delete')
-  let deleteButtonTrans = '{{ trans('global.datatables.delete') }}'
+  let deleteButtonTrans = '{{ trans(tenant()->id.'/global.datatables.delete') }}'
   let deleteButton = {
     text: deleteButtonTrans,
     url: "{{ route('admin.sports-billings.massDestroy') }}",
@@ -203,12 +156,12 @@
       });
 
       if (ids.length === 0) {
-        alert('{{ trans('global.datatables.zero_selected') }}')
+        alert('{{ trans(tenant()->id.'/global.datatables.zero_selected') }}')
 
         return
       }
 
-      if (confirm('{{ trans('global.areYouSure') }}')) {
+      if (confirm('{{ trans(tenant()->id.'/global.areYouSure') }}')) {
         $.ajax({
           headers: {'x-csrf-token': _token},
           method: 'POST',

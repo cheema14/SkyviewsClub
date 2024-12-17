@@ -1,10 +1,10 @@
-@extends('layouts.admin')
+@extends('layouts.'.tenant()->id.'.admin')
 @section('content')
 
 <div class="card">
     <div class="card-header">
     <h4>
-        {{ trans('global.show') }} {{ trans('cruds.menu.title') }}
+        {{ trans(tenant()->id.'/global.show') }} {{ trans(tenant()->id.'/cruds.menu.title') }}
     </h4>
     </div>
 
@@ -12,14 +12,14 @@
         <div class="table-responsive">
             <!-- <div class="form-group">
                 <a class="btn btn-default" href="{{ route('admin.menus.index') }}">
-                    {{ trans('global.back_to_list') }}
+                    {{ trans(tenant()->id.'/global.back_to_list') }}
                 </a>
             </div> -->
             <table class="table table-borderless table-hover table-striped">
                 <tbody>
                     <tr>
                         <th>
-                            {{ trans('cruds.menu.fields.id') }}
+                            {{ trans(tenant()->id.'/cruds.menu.fields.id') }}
                         </th>
                         <td>
                             {{ $menu->id }}
@@ -27,7 +27,7 @@
                     </tr>
                     <tr>
                         <th>
-                            {{ trans('cruds.menu.fields.title') }}
+                            {{ trans(tenant()->id.'/cruds.menu.fields.title') }}
                         </th>
                         <td>
                             {{ $menu->title }}
@@ -35,7 +35,7 @@
                     </tr>
                     <tr>
                         <th>
-                            {{ trans('cruds.menu.fields.summary') }}
+                            {{ trans(tenant()->id.'/cruds.menu.fields.summary') }}
                         </th>
                         <td>
                             {{ $menu->summary }}
@@ -45,7 +45,7 @@
             </table>
             <!-- <div class="form-group">
                 <a class="btn btn-default" href="{{ route('admin.menus.index') }}">
-                    {{ trans('global.back_to_list') }}
+                    {{ trans(tenant()->id.'/global.back_to_list') }}
                 </a>
             </div> -->
         </div>
@@ -55,13 +55,13 @@
 <div class="card">
     <div class="card-header">
         <h4>
-        {{ trans('global.relatedData') }}
+        {{ trans(tenant()->id.'/global.relatedData') }}
         </h4>
     </div>
     <ul class="nav nav-tabs" role="tablist" id="relationship-tabs">
         <li class="nav-item">
             <a class="nav-link" href="#menu_items" role="tab" data-toggle="tab">
-                {{ trans('cruds.item.title') }}
+                {{ trans(tenant()->id.'/cruds.item.title') }}
             </a>
         </li>
     </ul>

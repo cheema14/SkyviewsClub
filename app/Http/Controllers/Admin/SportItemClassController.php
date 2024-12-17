@@ -26,7 +26,7 @@ class SportItemClassController extends Controller
     {
         abort_if(Gate::denies('sport_item_class_create'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        $item_types = SportItemType::pluck('item_type', 'id')->prepend(trans('global.pleaseSelect'), '');
+        $item_types = SportItemType::pluck('item_type', 'id')->prepend(trans(tenant()->id.'/global.pleaseSelect'), '');
 
         return view('admin.sportItemClasses.create', compact('item_types'));
     }
@@ -42,7 +42,7 @@ class SportItemClassController extends Controller
     {
         abort_if(Gate::denies('sport_item_class_edit'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        $item_types = SportItemType::pluck('item_type', 'id')->prepend(trans('global.pleaseSelect'), '');
+        $item_types = SportItemType::pluck('item_type', 'id')->prepend(trans(tenant()->id.'/global.pleaseSelect'), '');
 
         $sportItemClass->load('item_type');
 

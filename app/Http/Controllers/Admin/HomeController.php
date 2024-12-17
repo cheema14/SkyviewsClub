@@ -11,7 +11,7 @@ class HomeController
 {
     public function index()
     {
-
+        
         $settings1 = [
             'chart_title'           => 'Total Members',
             'chart_type'            => 'number_block',
@@ -121,7 +121,7 @@ class HomeController
             })
                 ->{$settings3['aggregate_function'] ?? 'count'}($settings3['aggregate_field'] ?? '*');
         }
-
+        
         return view('home', compact('settings1', 'settings2', 'settings3'));
 
     }

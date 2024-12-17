@@ -146,6 +146,23 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Central and Tenant Domains
+    |--------------------------------------------------------------------------
+    |
+    | 
+    | These are the domains specified for 
+    | central and tenants.
+    |
+    | 
+    |
+    */
+
+    'central_domain' => env('CENTRAL_DOMAIN', 'http://local.paf.gov.pk/'),
+    'paf_domain' => env('PAF_DOMAIN', 'yourapp.com'),
+    'pcom_domain' => env('PCOM_DOMAIN', 'yourapp.com'),
+
+    /*
+    |--------------------------------------------------------------------------
     | Autoloaded Service Providers
     |--------------------------------------------------------------------------
     |
@@ -197,7 +214,8 @@ return [
         App\Providers\RouteServiceProvider::class,
         App\Providers\HealthServiceProvider::class,
         Barryvdh\Snappy\ServiceProvider::class,
-
+        Mews\Captcha\CaptchaServiceProvider::class,
+        App\Providers\TenancyServiceProvider::class,
     ],
 
     /*
@@ -212,6 +230,7 @@ return [
     */
 
     'aliases' => Facade::defaultAliases()->merge([
+        'Captcha' => Mews\Captcha\Facades\Captcha::class,
         // 'ExampleClass' => App\Example\ExampleClass::class,
         // 'PDF' => Barryvdh\Snappy\Facades\SnappyPdf::class,
         // 'SnappyImage' => Barryvdh\Snappy\Facades\SnappyImage::class,

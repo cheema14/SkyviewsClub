@@ -33,7 +33,7 @@ class TransactionController extends Controller
                 $deleteGate    = 'transaction_delete';
                 $crudRoutePart = 'transactions';
 
-                return view('partials.datatablesActions', compact(
+                return view('partials.'.tenant()->id.'.datatablesActions', compact(
                     'viewGate',
                     'editGate',
                     'deleteGate',
@@ -78,9 +78,9 @@ class TransactionController extends Controller
     {
         abort_if(Gate::denies('transaction_create'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        $users = User::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
+        $users = User::pluck('name', 'id')->prepend(trans(tenant()->id.'/global.pleaseSelect'), '');
 
-        $orders = Order::pluck('status', 'id')->prepend(trans('global.pleaseSelect'), '');
+        $orders = Order::pluck('status', 'id')->prepend(trans(tenant()->id.'/global.pleaseSelect'), '');
 
         return view('admin.transactions.create', compact('orders', 'users'));
     }
@@ -96,9 +96,9 @@ class TransactionController extends Controller
     {
         abort_if(Gate::denies('transaction_edit'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        $users = User::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
+        $users = User::pluck('name', 'id')->prepend(trans(tenant()->id.'/global.pleaseSelect'), '');
 
-        $orders = Order::pluck('status', 'id')->prepend(trans('global.pleaseSelect'), '');
+        $orders = Order::pluck('status', 'id')->prepend(trans(tenant()->id.'/global.pleaseSelect'), '');
 
         $transaction->load('user', 'order');
 

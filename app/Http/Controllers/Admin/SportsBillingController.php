@@ -21,9 +21,9 @@ class SportsBillingController extends Controller
     public function index()
     {
         abort_if(Gate::denies('sports_billing_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
-
-        $sportsBillings = SportsBilling::orderBy('created_at','desc')->get();
-
+        
+        $sportsBillings = SportsBilling::with('sportsBill','sportBillingSportBillingItems.billing_item_name')->orderBy('created_at','desc')->get();
+        // dd($sportsBillings);
         return view('admin.sportsBillings.index', compact('sportsBillings'));
     }
 
@@ -31,7 +31,7 @@ class SportsBillingController extends Controller
     {
         abort_if(Gate::denies('sports_billing_create'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        $divisions = SportsDivision::pluck('division', 'id')->prepend(trans('global.pleaseSelect'), '');
+        $divisions = SportsDivision::pluck('division', 'id')->prepend(trans(tenant()->id.'/global.pleaseSelect'), '');
 
         $new_billing_id = SportsBilling::latest()->value('id');
 
@@ -52,7 +52,7 @@ class SportsBillingController extends Controller
                 'billing_item_type_id' => $request->item_type_id,
                 'billing_item_class_id' => $value['billing_item_class_id'],
                 'billing_item_name_id' => $value['billing_item_name_id'],
-                'billing_item_description' => $value['billing_item_description'],
+                // 'billing_item_description' => $value['billing_item_description'],
                 'quantity' => $value['quantity'],
                 'rate' => $value['rate'],
                 'amount' => $value['amount'],
@@ -185,7 +185,7 @@ class SportsBillingController extends Controller
         $net_payable = $data->net_pay;
         
         $prepared_by = auth()->user()->name ?? 'Sports Admin';
-
+        
         return view('admin.sportsBillings.print_sports_bill', compact('data', 'gross_total', 'total_payable', 'net_payable','prepared_by'));
 
     }

@@ -1,4 +1,4 @@
-@extends('layouts.admin')
+@extends('layouts.'.tenant()->id.'/admin')
 @section('content')
 @section('styles')
 <style>
@@ -36,6 +36,7 @@
       max-width: 150px;
       width: 100%;
     }
+    
 </style>
 @endsection
 
@@ -43,16 +44,15 @@
 
 <div class="card" x-data="handler()">
     <div class="card-header">
-        {{ trans('global.create') }} {{ trans('cruds.sportsBilling.title_singular') }}
-
-        <button x-show="showDependents" x-model="showDependents" data-toggle="modal" data-target="#showMemberInfo" style="float:right" class="btn btn-success">{{ trans('cruds.sportsBilling.showDependents') }} </button>
+        {{ trans(tenant()->id.'/global.create') }} {{ trans(tenant()->id.'/cruds.sportsBilling.title_singular') }}
+        <button x-show="showDependents" x-model="showDependents" data-toggle="modal" data-target="#showMemberInfo" style="float:right" class="btn btn-success">{{ trans(tenant()->id.'/cruds.sportsBilling.showDependents') }} </button>
     </div>
 
     <form method="POST" action="{{ route("admin.sports-billings.store") }}" enctype="multipart/form-data">
     @csrf
         <div class="card-body row" x-data="{ membershipNo: '', memberName: '', nonMemberName: '' }">
             <div class="form-group col-md-4" x-show="!nonMemberName">
-                <label class="required" for="membership_no">{{ trans('cruds.sportsBilling.fields.membership_no') }}</label>
+                <label class="required" for="membership_no">{{ trans(tenant()->id.'/cruds.sportsBilling.fields.membership_no') }}</label>
                 <input class="form-control {{ $errors->has('membership_no') ? 'is-invalid' : '' }}" x-model="membershipNo" x-on:blur="getMemberInfo($event)" type="text" name="membership_no" id="membership_no" value="{{ old('membership_no', '') }}">
                 <p id="membership_no_error" style="color:red;display:none;">Invalid Membership no</p>
                 @if($errors->has('membership_no'))
@@ -60,40 +60,40 @@
                         {{ $errors->first('membership_no') }}
                     </div>
                 @endif
-                <span class="help-block">{{ trans('cruds.member.fields.membership_no_helper') }}</span>
+                <span class="help-block">{{ trans(tenant()->id.'/cruds.member.fields.membership_no_helper') }}</span>
             </div>
             <div class="form-group col-md-4" x-show="!nonMemberName">
-                <label for="member_name">{{ trans('cruds.sportsBilling.fields.member_name') }}</label>
+                <label for="member_name">{{ trans(tenant()->id.'/cruds.sportsBilling.fields.member_name') }}</label>
                 <input readonly class="form-control {{ $errors->has('member_name') ? 'is-invalid' : '' }}" x-model="memberName" type="text" name="member_name" id="member_name">
                 @if($errors->has('member_name'))
                     <div class="invalid-feedback">
                         {{ $errors->first('member_name') }}
                     </div>
                 @endif
-                <span class="help-block">{{ trans('cruds.sportsBilling.fields.member_name_helper') }}</span>
+                <span class="help-block">{{ trans(tenant()->id.'/cruds.sportsBilling.fields.member_name_helper') }}</span>
             </div>
             <div class="form-group col-md-4" x-show="!nonMemberName">
-                <label for="membership_status_label">{{ trans('cruds.sportsBilling.fields.membership_status') }}</label>
+                <label for="membership_status_label">{{ trans(tenant()->id.'/cruds.sportsBilling.fields.membership_status') }}</label>
                 <input readonly class="form-control {{ $errors->has('membership_status') ? 'is-invalid' : '' }}" x-model="memberStatus" type="text" name="membership_status" id="membership_status">
                 @if($errors->has('membership_status'))
                     <div class="invalid-feedback">
                         {{ $errors->first('membership_status') }}
                     </div>
                 @endif
-                <span class="help-block">{{ trans('cruds.sportsBilling.fields.member_name_helper') }}</span>
+                <span class="help-block">{{ trans(tenant()->id.'/cruds.sportsBilling.fields.member_name_helper') }}</span>
             </div>
             <div class="form-group col-md-4" x-show="!membershipNo">
-                <label for="non_member_name">{{ trans('cruds.sportsBilling.fields.non_member_name') }}</label>
+                <label for="non_member_name">{{ trans(tenant()->id.'/cruds.sportsBilling.fields.non_member_name') }}</label>
                 <input class="form-control {{ $errors->has('non_member_name') ? 'is-invalid' : '' }}" x-model="nonMemberName" type="text" name="non_member_name" id="non_member_name" value="{{ old('non_member_name', '') }}">
                 @if($errors->has('non_member_name'))
                     <div class="invalid-feedback">
                         {{ $errors->first('non_member_name') }}
                     </div>
                 @endif
-                <span class="help-block">{{ trans('cruds.sportsBilling.fields.non_member_name_helper') }}</span>
+                <span class="help-block">{{ trans(tenant()->id.'/cruds.sportsBilling.fields.non_member_name_helper') }}</span>
             </div>
             <div class="form-group col-md-4">
-                <label class="required" for="bill_date">{{ trans('cruds.sportsBilling.fields.bill_date') }}</label>
+                <label class="required" for="bill_date">{{ trans(tenant()->id.'/cruds.sportsBilling.fields.bill_date') }}</label>
                 <input disabled class="form-control date {{ $errors->has('bill_date') ? 'is-invalid' : '' }}" type="text" name="bill_date" id="bill_date" value="{{ old('bill_date') }}" required>
                 <input type="hidden" id="bill_date_post" name="bill_date" >
                 @if($errors->has('bill_date'))
@@ -101,102 +101,102 @@
                         {{ $errors->first('bill_date') }}
                     </div>
                 @endif
-                <span class="help-block">{{ trans('cruds.sportsBilling.fields.bill_date_helper') }}</span>
+                <span class="help-block">{{ trans(tenant()->id.'/cruds.sportsBilling.fields.bill_date_helper') }}</span>
             </div>
             <div class="form-group col-md-4">
-                <label for="bill_number">{{ trans('cruds.sportsBilling.fields.bill_number') }}</label>
+                <label for="bill_number">{{ trans(tenant()->id.'/cruds.sportsBilling.fields.bill_number') }}</label>
                 <input readonly class="form-control {{ $errors->has('bill_number') ? 'is-invalid' : '' }}" type="text" name="bill_number" id="bill_number" value="{{ $new_billing_id }}">
                 @if($errors->has('bill_number'))
                     <div class="invalid-feedback">
                         {{ $errors->first('bill_number') }}
                     </div>
                 @endif
-                <span class="help-block">{{ trans('cruds.sportsBilling.fields.bill_number_helper') }}</span>
+                <span class="help-block">{{ trans(tenant()->id.'/cruds.sportsBilling.fields.bill_number_helper') }}</span>
             </div>
             <div class="form-group col-md-4">
-                <label for="remarks">{{ trans('cruds.sportsBilling.fields.remarks') }}</label>
+                <label for="remarks">{{ trans(tenant()->id.'/cruds.sportsBilling.fields.remarks') }}</label>
                 <input class="form-control {{ $errors->has('remarks') ? 'is-invalid' : '' }}" type="text" name="remarks" id="remarks" value="{{ old('remarks', '') }}">
                 @if($errors->has('remarks'))
                     <div class="invalid-feedback">
                         {{ $errors->first('remarks') }}
                     </div>
                 @endif
-                <span class="help-block">{{ trans('cruds.sportsBilling.fields.remarks_helper') }}</span>
+                <span class="help-block">{{ trans(tenant()->id.'/cruds.sportsBilling.fields.remarks_helper') }}</span>
             </div>
             <div class="form-group col-md-4">
-                <label for="ref_club">{{ trans('cruds.sportsBilling.fields.ref_club') }}</label>
+                <label for="ref_club">{{ trans(tenant()->id.'/cruds.sportsBilling.fields.ref_club') }}</label>
                 <input class="form-control {{ $errors->has('ref_club') ? 'is-invalid' : '' }}" type="text" name="ref_club" id="ref_club" value="{{ old('ref_club', '') }}">
                 @if($errors->has('ref_club'))
                     <div class="invalid-feedback">
                         {{ $errors->first('ref_club') }}
                     </div>
                 @endif
-                <span class="help-block">{{ trans('cruds.sportsBilling.fields.ref_club_helper') }}</span>
+                <span class="help-block">{{ trans(tenant()->id.'/cruds.sportsBilling.fields.ref_club_helper') }}</span>
             </div>
             <div class="form-group col-md-4">
-                <label for="club_id_ref">{{ trans('cruds.sportsBilling.fields.club_id_ref') }}</label>
+                <label for="club_id_ref">{{ trans(tenant()->id.'/cruds.sportsBilling.fields.club_id_ref') }}</label>
                 <input class="form-control {{ $errors->has('club_id_ref') ? 'is-invalid' : '' }}" type="text" name="club_id_ref" id="club_id_ref" value="{{ old('club_id_ref', '') }}">
                 @if($errors->has('club_id_ref'))
                     <div class="invalid-feedback">
                         {{ $errors->first('club_id_ref') }}
                     </div>
                 @endif
-                <span class="help-block">{{ trans('cruds.sportsBilling.fields.club_id_ref_helper') }}</span>
+                <span class="help-block">{{ trans(tenant()->id.'/cruds.sportsBilling.fields.club_id_ref_helper') }}</span>
             </div>
             <div class="form-group col-md-4">
-                <label for="tee_off">{{ trans('cruds.sportsBilling.fields.tee_off') }}</label>
+                <label for="tee_off">{{ trans(tenant()->id.'/cruds.sportsBilling.fields.tee_off') }}</label>
                 <input class="form-control {{ $errors->has('tee_off') ? 'is-invalid' : '' }}" type="text" name="tee_off" id="tee_off" value="{{ old('tee_off', '') }}">
                 @if($errors->has('tee_off'))
                     <div class="invalid-feedback">
                         {{ $errors->first('tee_off') }}
                     </div>
                 @endif
-                <span class="help-block">{{ trans('cruds.sportsBilling.fields.tee_off_helper') }}</span>
+                <span class="help-block">{{ trans(tenant()->id.'/cruds.sportsBilling.fields.tee_off_helper') }}</span>
             </div>
             <div class="form-group col-md-4">
-                <label for="holes">{{ trans('cruds.sportsBilling.fields.holes') }}</label>
+                <label for="holes">{{ trans(tenant()->id.'/cruds.sportsBilling.fields.holes') }}</label>
                 <input class="form-control {{ $errors->has('holes') ? 'is-invalid' : '' }}" type="text" name="holes" id="holes" value="{{ old('holes', '') }}">
                 @if($errors->has('holes'))
                     <div class="invalid-feedback">
                         {{ $errors->first('holes') }}
                     </div>
                 @endif
-                <span class="help-block">{{ trans('cruds.sportsBilling.fields.holes_helper') }}</span>
+                <span class="help-block">{{ trans(tenant()->id.'/cruds.sportsBilling.fields.holes_helper') }}</span>
             </div>
             <div class="form-group col-md-4">
-                <label for="caddy">{{ trans('cruds.sportsBilling.fields.caddy') }}</label>
+                <label for="caddy">{{ trans(tenant()->id.'/cruds.sportsBilling.fields.caddy') }}</label>
                 <input class="form-control {{ $errors->has('caddy') ? 'is-invalid' : '' }}" type="text" name="caddy" id="caddy" value="{{ old('caddy', '') }}">
                 @if($errors->has('caddy'))
                     <div class="invalid-feedback">
                         {{ $errors->first('caddy') }}
                     </div>
                 @endif
-                <span class="help-block">{{ trans('cruds.sportsBilling.fields.caddy_helper') }}</span>
+                <span class="help-block">{{ trans(tenant()->id.'/cruds.sportsBilling.fields.caddy_helper') }}</span>
             </div>
             <div class="form-group col-md-4">
-                <label for="temp_mbr">{{ trans('cruds.sportsBilling.fields.temp_mbr') }}</label>
+                <label for="temp_mbr">{{ trans(tenant()->id.'/cruds.sportsBilling.fields.temp_mbr') }}</label>
                 <input class="form-control {{ $errors->has('temp_mbr') ? 'is-invalid' : '' }}" type="text" name="temp_mbr" id="temp_mbr" value="{{ old('temp_mbr', '') }}">
                 @if($errors->has('temp_mbr'))
                     <div class="invalid-feedback">
                         {{ $errors->first('temp_mbr') }}
                     </div>
                 @endif
-                <span class="help-block">{{ trans('cruds.sportsBilling.fields.temp_mbr_helper') }}</span>
+                <span class="help-block">{{ trans(tenant()->id.'/cruds.sportsBilling.fields.temp_mbr_helper') }}</span>
             </div>
             <div class="form-group col-md-4">
-                <label for="temp_caddy">{{ trans('cruds.sportsBilling.fields.temp_caddy') }}</label>
+                <label for="temp_caddy">{{ trans(tenant()->id.'/cruds.sportsBilling.fields.temp_caddy') }}</label>
                 <input class="form-control {{ $errors->has('temp_caddy') ? 'is-invalid' : '' }}" type="text" name="temp_caddy" id="temp_caddy" value="{{ old('temp_caddy', '') }}">
                 @if($errors->has('temp_caddy'))
                     <div class="invalid-feedback">
                         {{ $errors->first('temp_caddy') }}
                     </div>
                 @endif
-                <span class="help-block">{{ trans('cruds.sportsBilling.fields.temp_caddy_helper') }}</span>
+                <span class="help-block">{{ trans(tenant()->id.'/cruds.sportsBilling.fields.temp_caddy_helper') }}</span>
             </div>
             <div class="form-group col-md-4">
-                <label>{{ trans('cruds.sportsBilling.fields.pay_mode') }}</label>
+                <label>{{ trans(tenant()->id.'/cruds.sportsBilling.fields.pay_mode') }}</label>
                 <select x-on:change="showBankCharges($event)" x-model="payMode" class="form-control {{ $errors->has('pay_mode') ? 'is-invalid' : '' }}" name="pay_mode" id="pay_mode">
-                    <option value disabled {{ old('pay_mode', null) === null ? 'selected' : '' }}>{{ trans('global.pleaseSelect') }}</option>
+                    <option value disabled {{ old('pay_mode', null) === null ? 'selected' : '' }}>{{ trans(tenant()->id.'/global.pleaseSelect') }}</option>
                     @foreach(App\Models\SportsBilling::PAY_MODE_SELECT as $key => $label)
                         <option x-show="nonMemberName === '' || ['credit'].indexOf('{{ $key }}') === -1" value="{{ $key }}" value="{{ $key }}" {{ old('pay_mode', '') === (string) $key ? 'selected' : '' }}>{{ $label }}</option>
                     @endforeach
@@ -207,11 +207,11 @@
                         {{ $errors->first('pay_mode') }}
                     </div>
                 @endif
-                <span class="help-block">{{ trans('cruds.sportsBilling.fields.pay_mode_helper') }}</span>
+                <span class="help-block">{{ trans(tenant()->id.'/cruds.sportsBilling.fields.pay_mode_helper') }}</span>
             </div>
 
             <div class="form-group col-md-4">
-                <label>{{ trans('cruds.sportsBilling.fields.division') }}</label>
+                <label>{{ trans(tenant()->id.'/cruds.sportsBilling.fields.division') }}</label>
                 <select required name="item_division_id" class="form-control {{ $errors->has('item') ? 'is-invalid' : '' }}" id="item_division" x-on:change="getDivision($event)">
                     @foreach($divisions as $id => $entry)
                     <option value="{{ $id }}" x-bind:selected="shared.division == '{{ $id }}' ? true : false">{{ $entry }}</option>
@@ -222,11 +222,11 @@
                         {{ $errors->first('division') }}
                     </div>
                 @endif
-                <span class="help-block">{{ trans('cruds.sportsBilling.fields.division_helper') }}</span>
+                <span class="help-block">{{ trans(tenant()->id.'/cruds.sportsBilling.fields.division_helper') }}</span>
             </div>
 
             <div class="form-group col-md-4">
-                <label>{{ trans('cruds.sportsBilling.fields.item_type') }}</label>
+                <label>{{ trans(tenant()->id.'/cruds.sportsBilling.fields.item_type') }}</label>
                 <select required  x-on:change="getClass($event)" name="item_type_id" class="form-control {{ $errors->has('item') ? 'is-invalid' : '' }}" id="item_type" x-model="shared.itemType" >
                         <option value="" disabled selected>Select an option</option>
                             <template x-for="type in fields.types">
@@ -238,11 +238,11 @@
                         {{ $errors->first('item_type') }}
                     </div>
                 @endif
-                <span class="help-block">{{ trans('cruds.sportsBilling.fields.item_type_helper') }}</span>
+                <span class="help-block">{{ trans(tenant()->id.'/cruds.sportsBilling.fields.item_type_helper') }}</span>
             </div>
 
             <div class="form-group col-md-4">
-                <label>{{ trans('cruds.sportsBilling.fields.discount') }}</label>
+                <label>{{ trans(tenant()->id.'/cruds.sportsBilling.fields.discount') }}</label>
                 <input x-model="discountPercent" x-on:change="calculateDiscountOnChange($event)" class="form-control {{ $errors->has('discount') ? 'is-invalid' : '' }}" type="number" name="discount" id="discount" value="{{ old('discount', '') }}" step="0.01">
             </div>
             
@@ -261,7 +261,7 @@
                             <th>Item Class</th>
                             <th>Item Name</th>
                             <th>Item Code</th>
-                            <th>Item Description</th>
+                            {{-- <th>Item Description</th> --}}
                             <th>Quantity</th>
                             <th>Rate</th>
                             <th>Amount</th>
@@ -310,10 +310,9 @@
                                     {{-- <input type="hidden" x-model="field.item_id" :name="`items[${index}][item_id]`"> --}}
                                     <input required x-model="field.item_code" readonly :name="`items[${index}][billing_issue_item_id]`" class="form-control">
                                 </td>
-                                <td>
-                                    {{-- Item Description --}}
+                                {{-- <td>
                                     <input required x-model="field.item_description" :name="`items[${index}][billing_item_description]`" class="form-control">
-                                </td>
+                                </td> --}}
                                 <td>
                                     {{-- Quantity --}}
                                     <input required x-on:change="calculateAmount(index)" x-model="field.quantity" :name="`items[${index}][quantity]`" type="number" class="form-control" min="0" max="1000" @input="limitQuantityInput($event, index)">
@@ -366,7 +365,7 @@
 
             <div class="form-group col-md-4">
                 <button class="btn btn-danger" type="submit">
-                    {{ trans('global.save') }}
+                    {{ trans(tenant()->id.'/global.save') }}
                 </button>
             </div>
         </div>
@@ -449,7 +448,9 @@
                this.globalIndex = this.globalIndex + 1;
 
                // Reset the Item Type Dropdown
-               this.shared.itemType = '';
+               //    this.shared.itemType = '';
+
+               this.getClassFromOutside(this.shared.itemType);
             },
             removeField(index) {
                this.fields.splice(index, 1);
@@ -475,21 +476,29 @@
                     
             },
             async getClassFromOutside(event){
+                console.log("itemType",event);
+                let data = await (await fetch("{{ route('admin.sports-items.get_sports_classes') }}?item_type=" + event)).json();
                 
-                let data = await (await fetch("{{ route('admin.sports-items.get_sports_classes') }}?item_type=" + event.target.value)).json();
+                // Populate the class
+                this.fields[this.globalIndex].classes = data.itemClasses.sport_item_classes;
                 // this.getClass(false,data);
             },
             async getClass(event){
                     // this.fields.classes = [];
                     // this.fields.items = [];
                     // this.fields[index].quantity = 0;
-                    // console.log("index",this.fields);
+                    
                     let data = await (await fetch("{{ route('admin.sports-items.get_sports_classes') }}?item_type=" + event.target.value)).json();
                     this.fields[this.globalIndex].classes = data.itemClasses.sport_item_classes;
+                    // Now we have added the item type globally and 
+                    // it will be used for every item
+                    this.shared.itemType = event.target.value;
+
             },
             async getItems(index){
                 this.fields.items = [];
                 this.fields[this.globalIndex].quantity = 0;
+                this.fields[this.globalIndex].amount = 0;
                 let data = await (await fetch("{{ route('admin.sports-items.get_sports_items') }}?item_class=" + this.fields[[this.globalIndex]].item_class)).json();
                 this.fields[this.globalIndex].items = data.itemNames.sport_items;
                 this.fields.item_code = data.itemNames.sport_items[[this.globalIndex]].id;
@@ -500,7 +509,8 @@
                 this.fields[[this.globalIndex]].itemDetails = data.itemDetails;
                 this.fields[[this.globalIndex]].item_code = data.itemDetails.id;
                 this.fields[[this.globalIndex]].rate = data.itemDetails.item_rate;
-                // console.log("itemDetails",this.fields[index].itemDetails);
+                this.fields[this.globalIndex].quantity = 0;
+                this.fields[this.globalIndex].amount = 0;
             },
             async getLot(item_id) {
                 let data = await (await fetch("{{ route('admin.store-items.get_lot_by_item') }}?item_id=" + item_id)).json();
@@ -597,7 +607,7 @@
 
                     // document.getElementByClass(".memberPhoto").attr('src',data.memberInfo.dependents.media.original_url);
                     $(".memberStatus").text(data.memberInfo.membership_status);
-                    // console.log("member dependents",data.memberInfo.dependents);
+                    
                     if(data.memberInfo.dependents){
                         this.showDependents = true;
                         
@@ -605,13 +615,23 @@
                         
                         // Clear existing content in modal body
                         $(".modal-body").empty();
-
+                        
                         // Iterate through dependents and append information to modal body
+                        if(data.memberInfo.dependents.length === 0){
+                            $(".modal-body").append('<p>No dependents found for this Member</p>');
+                        }
+
+                        // Populate the member photo
+                        const imgMemberSrc = data.memberInfo.media.length > 0 ? data.memberInfo.media[0].preview : `https://ui-avatars.com/api/?rounded=true&name=${encodeURIComponent('DEFAULT_NAME')}`; 
+                        
+                        $(".modal-body").append(`
+                            <img src="${imgMemberSrc}" alt="Member Photo" style="border-radius:50%;max-width: 100%; height: 150px;width:150px;">
+                        `);
+
                         data.memberInfo.dependents.forEach(dependent => {
-                            const imgSrc = dependent.media.length > 0 ? dependent.media[0].thumbnail : `https://ui-avatars.com/api/?rounded=true&name=${encodeURIComponent('DEFAULT_NAME')}`;
-                            
+                            const imgSrc = dependent.media.length > 0 ? dependent.media[0].preview : `https://ui-avatars.com/api/?rounded=true&name=${encodeURIComponent('DEFAULT_NAME')}`; 
                             $(".modal-body").append(`
-                                <img src="${imgSrc}" alt="Dependent Photo" style="max-width: 100%; height: auto;">
+                                <br><br><br>
                                 <p>Dependent Name: ${dependent.name}</p>
                                 <p>Dependent Relationship: ${dependent.relation}</p>
                                 <p>Dependent Date of Birth: ${dependent.dob}</p>
@@ -620,9 +640,8 @@
                                 <hr>
                             `);
                         });
-
-
                     }
+                    
                 }
 
                 if(membershipNumber == ''){

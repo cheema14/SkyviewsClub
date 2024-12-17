@@ -1,10 +1,10 @@
-@extends('layouts.admin')
+@extends('layouts.'.tenant()->id.'.admin')
 @section('content')
 
 <div class="card">
     <div class="card-header">
         <h4>
-            {{ trans('global.show') }} {{ trans('cruds.item.title') }}
+            {{ trans(tenant()->id.'/global.show') }} {{ trans(tenant()->id.'/cruds.item.title') }}
         </h4>
     </div>
 
@@ -12,14 +12,14 @@
         <div class="form-group">
             <!-- <div class="form-group">
                 <a class="btn btn-default" href="{{ route('admin.items.index') }}">
-                    {{ trans('global.back_to_list') }}
+                    {{ trans(tenant()->id.'/global.back_to_list') }}
                 </a>
             </div> -->
             <table class="table table-borderless table-hover table-striped">
                 <tbody>
                     <tr>
                         <th>
-                            {{ trans('cruds.item.fields.id') }}
+                            {{ trans(tenant()->id.'/cruds.item.fields.id') }}
                         </th>
                         <td>
                             {{ $item->id }}
@@ -27,7 +27,7 @@
                     </tr>
                     <tr>
                         <th>
-                            {{ trans('cruds.item.fields.title') }}
+                            {{ trans(tenant()->id.'/cruds.item.fields.title') }}
                         </th>
                         <td>
                             {{ $item->title }}
@@ -35,7 +35,7 @@
                     </tr>
                     <tr>
                         <th>
-                            {{ trans('cruds.item.fields.menu') }}
+                            {{ trans(tenant()->id.'/cruds.item.fields.menu') }}
                         </th>
                         <td>
                             @foreach($item->menus as $key => $menu)
@@ -45,7 +45,7 @@
                     </tr>
                     <tr>
                         <th>
-                            {{ trans('cruds.item.fields.menu_item_category') }}
+                            {{ trans(tenant()->id.'/cruds.item.fields.menu_item_category') }}
                         </th>
                         <td>
                             {{ $item->menu_item_category->name ?? '' }}
@@ -53,7 +53,7 @@
                     </tr>
                     <tr>
                         <th>
-                            {{ trans('cruds.item.fields.summary') }}
+                            {{ trans(tenant()->id.'/cruds.item.fields.summary') }}
                         </th>
                         <td>
                             {{ $item->summary }}
@@ -61,7 +61,7 @@
                     </tr>
                     <tr>
                         <th>
-                            {{ trans('cruds.item.fields.price') }}
+                            {{ trans(tenant()->id.'/cruds.item.fields.price') }}
                         </th>
                         <td>
                             {{ $item->price }}
@@ -71,7 +71,7 @@
             </table>
             <!-- <div class="form-group">
                 <a class="btn btn-default" href="{{ route('admin.items.index') }}">
-                    {{ trans('global.back_to_list') }}
+                    {{ trans(tenant()->id.'/global.back_to_list') }}
                 </a>
             </div> -->
         </div>
@@ -80,12 +80,12 @@
 
 {{-- <div class="card">
     <div class="card-header">
-        {{ trans('global.relatedData') }}
+        {{ trans(tenant()->id.'/global.relatedData') }}
     </div>
     <ul class="nav nav-tabs" role="tablist" id="relationship-tabs">
         <li class="nav-item">
             <a class="nav-link" href="#item_order_items" role="tab" data-toggle="tab">
-                {{ trans('cruds.orderItem.title') }}
+                {{ trans(tenant()->id.'/cruds.orderItem.title') }}
             </a>
         </li>
     </ul>

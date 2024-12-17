@@ -1,10 +1,10 @@
-@extends('layouts.admin')
+@extends('layouts.'.tenant()->id.'.admin')
 @section('content')
 <!-- @can('stock_issue_item_create')
     <div style="margin-bottom: 10px;" class="row">
         <div class="col-lg-12">
             <a class="btn btn-success" href="{{ route('admin.stock-issue-items.create') }}">
-                {{ trans('global.add') }} {{ trans('cruds.stockIssueItem.title_singular') }}
+                {{ trans(tenant()->id.'/global.add') }} {{ trans(tenant()->id.'/cruds.stockIssueItem.title_singular') }}
             </a>
         </div>
     </div>
@@ -14,13 +14,13 @@
         <div class="row align-items-center">
             <div class="col-sm-6">
                 <h4>
-                {{ trans('cruds.stockIssueItem.title_singular') }} {{ trans('global.list') }}
+                {{ trans(tenant()->id.'/cruds.stockIssueItem.title_singular') }} {{ trans(tenant()->id.'/global.list') }}
                 </h4>
             </div>
             @can('stock_issue_item_create')
             <div class="col-sm-6 ml-auto text-sm-right">
                 <a class="btn btn-info px-4" href="{{ route('admin.stock-issue-items.create') }}">
-                {{ trans('global.add') }} {{ trans('cruds.stockIssueItem.title_singular') }}
+                {{ trans(tenant()->id.'/global.add') }} {{ trans(tenant()->id.'/cruds.stockIssueItem.title_singular') }}
                 </a>
             </div>
             @endcan
@@ -35,25 +35,25 @@
 
                     </th> --}}
                     <th>
-                        {{ trans('cruds.stockIssueItem.fields.id') }}
+                        {{ trans(tenant()->id.'/cruds.stockIssueItem.fields.id') }}
                     </th>
                     <th>
-                        {{ trans('cruds.stockIssueItem.fields.item') }}
+                        {{ trans(tenant()->id.'/cruds.stockIssueItem.fields.item') }}
                     </th>
                     <th>
-                        {{ trans('cruds.stockIssueItem.fields.unit') }}
+                        {{ trans(tenant()->id.'/cruds.stockIssueItem.fields.unit') }}
                     </th>
                     <th>
-                        {{ trans('cruds.stockIssueItem.fields.lot_no') }}
+                        {{ trans(tenant()->id.'/cruds.stockIssueItem.fields.lot_no') }}
                     </th>
                     <th>
-                        {{ trans('cruds.stockIssueItem.fields.stock_required') }}
+                        {{ trans(tenant()->id.'/cruds.stockIssueItem.fields.stock_required') }}
                     </th>
                     <th>
-                        {{ trans('cruds.stockIssueItem.fields.issued_qty') }}
+                        {{ trans(tenant()->id.'/cruds.stockIssueItem.fields.issued_qty') }}
                     </th>
                     {{-- <th>
-                        {{ trans('cruds.stockIssueItem.fields.stock_issue') }}
+                        {{ trans(tenant()->id.'/cruds.stockIssueItem.fields.stock_issue') }}
                     </th> --}}
                     <th>
                         Actions
@@ -73,7 +73,7 @@
     $(function () {
   let dtButtons = $.extend(true, [], $.fn.dataTable.defaults.buttons)
 @can('stock_issue_item_delete')
-  let deleteButtonTrans = '{{ trans('global.datatables.delete') }}';
+  let deleteButtonTrans = '{{ trans(tenant()->id.'/global.datatables.delete') }}';
   let deleteButton = {
     text: deleteButtonTrans,
     url: "{{ route('admin.stock-issue-items.massDestroy') }}",
@@ -84,12 +84,12 @@
       });
 
       if (ids.length === 0) {
-        alert('{{ trans('global.datatables.zero_selected') }}')
+        alert('{{ trans(tenant()->id.'/global.datatables.zero_selected') }}')
 
         return
       }
 
-      if (confirm('{{ trans('global.areYouSure') }}')) {
+      if (confirm('{{ trans(tenant()->id.'/global.areYouSure') }}')) {
         $.ajax({
           headers: {'x-csrf-token': _token},
           method: 'POST',
@@ -118,7 +118,7 @@
 { data: 'stock_required', name: 'stock_required' },
 { data: 'issued_qty', name: 'issued_qty' },
 // { data: 'stock_issue_issue_no', name: 'stock_issue_id' },
-{ data: 'actions', name: '{{ trans('global.actions') }}' }
+{ data: 'actions', name: '{{ trans(tenant()->id.'/global.actions') }}' }
     ],
     orderCellsTop: true,
     order: [[ 0, 'desc' ]],

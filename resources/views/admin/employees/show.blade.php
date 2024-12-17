@@ -1,23 +1,34 @@
-@extends('layouts.admin')
+@extends('layouts.'.tenant()->id.'.admin')
 @section('content')
 <div class="form-group">
     {{-- <a class="btn btn-dark" href="{{ route('admin.employees.index') }}">
-        {{ trans('global.back_to_list') }}
+        {{ trans(tenant()->id.'/global.back_to_list') }}
     </a> --}}
+    {{-- <img src="{{ asset('storage/employees/1/6731a8aba906b_pcom-dashboard.png') }}" > --}}
+    
 </div>
 <div class="card">
     <div class="card-header">
-        {{ trans('global.show') }} {{ trans('cruds.employee.title') }}
+        {{ trans(tenant()->id.'/global.show') }} {{ trans(tenant()->id.'/cruds.employee.title') }}
     </div>
     
     <div class="card-body">
         <div class="table-responsive">
-
             <table class="table table-borderless table-striped">
                 <tbody>
                     <tr>
                         <th>
-                            {{ trans('cruds.employee.fields.id') }}
+                            {{ trans(tenant()->id.'/cruds.employee.fields.employee_photo') }}
+                        </th>
+                        <td>
+                            <a target="_blank" href="{{ $employee->employee_photo?->getUrl() }}">
+                                <img src="{{ $employee->employee_photo?->getUrl('thumb') }}" class="img-fluid" alt="">
+                            </a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            {{ trans(tenant()->id.'/cruds.employee.fields.id') }}
                         </th>
                         <td>
                             {{ $employee->id }}
@@ -25,7 +36,7 @@
                     </tr>
                     <tr>
                         <th>
-                            {{ trans('cruds.employee.fields.name') }}
+                            {{ trans(tenant()->id.'/cruds.employee.fields.name') }}
                         </th>
                         <td>
                             {{ $employee->name ?? '' }}
@@ -33,7 +44,7 @@
                     </tr>
                     <tr>
                         <th>
-                            {{ trans('cruds.employee.fields.father_name') }}
+                            {{ trans(tenant()->id.'/cruds.employee.fields.father_name') }}
                         </th>
                         <td>
                             {{ $employee->father_name ?? '' }}
@@ -41,7 +52,7 @@
                     </tr>
                     <tr>
                         <th>
-                            {{ trans('cruds.employee.fields.phone') }}
+                            {{ trans(tenant()->id.'/cruds.employee.fields.phone') }}
                         </th>
                         <td>
                             {{ $employee->phone ?? '' }}
@@ -49,7 +60,7 @@
                     </tr>
                     <tr>
                         <th>
-                            {{ trans('cruds.employee.fields.designation') }}
+                            {{ trans(tenant()->id.'/cruds.employee.fields.designation') }}
                         </th>
                         <td>
                             {{ $employee->designation ?? '' }}
@@ -57,7 +68,7 @@
                     </tr>
                     <tr>
                         <th>
-                            {{ trans('cruds.employee.fields.employee_type') }}
+                            {{ trans(tenant()->id.'/cruds.employee.fields.employee_type') }}
                         </th>
                         <td>
                             {{ $employee->employee_type ?? '' }}
@@ -65,7 +76,7 @@
                     </tr>
                     <tr>
                         <th>
-                            {{ trans('cruds.employee.fields.service_no') }}
+                            {{ trans(tenant()->id.'/cruds.employee.fields.service_no') }}
                         </th>
                         <td>
                             {{ $employee->service_no ?? '' }}
@@ -73,7 +84,7 @@
                     </tr>
                     <tr>
                         <th>
-                            {{ trans('cruds.employee.fields.joining_date') }}
+                            {{ trans(tenant()->id.'/cruds.employee.fields.joining_date') }}
                         </th>
                         <td>
                             {{ $employee->joining_date ?? '' }}
@@ -81,7 +92,7 @@
                     </tr>
                     <tr>
                         <th>
-                            {{ trans('cruds.employee.fields.date_of_birth') }}
+                            {{ trans(tenant()->id.'/cruds.employee.fields.date_of_birth') }}
                         </th>
                         <td>
                             {{ $employee->date_of_birth ?? '' }}
@@ -89,7 +100,7 @@
                     </tr>
                     <tr>
                         <th>
-                            {{ trans('cruds.employee.fields.religion') }}
+                            {{ trans(tenant()->id.'/cruds.employee.fields.religion') }}
                         </th>
                         <td>
                             {{ $employee->religion ?? '' }}
@@ -97,7 +108,7 @@
                     </tr>
                     <tr>
                         <th>
-                            {{ trans('cruds.employee.fields.cnic_no') }}
+                            {{ trans(tenant()->id.'/cruds.employee.fields.cnic_no') }}
                         </th>
                         <td>
                             {{ $employee->cnic_no ?? '' }}
@@ -105,7 +116,7 @@
                     </tr>
                     <tr>
                         <th>
-                            {{ trans('cruds.employee.fields.address') }}
+                            {{ trans(tenant()->id.'/cruds.employee.fields.address') }}
                         </th>
                         <td>
                             {{ $employee->address ?? '' }}
@@ -113,7 +124,7 @@
                     </tr>
                     <tr>
                         <th>
-                            {{ trans('cruds.employee.fields.department') }}
+                            {{ trans(tenant()->id.'/cruds.employee.fields.department') }}
                         </th>
                         <td>
                             {{ $employee->department ?? '' }}
@@ -121,7 +132,7 @@
                     </tr>
                     <tr>
                         <th>
-                            {{ trans('cruds.employee.fields.section') }}
+                            {{ trans(tenant()->id.'/cruds.employee.fields.section') }}
                         </th>
                         <td>
                             {{ $employee->section ?? '' }}
@@ -129,7 +140,7 @@
                     </tr>
                     <tr>
                         <th>
-                            {{ trans('cruds.employee.fields.gender') }}
+                            {{ trans(tenant()->id.'/cruds.employee.fields.gender') }}
                         </th>
                         <td>
                             {{ App\Models\Employee::GENDER_SELECT[$employee->gender] ?? '' }} 
@@ -137,7 +148,7 @@
                     </tr>
                     <tr>
                         <th>
-                            {{ trans('cruds.employee.fields.marital_status') }}
+                            {{ trans(tenant()->id.'/cruds.employee.fields.marital_status') }}
                         </th>
                         <td>
                             {{ $employee->marital_status ?? '' }}
@@ -145,7 +156,7 @@
                     </tr>
                     <tr>
                         <th>
-                            {{ trans('cruds.employee.fields.blood_group') }}
+                            {{ trans(tenant()->id.'/cruds.employee.fields.blood_group') }}
                         </th>
                         <td>
                             {{ $employee->blood_group ?? '' }}
@@ -153,7 +164,7 @@
                     </tr>
                     <tr>
                         <th>
-                            {{ trans('cruds.employee.fields.nationality') }}
+                            {{ trans(tenant()->id.'/cruds.employee.fields.nationality') }}
                         </th>
                         <td>
                             {{ $employee->nationality ?? '' }}
@@ -161,7 +172,7 @@
                     </tr>
                     <tr>
                         <th>
-                            {{ trans('cruds.employee.fields.domicile') }}
+                            {{ trans(tenant()->id.'/cruds.employee.fields.domicile') }}
                         </th>
                         <td>
                             {{ $employee->domicile ?? '' }}
@@ -169,7 +180,7 @@
                     </tr>
                     <tr>
                         <th>
-                            {{ trans('cruds.employee.fields.qualification') }}
+                            {{ trans(tenant()->id.'/cruds.employee.fields.qualification') }}
                         </th>
                         <td>
                             {{ $employee->qualification ?? '' }}
@@ -177,7 +188,7 @@
                     </tr>
                     <tr>
                         <th>
-                            {{ trans('cruds.employee.fields.current_salary') }}
+                            {{ trans(tenant()->id.'/cruds.employee.fields.current_salary') }}
                         </th>
                         <td>
                             {{ $employee->current_salary ?? '0' }} PKR
@@ -185,7 +196,31 @@
                     </tr>
                     <tr>
                         <th>
-                            {{ trans('cruds.employee.fields.job_type') }}
+                            {{ trans(tenant()->id.'/cruds.employee.fields.bank_name') }}
+                        </th>
+                        <td>
+                            {{ $employee->bank_name ?? 'N/A' }} 
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            {{ trans(tenant()->id.'/cruds.employee.fields.bank_account_no') }}
+                        </th>
+                        <td>
+                            {{ $employee->bank_account_no ?? 'N/A' }} 
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            {{ trans(tenant()->id.'/cruds.employee.fields.salary_mode') }}
+                        </th>
+                        <td>
+                            {{ $employee->salary_mode ?? 'N/A' }} 
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            {{ trans(tenant()->id.'/cruds.employee.fields.job_type') }}
                         </th>
                         <td>
                             {{ $employee->job_type ?? '' }}

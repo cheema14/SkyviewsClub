@@ -40,10 +40,9 @@ class GenerateBillController extends Controller
 
     public function generate_customer_bill(Order $order)
     {
+        
         $order = $order->load('items', 'user', 'member', 'tableTop');
-        // dd($order,$order->grand_total,$order->total);
-        // Create transactions for the order
-
         return view('admin.bills.customer_bill', ['order' => $order, 'grand_total' => $order->grand_total, 'total' => $order->total]);
+        
     }
 }

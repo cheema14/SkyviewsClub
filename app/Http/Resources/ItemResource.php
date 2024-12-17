@@ -21,6 +21,7 @@ class ItemResource extends JsonResource
             'summary' => $this->summary,
             'price' => $this->price,
             'quantity' => $this->pivot->quantity,
+            'new_quantity' => $this->pivot->new_quantity,
             'category_id' => $this->menu_item_category?->id,
             'order_id' => $this->pivot->order_id,
             'content' => $this->pivot->content,

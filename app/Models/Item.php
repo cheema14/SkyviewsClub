@@ -4,13 +4,14 @@ namespace App\Models;
 
 use App\Models\Order;
 use DateTimeInterface;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Stancl\Tenancy\Database\Concerns\BelongsToTenant;
 
 class Item extends Model
 {
-    use SoftDeletes, HasFactory;
+    use SoftDeletes, HasFactory, BelongsToTenant;
 
     public $table = 'items';
 

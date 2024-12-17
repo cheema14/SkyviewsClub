@@ -2,14 +2,16 @@
 
 namespace App\Models;
 
+use App\Models\KitchenOrderHistory;
 use DateTimeInterface;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Stancl\Tenancy\Database\Concerns\BelongsToTenant;
 
 class Order extends Model
 {
-    use SoftDeletes, HasFactory;
+    use SoftDeletes, HasFactory, BelongsToTenant;
 
     public $table = 'orders';
 
@@ -26,6 +28,8 @@ class Order extends Model
         'Delivered' => '#c90076',
         'Returned' => '#d9d2e9',
         'Complete' => '#38761d',
+        'InProgress' => '#3399FF',
+        'Cancelled' => '#ba091b',
     ];
 
     public const STATUS_SELECT = [
@@ -35,6 +39,8 @@ class Order extends Model
         'Delivered' => 'Delivered',
         'Returned' => 'Returned',
         'Complete' => 'Complete',
+        'InProgress' => 'InProgress',
+        'Cancelled' => 'Cancelled',
     ];
 
     protected $fillable = [
@@ -83,7 +89,7 @@ class Order extends Model
     public function items()
     {
         return $this->belongsToMany(Item::class)
-            ->withPivot(['price', 'quantity', 'content', 'discount', 'menu_id']);
+            ->withPivot(['price', 'quantity', 'content', 'discount', 'menu_id','new_added_item','new_quantity']);
     }
 
     public function getPivotAttributesAttribute()
@@ -123,4 +129,16 @@ class Order extends Model
     {
         return $this->hasOne(Transaction::class)->latestOfMany();
     }
+
+    public function getfloorItems($menu_id)
+    {
+        return $this->belongsToMany(Item::class)
+            ->withPivot(['price', 'quantity', 'content', 'discount', 'menu_id','new_quantity']);
+    }
+
+    public function kitchenOrderHistory()
+    {
+        return $this->hasMany(KitchenOrderHistory::class, 'order_id', 'id');
+    }
+
 }

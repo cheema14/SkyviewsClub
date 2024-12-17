@@ -31,6 +31,11 @@ class Kernel extends HttpKernel
         'ability' => \Laravel\Sanctum\Http\Middleware\CheckForAnyAbility::class,
     ];
 
+    protected $routeMiddleware = [
+        'CheckMultipleLogin' => \App\Http\Middleware\CheckMultipleLogin::class,
+        'tenantSetup' => \App\Http\Middleware\TenantSetup::class,
+    ];
+
     protected $middlewareGroups = [
         'web' => [
             \App\Http\Middleware\EncryptCookies::class,

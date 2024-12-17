@@ -22,12 +22,12 @@
                         <tbody>
                             <tr>
                                 <td colspan="2" style="text-align: center !important;">
-                                    <img alt="logo" src="{{ asset('img/golf-logo.png') }}" width="80">
+                                    <img alt="logo" src="{{ asset('img/pcom/golf-logo.png') }}" width="80">
                                 </td>
                             </tr>
                             <tr>
                                 <td colspan="2" class="center_text ">
-                                    <h3>{{ trans('global.project_title') }}</h3>
+                                    <h3>{{ trans(tenant()->id.'/global.project_title') }}</h3>
                                 </td>
                             </tr>
                             <tr class="center_text">
@@ -57,10 +57,9 @@
                             </tr>
                             <tr class="center_text">
                                 <td colspan="2" class="left_text"> <label class="control-label text_size">
-                                        <strong>Remarks</strong></label></td>
+                                        <strong>Remarks:</strong></label> {{ $data->remarks }}</td>
                             </tr>
                             
-                         
                         </tbody>
                     </table>
                     <table style="border-top:none;">
@@ -87,7 +86,7 @@
                                         <strong>Total</strong></label>
                                 </td>
                             </tr>
-
+                            
                             <tr class="center_text">
                                 <td colspan="5" style="border-top: 2px dotted;"></td>
                             </tr>
@@ -126,7 +125,7 @@
                                 </td>
                                 <td colspan="3" > <span> {{ $gross_total }} </span> </td>
                             </tr>
-                            @if ($data->pay_mode == 'card')
+                            @if ($data->pay_mode == 'card' || false)
                                 <tr class="center_text">
                                     <td colspan="2" class="left_text">
                                         <strong><label style=""

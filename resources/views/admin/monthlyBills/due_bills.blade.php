@@ -1,5 +1,6 @@
-@extends('layouts.admin')
+@extends('layouts.'.tenant()->id.'.admin')
 @section('content')
+@include('partials.'.tenant()->id.'.flash_messages')
 @section('styles')
 <style>
     .dataTables_scrollBody, .dataTables_wrapper {
@@ -46,43 +47,47 @@
         <div class="row align-items-center">
             <div class="col-sm-6">
                 <h4>
-                {{ trans('cruds.monthlyBilling.dueBills.title') }}
+                {{ trans(tenant()->id.'/cruds.monthlyBilling.dueBills.title') }}
                 </h4>
             </div>
         </div>
         <br />
-
-        <div class="row">
-            <div class="form-group col-md-4 generate_bills">
-                <label for="billing_month">{{ trans('cruds.monthlyBilling.billing_invoice.billing_month') }}</label>
-                <select class="form-control {{ $errors->has('billing_month') ? 'is-invalid' : '' }}" name="billing_month" id="billing_month" required>
-                    <option value disabled {{ old('billing_month', null) === null ? 'selected' : '' }}>{{ trans('global.pleaseSelect') }}</option>
-                        @foreach(App\Models\Bill::BILLING_MONTHS as $key => $label)
-                            @if ($key == now()->format('m'))
-                                <option value="{{ $key }}" {{ old('billing_month', '') === (string) $key ? 'selected' : '' }}>{{ $label }} - {{ date('Y') }}</option>
-                            @endif
-                        @endforeach
-                </select>
-            </div>
-            <div class="form-group col-md-4 generate_bills">
-                <label for="invoice_due_date">{{ trans('cruds.monthlyBilling.billing_invoice.invoice_due_date') }}</label>
-                <input type="text" name="invoice_due_date" id="invoice_due_date" class="form-control" value="">
-            </div>
-            <div class="form-group col-md-12">
-                <button type="button" class="btn btn-primary generate_bills" id="loadDueBills">Load Bills</button>
-                <button type="button" class="btn btn-danger" id="resetDueBills">Reset</button>
-            </div>
-        </div>
         
+        @if(now()->day >= 5 || app('env') != 'production')
+            <div class="row">
+                <div class="form-group col-md-4 generate_bills">
+                    <label for="billing_month">{{ trans(tenant()->id.'/cruds.monthlyBilling.billing_invoice.billing_month') }}</label>
+                    <select class="form-control {{ $errors->has('billing_month') ? 'is-invalid' : '' }}" name="billing_month" id="billing_month" required>
+                        <option value disabled {{ old('billing_month', null) === null ? 'selected' : '' }}>{{ trans(tenant()->id.'/global.pleaseSelect') }}</option>
+                            @foreach(App\Models\Bill::BILLING_MONTHS as $key => $label)
+                            {{-- Display only current month --}}
+                            @if ($key == now()->format('m')) 
+                                    <option value="{{ $key }}" {{ old('billing_month', '') === (string) $key ? 'selected' : '' }}>{{ $label }} - {{ date('Y') }}</option>
+                                @endif
+                            @endforeach 
+                    </select>
+                </div>
+                <div class="form-group col-md-4 generate_bills">
+                    <label for="invoice_due_date">{{ trans(tenant()->id.'/cruds.monthlyBilling.billing_invoice.invoice_due_date') }}</label>
+                    <input type="text" name="invoice_due_date" id="invoice_due_date" class="form-control" value="">
+                </div>
+                <div class="form-group col-md-12">
+                    <button type="button" class="btn btn-primary generate_bills" id="loadDueBills">Load Bills</button>
+                    <button type="button" class="btn btn-danger" id="resetDueBills">Reset</button>
+                </div>
+            </div>
+        @else
+            <p style="color: red;font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif">This month's bills have not been generated yet. They will be generated on the 5th. You can view previous months' bills in the Old Bills list.</p>
+        @endif
         <div class="row" style="display:none;">
             <div class="form-group col-md-4">
-                <label for="membership_no">{{ trans('cruds.monthlyBilling.dueBills.membership_no') }}</label>
+                <label for="membership_no">{{ trans(tenant()->id.'/cruds.monthlyBilling.dueBills.membership_no') }}</label>
                 <input type="text" maxlength="10" name="membership_no" id="membership_no" class="form-control" value="">
             </div>
             <div class="form-group col-md-4">
-                <label for="membership_status">{{ trans('cruds.monthlyBilling.dueBills.membership_status') }}</label>
+                <label for="membership_status">{{ trans(tenant()->id.'/cruds.monthlyBilling.dueBills.membership_status') }}</label>
                 <select class="form-control {{ $errors->has('membership_status') ? 'is-invalid' : '' }}" name="membership_status" id="membership_status">
-                    <option value disabled {{ old('membership_status', null) === null ? 'selected' : '' }}>{{ trans('global.pleaseSelect') }}</option>
+                    <option value disabled {{ old('membership_status', null) === null ? 'selected' : '' }}>{{ trans(tenant()->id.'/global.pleaseSelect') }}</option>
                     @foreach(App\Models\Member::MEMBERSHIP_STATUS_SELECT as $key => $label)
                     <option value="{{ $key }}" {{ old('status', '') === (string) $key ? 'selected' : '' }}>{{ $label }}</option>
                     @endforeach
@@ -94,6 +99,8 @@
             </div>
         </div>
 
+        
+
     </div>
 
     <div class="card-body">
@@ -104,43 +111,46 @@
                 <thead>
                     <tr>
                         <th>
-                            {{ trans('cruds.monthlyBilling.dueBills.id') }}
+                            {{ trans(tenant()->id.'/cruds.monthlyBilling.dueBills.id') }}
                         </th>
                         <th>
-                            {{ trans('cruds.monthlyBilling.dueBills.member_name') }}
+                            {{ trans(tenant()->id.'/cruds.monthlyBilling.dueBills.member_name') }}
                         </th>
                         <th>
-                            {{ trans('cruds.monthlyBilling.dueBills.membership_no') }}
+                            {{ trans(tenant()->id.'/cruds.monthlyBilling.dueBills.membership_no') }}
                         </th>
                         <th>
-                            {{ trans('cruds.monthlyBilling.dueBills.cnic') }}
+                            {{ trans(tenant()->id.'/cruds.monthlyBilling.dueBills.cnic') }}
                         </th>
                         <th>
-                            {{ trans('cruds.monthlyBilling.dueBills.father_husband_name') }}
+                            {{ trans(tenant()->id.'/cruds.monthlyBilling.dueBills.father_husband_name') }}
                         </th>
                         <th>
-                            {{ trans('cruds.monthlyBilling.dueBills.membership_status') }}
+                            {{ trans(tenant()->id.'/cruds.monthlyBilling.dueBills.membership_status') }}
+                        </th>
+                        {{-- <th>
+                            {{ trans(tenant()->id.'/cruds.monthlyBilling.dueBills.arrears') }}
+                        </th> --}}
+                        <th>
+                            {{ trans(tenant()->id.'/cruds.monthlyBilling.dueBills.total_invoice_amount') }}
+                        </th>
+                        {{-- <th>
+                            {{ trans(tenant()->id.'/cruds.monthlyBilling.dueBills.total_billing_amount') }}
+                        </th> --}}
+                        <th>
+                            {{ trans(tenant()->id.'/cruds.monthlyBilling.dueBills.remaining_balance') }}
                         </th>
                         <th>
-                            {{ trans('cruds.monthlyBilling.dueBills.arrears') }}
+                            {{ trans(tenant()->id.'/cruds.monthlyBilling.dueBills.invoice_month') }}
                         </th>
                         <th>
-                            {{ trans('cruds.monthlyBilling.dueBills.total_invoice_amount') }}
+                            {{ trans(tenant()->id.'/cruds.monthlyBilling.dueBills.due_date') }}
                         </th>
                         <th>
-                            {{ trans('cruds.monthlyBilling.dueBills.net_balance_payable') }}
-                        </th>
-                        <th>
-                            {{ trans('cruds.monthlyBilling.dueBills.invoice_month') }}
-                        </th>
-                        <th>
-                            {{ trans('cruds.monthlyBilling.dueBills.due_date') }}
-                        </th>
-                        <th>
-                            {{ trans('cruds.monthlyBilling.dueBills.invoice_status') }}
+                            {{ trans(tenant()->id.'/cruds.monthlyBilling.dueBills.invoice_status') }}
                         </th>
                         <th class="text-center">
-                            {{ trans('cruds.monthlyBilling.dueBills.actions') }}
+                            {{ trans(tenant()->id.'/cruds.monthlyBilling.dueBills.actions') }}
                         </th>
                     </tr>
                 </thead>
@@ -229,6 +239,8 @@
             
             let billing_month = $("#billing_month").val();
             let lastDay = new Date(new Date().getFullYear(), billing_month, 0).getDate();
+            // let fifteenthDay = new Date(year, month, 15);
+            // lastDay = fifteenthDay;
             let monthNames = [
                     'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
                 ];
@@ -251,9 +263,7 @@
 
         $(document).on("click","#loadDueBills",function(){
             
-            // $(".generate_bills").css('pointer-events','none');
-            // $(".generate_bills").css('opacity','0.8');
-            // $("#loadDueBills").hide();
+            
             if($("#billing_month").val() == '' || $("#billing_month").val() == null){
                 alert('Select Month to load due bills');
                 $("#print_all_bills").hide();
@@ -266,9 +276,6 @@
         });
 
         $(document).on("click","#resetDueBills",function(){
-            // $(".generate_bills").css("pointer-events",'');
-            // $(".generate_bills").css('opacity','');
-            // $("#loadDueBills").show();
             window.location.reload();
             $("#billing_month").val();
             $("#invoice_due_date").val();
@@ -292,14 +299,7 @@
                 serverSide: true,
                 retrieve: true,
                 aaSorting: [],
-                // ajax: {
-                //     url: "{{ route('admin.monthlyBilling.get-due-bills') }}",
-                //     type: "GET",
-                //     data: {
-                //         month : month,
-                //         invoiceDueDate : invoiceDueDate,
-                //     },
-                // },
+                ordering:true,
                 columns: [
                         { data: 'id', name: 'id' },
                         { data: 'name', name: 'name' },
@@ -307,13 +307,14 @@
                         { data: 'cnic_no', name: 'cnic_no' },
                         { data: 'husband_father_name', name: 'husband_father_name' },
                         { data: 'membership_status', name: 'membership_status' },
-                        { data: 'arrears', name: 'arrears' },
+                        // { data: 'arrears', name: 'arrears' },
+                        // { data: 'total_bill', name: 'total_bill' },
                         { data: 'total_bill', name: 'total_bill' },
                         { data: 'net_balance_payable', name: 'net_balance_payable' },
                         { data: 'billing_month', name: 'billing_month' },
                         { data: 'due_date', name: 'due_date' },
-                        { data: 'invoice_status', name: 'invoice_status' },
-                        { data: 'actions.actions', name: '{{ trans('global.actions') }}' }
+                        { data: 'bill_status', name: 'bill_status' },
+                        { data: 'actions.actions', name: '{{ trans(tenant()->id.'/global.actions') }}' }
                 ],
                 orderCellsTop: true,
                 order: [[ 0, 'desc' ]],
@@ -326,7 +327,6 @@
             };
             
             let table = $('.datatable-due-bills').DataTable(dtOverrideGlobals);
-            // table.clear().draw();
             table.ajax.url("{{ route('admin.monthlyBilling.get-due-bills') }}?month=" + month + "&invoiceDueDate=" + invoiceDueDate).load();
     }
 

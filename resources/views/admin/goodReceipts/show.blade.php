@@ -1,10 +1,10 @@
-@extends('layouts.admin')
+@extends('layouts.'.tenant()->id.'.admin')
 @section('content')
 
 <div class="card">
     <div class="card-header">
         <h4>
-        {{ trans('global.show') }} {{ trans('cruds.goodReceipt.title') }}
+        {{ trans(tenant()->id.'/global.show') }} {{ trans(tenant()->id.'/cruds.goodReceipt.title') }}
         </h4>
     </div>
 
@@ -12,14 +12,14 @@
         <div class="table-responsive">
             <!-- <div class="form-group">
                 <a class="btn btn-default" href="{{ route('admin.good-receipts.index') }}">
-                    {{ trans('global.back_to_list') }}
+                    {{ trans(tenant()->id.'/global.back_to_list') }}
                 </a>
             </div> -->
             <table class="table table-borderless table-striped">
                 <tbody>
                     <tr>
                         <th>
-                            {{ trans('cruds.goodReceipt.fields.id') }}
+                            {{ trans(tenant()->id.'/cruds.goodReceipt.fields.id') }}
                         </th>
                         <td>
                             {{ $goodReceipt->id }}
@@ -27,7 +27,7 @@
                     </tr>
                     <tr>
                         <th>
-                            {{ trans('cruds.goodReceipt.fields.gr_number') }}
+                            {{ trans(tenant()->id.'/cruds.goodReceipt.fields.gr_number') }}
                         </th>
                         <td>
                             {{ $goodReceipt->gr_number }}
@@ -35,7 +35,7 @@
                     </tr>
                     <tr>
                         <th>
-                            {{ trans('cruds.goodReceipt.fields.store') }}
+                            {{ trans(tenant()->id.'/cruds.goodReceipt.fields.store') }}
                         </th>
                         <td>
                             {{ $goodReceipt->store->name ?? '' }}
@@ -43,7 +43,7 @@
                     </tr>
                     <tr>
                         <th>
-                            {{ trans('cruds.goodReceipt.fields.gr_date') }}
+                            {{ trans(tenant()->id.'/cruds.goodReceipt.fields.gr_date') }}
                         </th>
                         <td>
                             {{ $goodReceipt->gr_date }}
@@ -51,7 +51,7 @@
                     </tr>
                     <tr>
                         <th>
-                            {{ trans('cruds.goodReceipt.fields.vendor') }}
+                            {{ trans(tenant()->id.'/cruds.goodReceipt.fields.vendor') }}
                         </th>
                         <td>
                             {{ $goodReceipt->vendor->name ?? '' }}
@@ -59,7 +59,7 @@
                     </tr>
                     {{-- <tr>
                         <th>
-                            {{ trans('cruds.goodReceipt.fields.pay_type') }}
+                            {{ trans(tenant()->id.'/cruds.goodReceipt.fields.pay_type') }}
                         </th>
                         <td>
                             {{ App\Models\GoodReceipt::PAY_TYPE_SELECT[$goodReceipt->pay_type] ?? '' }}
@@ -67,7 +67,7 @@
                     </tr> --}}
                     <tr>
                         <th>
-                            {{ trans('cruds.goodReceipt.fields.gr_bill_no') }}
+                            {{ trans(tenant()->id.'/cruds.goodReceipt.fields.gr_bill_no') }}
                         </th>
                         <td>
                             {{ $goodReceipt->gr_bill_no ?? '' }}
@@ -75,7 +75,7 @@
                     </tr>
                     <tr>
                         <th>
-                            {{ trans('cruds.goodReceipt.fields.remarks') }}
+                            {{ trans(tenant()->id.'/cruds.goodReceipt.fields.remarks') }}
                         </th>
                         <td>
                             {{ $goodReceipt->remarks }}
@@ -85,7 +85,7 @@
             </table>
             <!-- <div class="form-group">
                 <a class="btn btn-default" href="{{ route('admin.good-receipts.index') }}">
-                    {{ trans('global.back_to_list') }}
+                    {{ trans(tenant()->id.'/global.back_to_list') }}
                 </a>
             </div> -->
         </div>
@@ -95,12 +95,12 @@
 <div class="card">
     <div class="card-header">
         <h4>
-        {{ trans('global.relatedData') }}</h4>
+        {{ trans(tenant()->id.'/global.relatedData') }}</h4>
     </div>
     <ul class="nav nav-tabs" role="tablist" id="relationship-tabs">
         <li class="nav-item">
             <a class="nav-link active" href="#gr_gr_item_details" role="tab" data-toggle="tab">
-                {{ trans('cruds.grItemDetail.title') }}
+                {{ trans(tenant()->id.'/cruds.grItemDetail.title') }}
             </a>
         </li>
     </ul>

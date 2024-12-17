@@ -1,11 +1,11 @@
-@extends('layouts.admin')
+@extends('layouts.'.tenant()->id.'.admin')
 @section('content')
 @can('dependent_create')
     <div style="margin-bottom: 10px;" class="row">
         <div class="col-lg-12">
 
             {{-- <button class="btn btn-warning" data-toggle="modal" data-target="#csvImportModal">
-                {{ trans('global.app_csvImport') }}
+                {{ trans(tenant()->id.'/global.app_csvImport') }}
             </button>
             @include('csvImport.modal', ['model' => 'Dependent', 'route' => 'admin.dependents.parseCsvImport']) --}}
         </div>
@@ -13,7 +13,7 @@
 @endcan
 <div class="card">
     <div class="card-header">
-        {{ trans('cruds.dependent.title_singular') }} {{ trans('global.list') }}
+        {{ trans(tenant()->id.'/cruds.dependent.title_singular') }} {{ trans(tenant()->id.'/global.list') }}
     </div>
 
     <div class="card-body">
@@ -24,31 +24,31 @@
 
                     </th> --}}
                     <th>
-                        {{ trans('cruds.dependent.fields.id') }}
+                        {{ trans(tenant()->id.'/cruds.dependent.fields.id') }}
                     </th>
                     <th>
-                        {{ trans('cruds.dependent.fields.name') }}
+                        {{ trans(tenant()->id.'/cruds.dependent.fields.name') }}
                     </th>
                     <th>
-                        {{ trans('cruds.dependent.fields.dob') }}
+                        {{ trans(tenant()->id.'/cruds.dependent.fields.dob') }}
                     </th>
                     <th>
-                        {{ trans('cruds.dependent.fields.relation') }}
+                        {{ trans(tenant()->id.'/cruds.dependent.fields.relation') }}
                     </th>
                     <th>
-                        {{ trans('cruds.dependent.fields.occupation') }}
+                        {{ trans(tenant()->id.'/cruds.dependent.fields.occupation') }}
                     </th>
                     <th>
-                        {{ trans('cruds.dependent.fields.nationality') }}
+                        {{ trans(tenant()->id.'/cruds.dependent.fields.nationality') }}
                     </th>
                     <th>
-                        {{ trans('cruds.dependent.fields.golf_hcap') }}
+                        {{ trans(tenant()->id.'/cruds.dependent.fields.golf_hcap') }}
                     </th>
                     <th>
-                        {{ trans('cruds.dependent.fields.allow_credit') }}
+                        {{ trans(tenant()->id.'/cruds.dependent.fields.allow_credit') }}
                     </th>
                     <th>
-                        {{ trans('cruds.dependent.fields.photo') }}
+                        {{ trans(tenant()->id.'/cruds.dependent.fields.photo') }}
                     </th>
                     <th>
                         &nbsp;
@@ -68,7 +68,7 @@
     $(function () {
   let dtButtons = $.extend(true, [], $.fn.dataTable.defaults.buttons)
 @can('dependent_delete')
-  let deleteButtonTrans = '{{ trans('global.datatables.delete') }}';
+  let deleteButtonTrans = '{{ trans(tenant()->id.'/global.datatables.delete') }}';
   let deleteButton = {
     text: deleteButtonTrans,
     url: "{{ route('admin.dependents.massDestroy') }}",
@@ -80,12 +80,12 @@
       });
 
       if (ids.length === 0) {
-        alert('{{ trans('global.datatables.zero_selected') }}')
+        alert('{{ trans(tenant()->id.'/global.datatables.zero_selected') }}')
 
         return
       }
 
-      if (confirm('{{ trans('global.areYouSure') }}')) {
+      if (confirm('{{ trans(tenant()->id.'/global.areYouSure') }}')) {
         $.ajax({
           headers: {'x-csrf-token': _token},
           method: 'POST',
@@ -116,7 +116,7 @@
 { data: 'golf_hcap', name: 'golf_hcap' },
 { data: 'allow_credit', name: 'allow_credit' },
 { data: 'photo', name: 'photo', sortable: false, searchable: false },
-{ data: 'actions', name: '{{ trans('global.actions') }}' }
+{ data: 'actions', name: '{{ trans(tenant()->id.'/global.actions') }}' }
     ],
     orderCellsTop: true,
     order: [[ 0, 'desc' ]],

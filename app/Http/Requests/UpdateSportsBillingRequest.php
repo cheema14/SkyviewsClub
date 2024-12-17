@@ -63,6 +63,10 @@ class UpdateSportsBillingRequest extends FormRequest
                 'string',
                 'nullable',
             ],
+            'pay_mode' => [
+                'required',
+                'string',
+            ],
             'gross_total' => [
                 'nullable',
                 'numeric',
@@ -75,9 +79,9 @@ class UpdateSportsBillingRequest extends FormRequest
                 'min:-2147483648',
                 'max:2147483647',
             ],
-            'bank_charges' => [
-                'numeric',
-            ],
+            // 'bank_charges' => [
+            //     'numeric',
+            // ],
             'net_pay' => [
                 'numeric',
             ],

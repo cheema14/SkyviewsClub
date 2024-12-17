@@ -1,4 +1,4 @@
-@extends('layouts.admin')
+@extends('layouts.'.tenant()->id.'.admin')
 @section('content')
 @section('styles')
 <style>
@@ -23,7 +23,7 @@
         <div class="row align-items-center">
             <div class="col-sm-6">
                 <h4>
-                {{ trans('cruds.paymentHistory.title') }} {{ trans('global.list') }}
+                {{ trans(tenant()->id.'/cruds.paymentHistory.title') }} {{ trans(tenant()->id.'/global.list') }}
                 </h4>
             </div>
         </div>
@@ -34,37 +34,37 @@
             <thead>
                 <tr>
                     <th>
-                        {{ trans('cruds.paymentHistory.fields.id') }}
+                        {{ trans(tenant()->id.'/cruds.paymentHistory.fields.id') }}
                     </th>
                     <th>
-                        {{ trans('cruds.paymentHistory.fields.name') }}
+                        {{ trans(tenant()->id.'/cruds.paymentHistory.fields.name') }}
                     </th>
                     <th>
-                        {{ trans('cruds.paymentHistory.fields.membership_no') }}
+                        {{ trans(tenant()->id.'/cruds.paymentHistory.fields.membership_no') }}
                     </th>
                     <th>
-                        {{ trans('cruds.paymentHistory.fields.cnic') }}
+                        {{ trans(tenant()->id.'/cruds.paymentHistory.fields.cnic') }}
                     </th>
                     <th>
-                        {{ trans('cruds.paymentHistory.fields.father_husband_name') }}
+                        {{ trans(tenant()->id.'/cruds.paymentHistory.fields.father_husband_name') }}
                     </th>
                     <th>
-                        {{ trans('cruds.paymentHistory.fields.membership_status') }}
+                        {{ trans(tenant()->id.'/cruds.paymentHistory.fields.membership_status') }}
                     </th>
                     <th>
-                        {{ trans('cruds.paymentHistory.fields.invoice_month') }}
+                        {{ trans(tenant()->id.'/cruds.paymentHistory.fields.invoice_month') }}
                     </th>
                     <th>
-                        {{ trans('cruds.paymentHistory.fields.total_invoice') }}
+                        {{ trans(tenant()->id.'/cruds.paymentHistory.fields.total_invoice') }}
                     </th>
                     <th>
-                        {{ trans('cruds.paymentHistory.fields.paid_amount') }}
+                        {{ trans(tenant()->id.'/cruds.paymentHistory.fields.paid_amount') }}
                     </th>
                     <th>
-                        {{ trans('cruds.paymentHistory.fields.balance') }}
+                        {{ trans(tenant()->id.'/cruds.paymentHistory.fields.balance') }}
                     </th>
                     <th>
-                        {{ trans('global.action') }}
+                        {{ trans(tenant()->id.'/global.action') }}
                     </th>
                 </tr>
             </thead>
@@ -98,7 +98,7 @@
                 { data: 'invoice_amount', name: 'invoice_amount' },
                 { data: 'totalPaid', name: 'totalPaid' },
                 { data: 'arrears', name: 'arrears' },
-                { data: 'actions', name: '{{ trans('global.actions') }}' }
+                { data: 'actions', name: '{{ trans(tenant()->id.'/global.actions') }}' }
             ],
             orderCellsTop: true,
             pageLength: 15,

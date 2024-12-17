@@ -1,10 +1,10 @@
-@extends('layouts.admin')
+@extends('layouts.'.tenant()->id.'.admin')
 @section('content')
 
 <div class="card">
     <div class="card-header">
         <h4>
-        {{ trans('global.show') }} {{ trans('cruds.stockIssueItem.title') }}
+        {{ trans(tenant()->id.'/global.show') }} {{ trans(tenant()->id.'/cruds.stockIssueItem.title') }}
         </h4>
     </div>
 
@@ -12,14 +12,14 @@
         <div class="table-responsive">
             <!-- <div class="form-group">
                 <a class="btn btn-default" href="{{ route('admin.stock-issue-items.index') }}">
-                    {{ trans('global.back_to_list') }}
+                    {{ trans(tenant()->id.'/global.back_to_list') }}
                 </a>
             </div> -->
             <table class="table table-bordered table-striped">
                 <tbody>
                     <tr>
                         <th>
-                            {{ trans('cruds.stockIssueItem.fields.id') }}
+                            {{ trans(tenant()->id.'/cruds.stockIssueItem.fields.id') }}
                         </th>
                         <td>
                             {{ $stockIssueItem->id }}
@@ -27,7 +27,7 @@
                     </tr>
                     <tr>
                         <th>
-                            {{ trans('cruds.stockIssueItem.fields.item') }}
+                            {{ trans(tenant()->id.'/cruds.stockIssueItem.fields.item') }}
                         </th>
                         <td>
                             {{ $stockIssueItem->item->name ?? '' }}
@@ -35,7 +35,7 @@
                     </tr>
                     <tr>
                         <th>
-                            {{ trans('cruds.stockIssueItem.fields.unit') }}
+                            {{ trans(tenant()->id.'/cruds.stockIssueItem.fields.unit') }}
                         </th>
                         <td>
                             {{ $stockIssueItem->unit->type ?? '' }}
@@ -43,7 +43,7 @@
                     </tr>
                     <tr>
                         <th>
-                            {{ trans('cruds.stockIssueItem.fields.lot_no') }}
+                            {{ trans(tenant()->id.'/cruds.stockIssueItem.fields.lot_no') }}
                         </th>
                         <td>
                             {{ $stockIssueItem->lot_no }}
@@ -51,7 +51,7 @@
                     </tr>
                     <tr>
                         <th>
-                            {{ trans('cruds.stockIssueItem.fields.stock_required') }}
+                            {{ trans(tenant()->id.'/cruds.stockIssueItem.fields.stock_required') }}
                         </th>
                         <td>
                             {{ $stockIssueItem->stock_required }}
@@ -59,7 +59,7 @@
                     </tr>
                     <tr>
                         <th>
-                            {{ trans('cruds.stockIssueItem.fields.issued_qty') }}
+                            {{ trans(tenant()->id.'/cruds.stockIssueItem.fields.issued_qty') }}
                         </th>
                         <td>
                             {{ $stockIssueItem->issued_qty }}
@@ -67,7 +67,7 @@
                     </tr>
                     <tr>
                         <th>
-                            {{ trans('cruds.stockIssueItem.fields.stock_issue') }}
+                            {{ trans(tenant()->id.'/cruds.stockIssueItem.fields.stock_issue') }}
                         </th>
                         <td>
                             {{ $stockIssueItem->stock_issue->issue_no ?? '' }}
@@ -77,7 +77,7 @@
             </table>
             <!-- <div class="form-group">
                 <a class="btn btn-default" href="{{ route('admin.stock-issue-items.index') }}">
-                    {{ trans('global.back_to_list') }}
+                    {{ trans(tenant()->id.'/global.back_to_list') }}
                 </a>
             </div> -->
         </div>

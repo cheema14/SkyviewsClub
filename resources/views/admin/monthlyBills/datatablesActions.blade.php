@@ -7,17 +7,19 @@
         {{-- Where $row->id is the member ID --}}
         
         @can($viewGate)
-            <a class="dropdown-item" href="{{ route('admin.' . $crudRoutePart . '.view-due-bill',['id' => $row->id]) }}">
+            <a class="dropdown-item" target="_blank" href="{{ route('admin.' . $crudRoutePart . '.view-due-bill',['id' => $row->id]) }}">
                 <i style="margin-right:10px; " class="fa fa-eye fa-lg"></i>
-                {{ trans('cruds.monthlyBilling.view_bill') }}
+                {{ trans(tenant()->id.'/cruds.monthlyBilling.view_bill') }}
             </a>
         @endcan
         
         @can($printGate)
-            <a class="dropdown-item" target="_blank" href="{{ route('admin.' . $crudRoutePart . '.create-bill-receipt',['id' => $row->id]) }}">
-                <i style="margin-right:10px; " class="fa fa-edit fa-lg"></i>
-                {{ trans('cruds.monthlyBilling.print_receipt') }}
-            </a>
+            @if ($row->bill_status != App\Models\Bill::BILL_STATUS['Paid'])            
+                <a class="dropdown-item" target="_blank" href="{{ route('admin.' . $crudRoutePart . '.create-bill-receipt',['id' => $row->id]) }}">
+                    <i style="margin-right:10px; " class="fa fa-edit fa-lg"></i>
+                    {{ trans(tenant()->id.'/cruds.monthlyBilling.print_receipt') }}
+                </a>
+            @endif
         @endcan
 
     </div>

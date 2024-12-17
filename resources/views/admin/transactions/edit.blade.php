@@ -1,10 +1,10 @@
-@extends('layouts.admin')
+@extends('layouts.'.tenant()->id.'.admin')
 @section('content')
 
 <div class="card">
     <div class="card-header">
         <h4>
-        {{ trans('global.edit') }} {{ trans('cruds.transaction.title_singular') }}
+        {{ trans(tenant()->id.'/global.edit') }} {{ trans(tenant()->id.'/cruds.transaction.title_singular') }}
         </h4>
     </div>
 
@@ -13,7 +13,7 @@
             @method('PUT')
             @csrf
             <div class="form-group">
-                <label class="required" for="user_id">{{ trans('cruds.transaction.fields.user') }}</label>
+                <label class="required" for="user_id">{{ trans(tenant()->id.'/cruds.transaction.fields.user') }}</label>
                 <select class="form-control select2 {{ $errors->has('user') ? 'is-invalid' : '' }}" name="user_id" id="user_id" required>
                     @foreach($users as $id => $entry)
                         <option value="{{ $id }}" {{ (old('user_id') ? old('user_id') : $transaction->user->id ?? '') == $id ? 'selected' : '' }}>{{ $entry }}</option>
@@ -24,10 +24,10 @@
                         {{ $errors->first('user') }}
                     </div>
                 @endif
-                <span class="help-block">{{ trans('cruds.transaction.fields.user_helper') }}</span>
+                <span class="help-block">{{ trans(tenant()->id.'/cruds.transaction.fields.user_helper') }}</span>
             </div>
             <div class="form-group">
-                <label class="required" for="order_id">{{ trans('cruds.transaction.fields.order') }}</label>
+                <label class="required" for="order_id">{{ trans(tenant()->id.'/cruds.transaction.fields.order') }}</label>
                 <select class="form-control select2 {{ $errors->has('order') ? 'is-invalid' : '' }}" name="order_id" id="order_id" required>
                     @foreach($orders as $id => $entry)
                         <option value="{{ $id }}" {{ (old('order_id') ? old('order_id') : $transaction->order->id ?? '') == $id ? 'selected' : '' }}>{{ $entry }}</option>
@@ -38,22 +38,22 @@
                         {{ $errors->first('order') }}
                     </div>
                 @endif
-                <span class="help-block">{{ trans('cruds.transaction.fields.order_helper') }}</span>
+                <span class="help-block">{{ trans(tenant()->id.'/cruds.transaction.fields.order_helper') }}</span>
             </div>
             <div class="form-group">
-                <label for="code">{{ trans('cruds.transaction.fields.code') }}</label>
+                <label for="code">{{ trans(tenant()->id.'/cruds.transaction.fields.code') }}</label>
                 <input class="form-control {{ $errors->has('code') ? 'is-invalid' : '' }}" type="text" name="code" id="code" value="{{ old('code', $transaction->code) }}">
                 @if($errors->has('code'))
                     <div class="invalid-feedback">
                         {{ $errors->first('code') }}
                     </div>
                 @endif
-                <span class="help-block">{{ trans('cruds.transaction.fields.code_helper') }}</span>
+                <span class="help-block">{{ trans(tenant()->id.'/cruds.transaction.fields.code_helper') }}</span>
             </div>
             <div class="form-group">
-                <label>{{ trans('cruds.transaction.fields.type') }}</label>
+                <label>{{ trans(tenant()->id.'/cruds.transaction.fields.type') }}</label>
                 <select class="form-control {{ $errors->has('type') ? 'is-invalid' : '' }}" name="type" id="type">
-                    <option value disabled {{ old('type', null) === null ? 'selected' : '' }}>{{ trans('global.pleaseSelect') }}</option>
+                    <option value disabled {{ old('type', null) === null ? 'selected' : '' }}>{{ trans(tenant()->id.'/global.pleaseSelect') }}</option>
                     @foreach(App\Models\Transaction::TYPE_SELECT as $key => $label)
                         <option value="{{ $key }}" {{ old('type', $transaction->type) === (string) $key ? 'selected' : '' }}>{{ $label }}</option>
                     @endforeach
@@ -63,12 +63,12 @@
                         {{ $errors->first('type') }}
                     </div>
                 @endif
-                <span class="help-block">{{ trans('cruds.transaction.fields.type_helper') }}</span>
+                <span class="help-block">{{ trans(tenant()->id.'/cruds.transaction.fields.type_helper') }}</span>
             </div>
             <div class="form-group">
-                <label>{{ trans('cruds.transaction.fields.status') }}</label>
+                <label>{{ trans(tenant()->id.'/cruds.transaction.fields.status') }}</label>
                 <select class="form-control {{ $errors->has('status') ? 'is-invalid' : '' }}" name="status" id="status">
-                    <option value disabled {{ old('status', null) === null ? 'selected' : '' }}>{{ trans('global.pleaseSelect') }}</option>
+                    <option value disabled {{ old('status', null) === null ? 'selected' : '' }}>{{ trans(tenant()->id.'/global.pleaseSelect') }}</option>
                     @foreach(App\Models\Transaction::STATUS_SELECT as $key => $label)
                         <option value="{{ $key }}" {{ old('status', $transaction->status) === (string) $key ? 'selected' : '' }}>{{ $label }}</option>
                     @endforeach
@@ -78,11 +78,11 @@
                         {{ $errors->first('status') }}
                     </div>
                 @endif
-                <span class="help-block">{{ trans('cruds.transaction.fields.status_helper') }}</span>
+                <span class="help-block">{{ trans(tenant()->id.'/cruds.transaction.fields.status_helper') }}</span>
             </div>
             <div class="form-group">
                 <button class="btn btn-info px-5" type="submit">
-                    {{ trans('global.save') }}
+                    {{ trans(tenant()->id.'/global.save') }}
                 </button>
             </div>
         </form>
