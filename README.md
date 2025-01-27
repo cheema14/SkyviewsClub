@@ -1,5 +1,5 @@
 # Skyviews Club
-<p>This project focuses on providing digital solutions for management of multiple modules. The project covers member expenses of all types like sports billings, restaurant orders, memberhsip charges, monthly charges, arrears, credit etc.</p>
+<p>This project focuses on providing digital solutions for management of multiple modules. The project covers member expenses of all types like sports billings, restaurant orders, memberhship charges, monthly charges, arrears, credit etc.</p>
 
 <p>There are multiple modules. They are mentioned below:</p>
 1. Members
